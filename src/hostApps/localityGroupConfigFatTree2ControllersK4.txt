@@ -1,0 +1,16 @@
+Scenario_DynamicFatTree_KN.fat_tree.client[0];0
+Scenario_DynamicFatTree_KN.fat_tree.client[1];0
+Scenario_DynamicFatTree_KN.fat_tree.client[2];0
+Scenario_DynamicFatTree_KN.fat_tree.client[3];0
+Scenario_DynamicFatTree_KN.fat_tree.client[4];0
+Scenario_DynamicFatTree_KN.fat_tree.client[5];0
+Scenario_DynamicFatTree_KN.fat_tree.client[6];0
+Scenario_DynamicFatTree_KN.fat_tree.client[7];0
+Scenario_DynamicFatTree_KN.fat_tree.client[8];1
+Scenario_DynamicFatTree_KN.fat_tree.client[9];1
+Scenario_DynamicFatTree_KN.fat_tree.client[10];1
+Scenario_DynamicFatTree_KN.fat_tree.client[11];1
+Scenario_DynamicFatTree_KN.fat_tree.client[12];1
+Scenario_DynamicFatTree_KN.fat_tree.client[13];1
+Scenario_DynamicFatTree_KN.fat_tree.client[14];1
+Scenario_DynamicFatTree_KN.fat_tree.client[15];1

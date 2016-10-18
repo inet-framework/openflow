@@ -1,0 +1,238 @@
+diff --git a/src/networklayer/autorouting/ipv4/IPv4NetworkConfigurator.cc b/src/networklayer/autorouting/ipv4/IPv4NetworkConfigurator.cc
+index 687938f..11b15e2 100644
+--- a/src/networklayer/autorouting/ipv4/IPv4NetworkConfigurator.cc
++++ b/src/networklayer/autorouting/ipv4/IPv4NetworkConfigurator.cc
+@@ -261,6 +261,12 @@ void IPv4NetworkConfigurator::extractTopology(IPv4Topology& topology)
+         {
+             for (int j = 0; j < interfaceTable->getNumInterfaces(); j++)
+             {
++
++                if(strcmp(node->module->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") == 0 && interfaceTable->getInterface(j) != interfaceTable->getInterfaceByName("eth0")){
++                    continue;
++                }
++
++
+                 InterfaceEntry *interfaceEntry = interfaceTable->getInterface(j);
+                 if (!interfaceEntry->isLoopback() && interfacesSeen.count(interfaceEntry) == 0)
+                 {
+@@ -370,24 +376,43 @@ void IPv4NetworkConfigurator::extractWiredNeighbors(IPv4Topology& topology, Topo
+     Node *node = (Node *)linkOut->getRemoteNode();
+     int inputGateId = linkOut->getRemoteGateId();
+     IInterfaceTable *interfaceTable = node->interfaceTable;
+-    if (!isBridgeNode(node))
+-    {
++
++    if(strcmp(node->module->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") == 0){
+         InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByNodeInputGateId(inputGateId);
+-        if (!interfaceEntry) {
+-            // no such interface (node is probably down); we should probably get the information from our (future) internal database
+-        }
+-        else if (interfacesSeen.count(interfaceEntry) == 0)
+-        {
+-            InterfaceInfo *neighborInterfaceInfo = createInterfaceInfo(topology, node, linkInfo, interfaceEntry);
+-            linkInfo->interfaceInfos.push_back(neighborInterfaceInfo);
+-            interfacesSeen.insert(interfaceEntry);
++        if(interfaceEntry == interfaceTable->getInterfaceByName("eth0")){
++            if (!interfaceEntry) {
++                // no such interface (node is probably down); we should probably get the information from our (future) internal database
++            } else if (interfacesSeen.count(interfaceEntry) == 0){
++                InterfaceInfo *neighborInterfaceInfo = createInterfaceInfo(topology, node, linkInfo, interfaceEntry);
++                linkInfo->interfaceInfos.push_back(neighborInterfaceInfo);
++                interfacesSeen.insert(interfaceEntry);
++            }
++        } else {
++            if (!contains(deviceNodesVisited, node))
++                extractDeviceNeighbors(topology, node, linkInfo, interfacesSeen, deviceNodesVisited);
+         }
++    } else {
++        if (!isBridgeNode(node))
++            {
++                InterfaceEntry *interfaceEntry = interfaceTable->getInterfaceByNodeInputGateId(inputGateId);
++                if (!interfaceEntry) {
++                    // no such interface (node is probably down); we should probably get the information from our (future) internal database
++                }
++                else if (interfacesSeen.count(interfaceEntry) == 0)
++                {
++                    InterfaceInfo *neighborInterfaceInfo = createInterfaceInfo(topology, node, linkInfo, interfaceEntry);
++                    linkInfo->interfaceInfos.push_back(neighborInterfaceInfo);
++                    interfacesSeen.insert(interfaceEntry);
++                }
++            }
++            else
++            {
++                if (!contains(deviceNodesVisited, node))
++                    extractDeviceNeighbors(topology, node, linkInfo, interfacesSeen, deviceNodesVisited);
++            }
+     }
+-    else
+-    {
+-        if (!contains(deviceNodesVisited, node))
+-            extractDeviceNeighbors(topology, node, linkInfo, interfacesSeen, deviceNodesVisited);
+-    }
++
++
+ }
+ 
+ void IPv4NetworkConfigurator::extractWirelessNeighbors(IPv4Topology& topology, const char *wirelessId, LinkInfo* linkInfo, std::set<InterfaceEntry *>& interfacesSeen, std::vector<Node *>& deviceNodesVisited)
+@@ -433,6 +458,11 @@ void IPv4NetworkConfigurator::extractDeviceNeighbors(IPv4Topology& topology, Nod
+         for (int i = 0; i < interfaceTable->getNumInterfaces(); i++)
+         {
+             InterfaceEntry *interfaceEntry = interfaceTable->getInterface(i);
++
++            if(strcmp(node->getModule()->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch")==0 && interfaceEntry == interfaceTable->getInterfaceByName("eth0")){
++                continue;
++            }
++
+             if (!interfaceEntry->isLoopback() && interfacesSeen.count(interfaceEntry) == 0)
+             {
+                 if (isWirelessInterface(interfaceEntry))
+@@ -1793,6 +1823,8 @@ void IPv4NetworkConfigurator::addStaticRoutes(IPv4Topology& topology)
+                     continue;
+                 if (!destinationNode->interfaceTable)
+                     continue;
++                if(strcmp(destinationNode->module->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") == 0)
++                    continue;
+ 
+                 // determine next hop interface
+                 // find next hop interface (the last IP interface on the path that is not in the source node)
+@@ -1802,7 +1834,8 @@ void IPv4NetworkConfigurator::addStaticRoutes(IPv4Topology& topology)
+                 while (node != sourceNode)
+                 {
+                     link = (Link *)node->getPath(0);
+-                    if (node->interfaceTable && node != sourceNode && link->sourceInterfaceInfo)
++
++                    if (node->interfaceTable && node != sourceNode && link->sourceInterfaceInfo && strcmp(node->getModule()->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") != 0)
+                         nextHopInterfaceInfo = link->sourceInterfaceInfo;
+                     node = (Node *)node->getPath(0)->getRemoteNode();
+                 }
+diff --git a/src/networklayer/autorouting/ipv4/IPv4NodeConfigurator.cc b/src/networklayer/autorouting/ipv4/IPv4NodeConfigurator.cc
+index f8db0f8..975d9dc 100644
+--- a/src/networklayer/autorouting/ipv4/IPv4NodeConfigurator.cc
++++ b/src/networklayer/autorouting/ipv4/IPv4NodeConfigurator.cc
+@@ -38,37 +38,39 @@ IPv4NodeConfigurator::IPv4NodeConfigurator()
+ 
+ void IPv4NodeConfigurator::initialize(int stage)
+ {
+-    cSimpleModule::initialize(stage);
+ 
+-    if (stage == 0)
+-    {
+-        cModule *node = getContainingNode(this);
+-        if (!node)
+-            throw cRuntimeError("The container @node module not found");
+-        const char *networkConfiguratorPath = par("networkConfiguratorModule");
+-        nodeStatus = dynamic_cast<NodeStatus *>(node->getSubmodule("status"));
+-        interfaceTable = InterfaceTableAccess().get();
+-        routingTable = RoutingTableAccess().get();
++        cSimpleModule::initialize(stage);
++
++            if (stage == 0)
++            {
++                cModule *node = getContainingNode(this);
++                if (!node)
++                    throw cRuntimeError("The container @node module not found");
++                const char *networkConfiguratorPath = par("networkConfiguratorModule");
++                nodeStatus = dynamic_cast<NodeStatus *>(node->getSubmodule("status"));
++                interfaceTable = InterfaceTableAccess().get();
++                routingTable = RoutingTableAccess().get();
++
++                if (!networkConfiguratorPath[0])
++                    networkConfigurator = NULL;
++                else {
++                    cModule *module = getModuleByPath(networkConfiguratorPath);
++                    if (!module)
++                        throw cRuntimeError("Configurator module '%s' not found (check the 'networkConfiguratorModule' parameter)", networkConfiguratorPath);
++                    networkConfigurator = check_and_cast<IPv4NetworkConfigurator *>(module);
++                }
++            }
++            else if (stage == 1)
++            {
++                if (!nodeStatus || nodeStatus->getState() == NodeStatus::UP)
++                    prepareNode();
++            }
++            else if (stage == 2)
++            {
++                if ((!nodeStatus || nodeStatus->getState() == NodeStatus::UP) && networkConfigurator)
++                    configureNode();
++            }
+ 
+-        if (!networkConfiguratorPath[0])
+-            networkConfigurator = NULL;
+-        else {
+-            cModule *module = getModuleByPath(networkConfiguratorPath);
+-            if (!module)
+-                throw cRuntimeError("Configurator module '%s' not found (check the 'networkConfiguratorModule' parameter)", networkConfiguratorPath);
+-            networkConfigurator = check_and_cast<IPv4NetworkConfigurator *>(module);
+-        }
+-    }
+-    else if (stage == 1)
+-    {
+-        if (!nodeStatus || nodeStatus->getState() == NodeStatus::UP)
+-            prepareNode();
+-    }
+-    else if (stage == 2)
+-    {
+-        if ((!nodeStatus || nodeStatus->getState() == NodeStatus::UP) && networkConfigurator)
+-            configureNode();
+-    }
+ }
+ 
+ bool IPv4NodeConfigurator::handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback)
+@@ -91,8 +93,12 @@ bool IPv4NodeConfigurator::handleOperationStage(LifecycleOperation *operation, i
+ 
+ void IPv4NodeConfigurator::prepareNode()
+ {
+-    for (int i = 0; i < interfaceTable->getNumInterfaces(); i++)
+-        prepareInterface(interfaceTable->getInterface(i));
++    if((strcmp(getParentModule()->getParentModule()->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") == 0)){
++        prepareInterface(interfaceTable->getInterfaceByName("eth0"));
++    } else {
++        for (int i = 0; i < interfaceTable->getNumInterfaces(); i++)
++                prepareInterface(interfaceTable->getInterface(i));
++    }
+ }
+ 
+ void IPv4NodeConfigurator::prepareInterface(InterfaceEntry *interfaceEntry)
+@@ -123,8 +129,12 @@ void IPv4NodeConfigurator::prepareInterface(InterfaceEntry *interfaceEntry)
+ void IPv4NodeConfigurator::configureNode()
+ {
+     ASSERT(networkConfigurator);
+-    for (int i = 0; i < interfaceTable->getNumInterfaces(); i++)
+-        networkConfigurator->configureInterface(interfaceTable->getInterface(i));
++    if((strcmp(getParentModule()->getParentModule()->getNedTypeName(),"openflow.openflow.switch.Open_Flow_Switch") == 0)){
++        networkConfigurator->configureInterface(interfaceTable->getInterfaceByName("eth0"));
++    } else {
++        for (int i = 0; i < interfaceTable->getNumInterfaces(); i++)
++                networkConfigurator->configureInterface(interfaceTable->getInterface(i));
++    }
+     if (par("configureRoutingTable").boolValue())
+         networkConfigurator->configureRoutingTable(routingTable);
+ }
+diff --git a/src/transport/tcp/TCP.cc b/src/transport/tcp/TCP.cc
+index 35b323a..dbba6f4 100644
+--- a/src/transport/tcp/TCP.cc
++++ b/src/transport/tcp/TCP.cc
+@@ -389,10 +389,11 @@ void TCP::addSockPair(TCPConnection *conn, IPvXAddress localAddr, IPvXAddress re
+     if (it != tcpConnMap.end())
+     {
+         // throw "address already in use" error
+-        if (remoteAddr.isUnspecified() && remotePort == -1)
+-            error("Address already in use: there is already a connection listening on %s:%d",
+-                  localAddr.str().c_str(), localPort);
+-        else
++        if (remoteAddr.isUnspecified() && remotePort == -1){
++            removeConnection(it->second);
++            //error("Address already in use: there is already a connection listening on %s:%d",
++            //      localAddr.str().c_str(), localPort);
++        }else
+             error("Address already in use: there is already a connection %s:%d to %s:%d",
+                   localAddr.str().c_str(), localPort, remoteAddr.str().c_str(), remotePort);
+     }
+@@ -448,6 +449,7 @@ void TCP::addForkedConnection(TCPConnection *conn, TCPConnection *newConn, IPvXA
+     key.appGateIndex = newConn->appGateIndex;
+     key.connId = newConn->connId;
+     tcpAppConnMap[key] = newConn;
++
+ }
+ 
+ void TCP::removeConnection(TCPConnection *conn)
