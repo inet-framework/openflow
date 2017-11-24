@@ -2,12 +2,12 @@
 
 package openflow.nodes;
 
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
-import inet.nodes.inet.StandardHost;
-import inet.util.ThruputMeteringChannel;
-import inet.nodes.ethernet.EtherSwitch;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.StandardHost;
+import openflow.openflow.switch.Open_Flow_Switch;
+
+
 //
 // OpenFlow domain consisting of an OpenFlow switch and several hosts, but NO controller.
 //
@@ -54,7 +54,7 @@ module Open_Flow_Domain
         }
 
         for i=0..sizeof(gateCPlane)-1 {
-            etherSwitch.ethg[i] <-->  gateCPlane[i];
+            etherSwitch.ethg[i] <--> gateCPlane[i];
         }
 
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch.gateControlPlane++;

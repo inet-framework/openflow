@@ -1,5 +1,5 @@
 #include <HyperFlowAgent.h>
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include "Switch_Info.h"
 #include "algorithm"
 #include "string"
@@ -33,7 +33,7 @@ void HyperFlowAgent::initialize(){
     //init socket to synchronizer
     const char *localAddress = par("localAddress");
     int localPort = par("localPort");
-    socket.bind(localAddress[0] ? IPvXAddress(localAddress) : IPvXAddress(), localPort);
+    socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
     socket.setOutputGate(gate("tcpOut"));
     socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
 
@@ -75,7 +75,7 @@ void HyperFlowAgent::handleMessage(cMessage *msg){
             //init socket to synchronizer
             const char *connectAddressHyperFlowSynchronizer = par("connectAddressHyperFlowSynchronizer");
             int connectPort = par("connectPortHyperFlowSynchronizer");
-            socket.connect(IPvXAddressResolver().resolve(connectAddressHyperFlowSynchronizer), connectPort);
+            socket.connect(L3AddressResolver().resolve(connectAddressHyperFlowSynchronizer), connectPort);
         }
     }
 

@@ -4,7 +4,7 @@
 
 #include "PingAppRandom.h"
 
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include "PingPayload_m.h"
 #include "IPv4ControlInfo.h"
 #include "IPv6ControlInfo.h"
@@ -46,16 +46,16 @@ void PingAppRandom::handleMessage(cMessage *msg){
                 connectAddress =topo.getNode(random_num)->getModule()->getFullPath().c_str();
             }
 
-            destAddr = IPvXAddressResolver().resolve(connectAddress);
+            destAddr = inet::L3AddressResolver().resolve(connectAddress);
             ASSERT(!destAddr.isUnspecified());
-            srcAddr = IPvXAddressResolver().resolve(par("srcAddr"));
+            srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
 
-            sendPingRequest();
+            sendPing();
             if (isEnabled())
-                scheduleNextPingRequest(simTime());
+                scheduleNextPingRequest(simTime(), true);
         }else{
-            PingPayload * pingMsg = check_and_cast<PingPayload *>(msg);
+            inet::PingPayload * pingMsg = check_and_cast<inet::PingPayload *>(msg);
 
             //generate and emit hash
             std::stringstream hashString;

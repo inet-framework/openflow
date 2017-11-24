@@ -13,9 +13,9 @@
 
 #include "IPv4Datagram.h"
 #include "ARPPacket_m.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 
-#include "InterfaceTableAccess.h"
+#include "ModuleAccess.h"
 #include "InterfaceTable.h"
 
 #include "PingPayload_m.h"
@@ -89,7 +89,7 @@ void OF_Switch::initialize(){
     const char *localAddress = par("localAddress");
     int localPort = par("localPort");
 
-    socket.bind(*localAddress ? IPvXAddress(localAddress) : IPvXAddress(), localPort);
+    socket.bind(*localAddress ? L3Address(localAddress) : L3Address(), localPort);
     socket.setOutputGate(gate("controlPlaneOut"));
     socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
 
@@ -101,7 +101,7 @@ void OF_Switch::initialize(){
     scheduleAt(par("connectAt"), initiateConnection);
 
     //remove unused nics from ift
-    IInterfaceTable* interfaceTable = InterfaceTableAccess().get();
+    IInterfaceTable* interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
     for(int i=0; i< interfaceTable->getNumInterfaces() ;i++){
         if(interfaceTable->getInterface(i) != interfaceTable->getInterfaceByName("eth0")){
             interfaceTable->deleteInterface(interfaceTable->getInterface(i));
@@ -181,7 +181,7 @@ void OF_Switch::connect(const char *addressToConnect){
 
     EV << "Sending Hello to" << connectAddress <<" \n";
 
-    socket.connect(IPvXAddressResolver().resolve(connectAddress), connectPort);
+    socket.connect(L3AddressResolver().resolve(connectAddress), connectPort);
     OFP_Hello *msg = new OFP_Hello("Hello");
     msg->getHeader().version = OFP_VERSION;
     msg->getHeader().type = OFPT_HELLO;
@@ -302,7 +302,7 @@ void OF_Switch::handleFeaturesRequestMessage(Open_Flow_Message *of_msg){
     featuresReply->getHeader().version = OFP_VERSION;
     featuresReply->getHeader().type = OFPT_FEATURES_REPLY;
 
-    IInterfaceTable *inet_ift = InterfaceTableAccess().get();
+    IInterfaceTable *inet_ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 
     MACAddress mac = inet_ift->getInterface(0)->getMacAddress();
 

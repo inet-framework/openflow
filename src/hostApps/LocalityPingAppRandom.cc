@@ -4,7 +4,7 @@
 
 #include "LocalityPingAppRandom.h"
 
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include "PingPayload_m.h"
 #include "IPv4ControlInfo.h"
 #include "IPv6ControlInfo.h"
@@ -83,14 +83,14 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
             }
 
 
-            destAddr = IPvXAddressResolver().resolve(connectAddress);
+            destAddr = L3AddressResolver().resolve(connectAddress);
             ASSERT(!destAddr.isUnspecified());
-            srcAddr = IPvXAddressResolver().resolve(par("srcAddr"));
+            srcAddr = L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
 
-            sendPingRequest();
+            sendPing();
             if (isEnabled())
-                scheduleNextPingRequest(simTime());
+                scheduleNextPingRequest(simTime(), true);
         }
         else
             processPingResponse(check_and_cast<PingPayload *>(msg));

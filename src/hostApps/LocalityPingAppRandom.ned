@@ -2,9 +2,6 @@
 
 package openflow.hostApps;
 
-import inet.applications.IPingApp;
-import inet.applications.pingapp.*;
-
 //PingAppRandom:
 // choses random destination node.
 //
@@ -29,14 +26,15 @@ import inet.applications.pingapp.*;
 //
 // @see PingPayload, ICMP, ICMPv6Core
 //
-simple LocalityPingAppRandom extends inet.applications.pingapp.PingApp{
+simple LocalityPingAppRandom extends inet.applications.pingapp.PingApp
+{
     parameters:
         @display("i=block/app");
         @class(LocalityPingAppRandom);
         double localityRelation = default(0.5);
         string destinationNedType = default("inet.nodes.inet.StandardHost");
         string pathToGroupConfigFile = default("");
-        
+
 }
 
 

@@ -1,5 +1,5 @@
 #include <KandooAgent.h>
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 #include "Switch_Info.h"
 #include "algorithm"
 #include "string"
@@ -29,10 +29,10 @@ void KandooAgent::initialize(){
     if(isRootController){
         socket.setOutputGate(gate("tcpOut"));
         socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
-        socket.bind(localAddress[0] ? IPvXAddress(localAddress) : IPvXAddress(), par("connectPortRootController"));
+        socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), par("connectPortRootController"));
         socket.listen();
     } else {
-        socket.bind(localAddress[0] ? IPvXAddress(localAddress) : IPvXAddress(), localPort);
+        socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
         socket.setOutputGate(gate("tcpOut"));
         socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
 
@@ -56,7 +56,7 @@ void KandooAgent::handleMessage(cMessage *msg){
             //init socket to synchronizer
             const char *connectAddressRootController = par("connectAddressRootController");
             int connectPort = par("connectPortRootController");
-            socket.connect(IPvXAddressResolver().resolve(connectAddressRootController), connectPort);
+            socket.connect(L3AddressResolver().resolve(connectAddressRootController), connectPort);
             delete msg;
         }
     }

@@ -18,7 +18,8 @@
 
 package openflow.controllerApps;
 
-import inet.applications.ITCPApp;
+import inet.applications.contract.ITCPApp;
+
 
 //
 // Template for TCP applications. It shows what gates a TCP app
@@ -33,7 +34,7 @@ simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
         @signal[waitingTime](type="simtime_t");
         @statistic[waitingTime](title="WaitingTime"; record=vector?,stats?; interpolationmode=none);
         double serviceTime @unit("s") = default(0s);
-        
+
     gates:
         input tcpIn @labels(TCPCommand/up);
         output tcpOut @labels(TCPCommand/down);

@@ -2,12 +2,12 @@
 
 package openflow.nodes;
 
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
-import inet.nodes.inet.StandardHost;
-import inet.util.ThruputMeteringChannel;
-import inet.nodes.ethernet.EtherSwitch;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.StandardHost;
+import openflow.openflow.switch.Open_Flow_Switch;
+
+
 //
 // OpenFlow domain consisting of an OpenFlow switch and several hosts, but NO controller.
 //
@@ -52,7 +52,7 @@ module Fat_Tree
     connections allowunconnected:
 
         //core to agg
-        
+
         for i=0..(iNumber*2)-1 {
             coreLayerSwitches[0].gateDataPlane++ <--> ethernetline <--> aggLayerSwitches[i].gateDataPlane++ if i%2==0;
             coreLayerSwitches[1].gateDataPlane++ <--> ethernetline <--> aggLayerSwitches[i].gateDataPlane++ if i%2==0;

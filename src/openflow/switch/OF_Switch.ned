@@ -20,6 +20,8 @@ simple OF_Switch
         @statistic[waitingTime](title="WaitingTime"; record=vector?,stats?; interpolationmode=none);
         @display("i=block/app");
         
+        string interfaceTableModule;   // The path to the InterfaceTable module
+        
         string localAddress = default("");
         int localPort = default(-1);
         string connectAddress = default("");

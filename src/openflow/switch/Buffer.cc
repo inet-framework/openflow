@@ -1,8 +1,9 @@
 #include <omnetpp.h>
-#include <Buffer.h>
+#include "openflow/switch/Buffer.h"
 #include <openflow.h>
 
 using namespace std;
+using namespace inet;
 
 Buffer::Buffer(){
 

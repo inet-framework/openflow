@@ -2,9 +2,10 @@
 
 #include "TCPTrafficGeneratorApp.h"
 #include "TCPSocket.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 
 using namespace std;
+using namespace inet;
 
 
 Define_Module(TCPTrafficGeneratorApp);
@@ -47,13 +48,13 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
             //determine random target
             int random_num = intrand(topo.getNumNodes());
             const char *connectAddress = topo.getNode(random_num)->getModule()->getFullPath().c_str();
-            IPvXAddress destAddr = IPvXAddressResolver().resolve(connectAddress);
+            L3Address destAddr = L3AddressResolver().resolve(connectAddress);
 
             while (topo.getNode(random_num)->getModule() == getParentModule() || destAddr.isUnspecified()) {
                 // avoid same source and destination
                 random_num = intrand(topo.getNumNodes());
                 connectAddress = topo.getNode(random_num)->getModule()->getFullPath().c_str();
-                destAddr = IPvXAddressResolver().resolve(connectAddress);
+                destAddr = L3AddressResolver().resolve(connectAddress);
             }
             //generate socket
             TCPSocket *tempSocket = new TCPSocket();

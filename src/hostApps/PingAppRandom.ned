@@ -2,9 +2,6 @@
 
 package openflow.hostApps;
 
-import inet.applications.IPingApp;
-import inet.applications.pingapp.*;
-
 //PingAppRandom:
 // choses random destination node.
 //
@@ -29,7 +26,8 @@ import inet.applications.pingapp.*;
 //
 // @see PingPayload, ICMP, ICMPv6Core
 //
-simple PingAppRandom extends inet.applications.pingapp.PingApp{
+simple PingAppRandom extends inet.applications.pingapp.PingApp
+{
     parameters:
         @signal[pingPacketHash](type="long");
         @statistic[pingPacketHash](title="PingPacketHash"; record=vector?,stats?; interpolationmode=none);

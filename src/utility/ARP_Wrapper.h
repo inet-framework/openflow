@@ -7,6 +7,7 @@
 #include "MACAddress.h"
 
 using namespace std;
+using namespace inet;
 
 class ARP_Wrapper: public cObject {
 

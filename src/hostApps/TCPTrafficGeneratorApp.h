@@ -8,10 +8,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <TCPSocket.h>
-#include "IPvXAddress.h"
+#include "TCPSocket.h"
+#include "L3Address.h"
 
 using namespace std;
+using namespace inet;
+
 /**
  * Single-connection TCP application.
  */

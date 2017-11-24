@@ -2,22 +2,10 @@
 
 package openflow.openflow.switch;
 
-import inet.applications.pingapp.PingApp;
-import inet.applications.ITCPApp;
-import inet.base.NotificationBoard;
-import inet.linklayer.ethernet.EtherMAC;
+import inet.linklayer.contract.IWiredNic;
 import inet.linklayer.ethernet.EthernetInterface;
-import inet.linklayer.ext.ExtInterface;
-import inet.linklayer.ppp.PPPInterface;
 import inet.networklayer.common.InterfaceTable;
-import inet.networklayer.ipv4.RoutingTable;
-import inet.transport.ITCP;
-import inet.transport.udp.UDP;
-import inet.util.TCPDump;
-import inet.nodes.inet.NetworkLayer;
-import inet.linklayer.IWiredNic;
-import inet.linklayer.configurator.L2NodeConfigurator;
-
+import inet.transportlayer.contract.ITCP;
 
 
 module Open_Flow_Switch

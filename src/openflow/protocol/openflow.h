@@ -10,6 +10,8 @@
 #include <MACAddress.h>
 #include <IPv4Address.h>
 
+using namespace inet;
+
 struct oxm_basic_match {
     int OFB_IN_PORT;
     MACAddress OFB_ETH_DST;

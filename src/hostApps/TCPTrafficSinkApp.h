@@ -7,9 +7,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <TCPSocket.h>
+#include "TCPSocket.h"
 
 using namespace std;
+using namespace inet;
+
 /**
  * Single-connection TCP application.
  */

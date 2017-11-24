@@ -1,9 +1,9 @@
 
 
 #include "TCPTrafficSinkApp.h"
-#include "IPvXAddress.h"
+#include "L3Address.h"
 #include "TCPSocket.h"
-#include "IPvXAddressResolver.h"
+#include "L3AddressResolver.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ void TCPTrafficSinkApp::initialize(){
 
     socket.setOutputGate(gate("tcpOut"));
     socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
-    socket.bind(localAddress[0] ? IPvXAddress(localAddress) : IPvXAddress(), localPort);
+    socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
     socket.listen();
     socket.setCallbackObject(this,&socket);
 }

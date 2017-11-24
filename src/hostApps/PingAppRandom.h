@@ -2,9 +2,7 @@
 
 #include "INETDefs.h"
 #include "PingApp.h"
-#include "IPvXAddress.h"
-
-
+#include "L3Address.h"
 
 /**
  * Generates ping requests and calculates the packet loss and round trip
@@ -13,7 +11,7 @@
  *
  * See NED file for detailed description of operation.
  */
-class PingAppRandom : public PingApp {
+class PingAppRandom : public inet::PingApp {
   protected:
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);

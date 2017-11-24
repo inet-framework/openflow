@@ -2,10 +2,12 @@
 
 #include "INETDefs.h"
 #include "PingApp.h"
-#include "IPvXAddress.h"
+#include "L3Address.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
+
+using namespace inet;
 
 /**
  * Generates ping requests and calculates the packet loss and round trip

@@ -1,13 +1,9 @@
 
 
 package openflow.hyperflow;
-import inet.base.NotificationBoard;
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
-import inet.networklayer.ipv4.RoutingTable;
-import inet.nodes.inet.NetworkLayer;
-import inet.transport.ITCP;
-import inet.applications.ITCPApp;
+import inet.transportlayer.contract.ITCP;
 
 //
 // TODO documentation

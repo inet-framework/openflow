@@ -56,7 +56,7 @@ void OF_Controller::initialize(){
     int port = par("port");
     socket.setOutputGate(gate("tcpOut"));
     socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
-    socket.bind(address[0] ? IPvXAddress(address) : IPvXAddress(), port);
+    socket.bind(address[0] ? L3Address(address) : L3Address(), port);
     socket.listen();
 
     //schedule booted message

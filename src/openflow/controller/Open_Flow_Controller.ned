@@ -1,15 +1,13 @@
 
 
 package openflow.openflow.controller;
-import inet.base.NotificationBoard;
+import inet.applications.contract.ITCPApp;
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
-import inet.networklayer.ipv4.RoutingTable;
-import inet.nodes.inet.NetworkLayer;
-import inet.transport.ITCP;
-import inet.applications.ITCPApp;
+import inet.transportlayer.contract.ITCP;
+import openflow.controllerApps.AbstractControllerApp;
 
-import openflow.controllerApps.*;
+
 //
 // TODO documentation
 //
