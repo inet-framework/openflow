@@ -1,7 +1,7 @@
 
 cplusplus {{
-    #include <EtherFrame_m.h>
-    #include "HyperFlowStructs.h"
+    #include "inet/linklayer/ethernet/EtherFrame_m.h"
+    #include "openflow/hyperflow/HyperFlowStructs.h"
     typedef std::list<ControlChannelEntry> ControlChannel;
     typedef std::list<DataChannelEntry> DataChannel;
     

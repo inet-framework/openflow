@@ -2,8 +2,8 @@
 #ifndef ABSTRACTTCPCONTROLLERAPP_H_
 #define ABSTRACTTCPCONTROLLERAPP_H_
 
-#include <AbstractControllerApp.h>
-#include "TCPSocket.h"
+#include "openflow/controllerApps/AbstractControllerApp.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
 
 class AbstractTCPControllerApp: public AbstractControllerApp {

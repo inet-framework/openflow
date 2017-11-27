@@ -1,8 +1,8 @@
-#include <KN_LLDPForwarding.h>
+#include "openflow/kandoo/KN_LLDPForwarding.h"
 #include <algorithm>
 #include <string>
-#include "ICMPMessage.h"
-#include "PingPayload_m.h"
+#include "inet/networklayer/ipv4/ICMPMessage.h"
+#include "inet/applications/pingapp/PingPayload_m.h"
 
 
 Define_Module(KN_LLDPForwarding);

@@ -1,5 +1,5 @@
 #include <omnetpp.h>
-#include "Switch_Info.h"
+#include "openflow/openflow/controller/Switch_Info.h"
 
 using namespace std;
 

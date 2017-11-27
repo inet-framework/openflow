@@ -4,7 +4,7 @@
 #define STATICSPANNINGTREE_H_
 
 #include <omnetpp.h>
-#include "OF_Switch.h"
+#include "openflow/openflow/switch/OF_Switch.h"
 
 class StaticSpanningTree : public cSimpleModule
 {

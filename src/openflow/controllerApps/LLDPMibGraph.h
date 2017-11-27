@@ -3,7 +3,7 @@
 #ifndef LLDPMIBGRAPH_H_
 #define LLDPMIBGRAPH_H_
 
-#include "LLDPMib.h"
+#include "openflow/controllerApps/LLDPMib.h"
 #include <string>
 #include <algorithm>
 

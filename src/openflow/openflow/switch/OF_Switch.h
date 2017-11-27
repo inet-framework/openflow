@@ -4,11 +4,11 @@
 #define OF_SWITCH_H_
 
 #include <omnetpp.h>
-#include "TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
-#include "Buffer.h"
-#include "Open_Flow_Message_m.h"
-#include "Flow_Table.h"
+#include "openflow/openflow/switch/Buffer.h"
+#include "openflow/messages/Open_Flow_Message_m.h"
+#include "openflow/openflow/switch/Flow_Table.h"
 #include <vector>
 
 class OF_Switch: public cSimpleModule

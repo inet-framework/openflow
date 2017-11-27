@@ -2,12 +2,12 @@
 
 
 
-#include "PingAppRandom.h"
+#include "openflow/hostApps/PingAppRandom.h"
 
-#include "L3AddressResolver.h"
-#include "PingPayload_m.h"
-#include "IPv4ControlInfo.h"
-#include "IPv6ControlInfo.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
+#include "inet/applications/pingapp/PingPayload_m.h"
+#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
+#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
 
 #include <iostream>
 #include <functional>

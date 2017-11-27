@@ -3,9 +3,9 @@
 #define KANDOO_AGENT_H_
 
 #include <omnetpp.h>
-#include "AbstractTCPControllerApp.h"
-#include "TCPSocket.h"
-#include "KN_Packet_m.h"
+#include "openflow/controllerApps/AbstractTCPControllerApp.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "openflow/messages/KN_Packet_m.h"
 
 struct SwitchControllerMapping {
     std::string switchId;

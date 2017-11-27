@@ -4,8 +4,8 @@
 #define HF_REFIRE_WRAPPER_H_
 
 #include "cobject.h"
-#include "MACAddress.h"
-#include "HyperFlowStructs.h"
+#include "inet/linklayer/common/MACAddress.h"
+#include "openflow/hyperflow/HyperFlowStructs.h"
 
 using namespace std;
 

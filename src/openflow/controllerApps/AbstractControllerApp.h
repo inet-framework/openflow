@@ -3,15 +3,15 @@
 #define ABSTRACTCONTROLLERAPP_H_
 
 #include <omnetpp.h>
-#include "list"
-#include "OF_Controller.h"
-#include "TCPSocket.h"
-#include "openflow.h"
-#include "Open_Flow_Message_m.h"
-#include "OFP_Packet_In_m.h"
-#include "OFP_Packet_Out_m.h"
-#include "OFP_Flow_Mod_m.h"
-#include "ARPPacket_m.h"
+#include <list>
+#include "openflow/openflow/controller/OF_Controller.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/messages/Open_Flow_Message_m.h"
+#include "openflow/messages/OFP_Packet_In_m.h"
+#include "openflow/messages/OFP_Packet_Out_m.h"
+#include "openflow/messages/OFP_Flow_Mod_m.h"
+#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
 
 struct CommonHeaderFields{
     uint32_t buffer_id;

@@ -2,12 +2,12 @@
 #ifndef TCP_TRAFFIC_SINK_APP_H_
 #define TCP_TRAFFIC_SINK_APP_H_
 
-#include "INETDefs.h"
+#include "inet/common/INETDefs.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include "TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
 using namespace std;
 using namespace inet;

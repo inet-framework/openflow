@@ -1,8 +1,8 @@
 
 
-#include "INETDefs.h"
-#include "PingApp.h"
-#include "L3Address.h"
+#include "inet/common/INETDefs.h"
+#include "inet/applications/pingapp/PingApp.h"
+#include "inet/networklayer/common/L3Address.h"
 #include <iostream>
 #include <fstream>
 #include <vector>

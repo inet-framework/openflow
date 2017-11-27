@@ -3,13 +3,13 @@
 #ifndef TCP_TRAFFIC_GENERATOR_APP_H_
 #define TCP_TRAFFIC_GENERATOR_APP_H_
 
-#include "INETDefs.h"
+#include "inet/common/INETDefs.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include "TCPSocket.h"
-#include "L3Address.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/networklayer/common/L3Address.h"
 
 using namespace std;
 using namespace inet;

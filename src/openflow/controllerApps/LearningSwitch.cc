@@ -1,5 +1,5 @@
-#include <LearningSwitch.h>
-#include "Switch_Info.h"
+#include "openflow/controllerApps/LearningSwitch.h"
+#include "openflow/openflow/controller/Switch_Info.h"
 
 Define_Module(LearningSwitch);
 

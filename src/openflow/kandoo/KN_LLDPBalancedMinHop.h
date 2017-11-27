@@ -3,8 +3,8 @@
 #define KNLLDPBALANCEDMINHOP_H_
 
 #include <omnetpp.h>
-#include "LLDPBalancedMinHop.h"
-#include "KandooAgent.h"
+#include "openflow/controllerApps/LLDPBalancedMinHop.h"
+#include "openflow/kandoo/KandooAgent.h"
 
 
 

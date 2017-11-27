@@ -1,8 +1,8 @@
 
 
 cplusplus {{
-    #include <EtherFrame_m.h>
-    #include "Switch_Info.h"    
+    #include "inet/linklayer/ethernet/EtherFrame_m.h"
+    #include "openflow/openflow/controller/Switch_Info.h"    
     typedef std::list<Switch_Info *> SwitchInfoList;
 }};
 

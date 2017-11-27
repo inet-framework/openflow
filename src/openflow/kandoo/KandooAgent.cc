@@ -1,6 +1,6 @@
-#include <KandooAgent.h>
-#include "L3AddressResolver.h"
-#include "Switch_Info.h"
+#include "openflow/kandoo/KandooAgent.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
+#include "openflow/openflow/controller/Switch_Info.h"
 #include "algorithm"
 #include "string"
 

@@ -1,4 +1,4 @@
-#include <KN_LLDPBalancedMinHop.h>
+#include "openflow/kandoo/KN_LLDPBalancedMinHop.h"
 #include <algorithm>
 #include <string>
 

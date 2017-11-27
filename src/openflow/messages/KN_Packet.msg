@@ -1,7 +1,7 @@
 
 cplusplus {{
-    #include <EtherFrame_m.h>
-    #include "KandooStructs.h"
+    #include "inet/linklayer/ethernet/EtherFrame_m.h"
+    #include "openflow/utility/KandooStructs.h"
 }};
   
 struct KandooEntry;

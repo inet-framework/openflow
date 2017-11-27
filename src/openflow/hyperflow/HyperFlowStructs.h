@@ -2,7 +2,7 @@
 #ifndef HYPERFLOWSTRUCTS_H_
 #define HYPERFLOWSTRUCTS_H_
 
-#include "Switch_Info.h"
+#include "openflow/openflow/controller/Switch_Info.h"
 
 struct ControlChannelEntry{
     std::list<Switch_Info *> switches;

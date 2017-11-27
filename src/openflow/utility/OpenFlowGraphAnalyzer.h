@@ -3,7 +3,7 @@
 #define OPENFLOWGRAPHANALYZER_H_
 
 #include <omnetpp.h>
-#include "OF_Switch.h"
+#include "openflow/openflow/switch/OF_Switch.h"
 #include "ctopology.h"
 
 class Node;

@@ -1,8 +1,8 @@
 
 cplusplus {{
-    #include "openflow.h"
-    #include "Open_Flow_Message_m.h"
-    #include <EtherFrame_m.h>
+    #include "openflow/openflow/protocol/openflow.h"
+    #include "openflow/messages/Open_Flow_Message_m.h"
+    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     
     inline std::ostream& operator<<(std::ostream& os, ofp_action_output action)
     {

@@ -3,8 +3,8 @@
 #define LEARNINGSWITCH_H_
 
 #include <omnetpp.h>
-#include "AbstractControllerApp.h"
-#include "MACAddress.h"
+#include "openflow/controllerApps/AbstractControllerApp.h"
+#include "inet/linklayer/common/MACAddress.h"
 
 class LearningSwitch:public AbstractControllerApp {
 

@@ -3,17 +3,17 @@
 #define HFLLDPAGENT_H_
 
 #include <omnetpp.h>
-#include "LLDPAgent.h"
-#include "AbstractControllerApp.h"
-#include "LLDP_m.h"
-#include "TCPSocket.h"
-#include "Switch_Info.h"
-#include "LLDPMibGraph.h"
-#include "OFP_Features_Reply_m.h"
-#include "OFP_Packet_In_m.h"
-#include "HyperFlowAgent.h"
-#include "HF_ReFire_Wrapper.h"
-#include "LLDP_Wrapper.h"
+#include "openflow/controllerApps/LLDPAgent.h"
+#include "openflow/controllerApps/AbstractControllerApp.h"
+#include "openflow/messages/LLDP_m.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "openflow/openflow/controller/Switch_Info.h"
+#include "openflow/controllerApps/LLDPMibGraph.h"
+#include "openflow/messages/OFP_Features_Reply_m.h"
+#include "openflow/messages/OFP_Packet_In_m.h"
+#include "openflow/hyperflow/HyperFlowAgent.h"
+#include "openflow/hyperflow/HF_ReFire_Wrapper.h"
+#include "openflow/utility/LLDP_Wrapper.h"
 
 
 class HF_LLDPAgent:public LLDPAgent {

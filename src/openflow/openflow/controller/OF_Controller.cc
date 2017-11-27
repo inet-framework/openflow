@@ -1,17 +1,17 @@
 #include <omnetpp.h>
-#include <OF_Controller.h>
+#include "openflow/openflow/controller/OF_Controller.h"
 
-#include "GenericAppMsg_m.h"
-#include "openflow.h"
-#include "Open_Flow_Message_m.h"
-#include "OFP_Packet_Out_m.h"
-#include "TCPCommand_m.h"
-#include "OFP_Flow_Mod_m.h"
-#include "OFP_Features_Request_m.h"
-#include "OFP_Features_Reply_m.h"
-#include "TCPConnection.h"
-#include "OFP_Initialize_Handshake_m.h"
-#include "AbstractControllerApp.h"
+#include "inet/applications/tcpapp/GenericAppMsg_m.h"
+#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/messages/Open_Flow_Message_m.h"
+#include "openflow/messages/OFP_Packet_Out_m.h"
+#include "inet/transportlayer/contract/tcp/TCPCommand_m.h"
+#include "openflow/messages/OFP_Flow_Mod_m.h"
+#include "openflow/messages/OFP_Features_Request_m.h"
+#include "openflow/messages/OFP_Features_Reply_m.h"
+#include "inet/transportlayer/tcp/TCPConnection.h"
+#include "openflow/messages/OFP_Initialize_Handshake_m.h"
+#include "openflow/controllerApps/AbstractControllerApp.h"
 
 
 #define MSGKIND_BOOTED 100

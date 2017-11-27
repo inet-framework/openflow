@@ -1,5 +1,5 @@
 #include <omnetpp.h>
-#include "LLDPMib.h"
+#include "openflow/controllerApps/LLDPMib.h"
 
 using namespace std;
 

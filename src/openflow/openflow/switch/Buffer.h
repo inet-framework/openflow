@@ -5,7 +5,7 @@
 
 #include <deque>
 #include <map>
-#include <EtherFrame_m.h>
+#include "inet/linklayer/ethernet/EtherFrame_m.h"
 
 
 using namespace std;

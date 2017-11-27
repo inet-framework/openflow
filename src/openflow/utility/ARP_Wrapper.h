@@ -4,7 +4,7 @@
 #define ARP_WRAPPER_H_
 
 #include "cobject.h"
-#include "MACAddress.h"
+#include "inet/linklayer/common/MACAddress.h"
 
 using namespace std;
 using namespace inet;

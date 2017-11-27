@@ -2,14 +2,14 @@
 #ifndef HYPERFLOWSYNCHRONIZER_H_
 #define HYPERFLOWSYNCHRONIZER_H_
 
-#include "TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
 #include <omnetpp.h>
-#include "Switch_Info.h"
-#include "HF_ReportIn_m.h"
-#include "HF_SyncRequest_m.h"
-#include "HF_SyncReply_m.h"
-#include "HF_ChangeNotification_m.h"
-#include "HyperFlowStructs.h"
+#include "openflow/openflow/controller/Switch_Info.h"
+#include "openflow/messages/HF_ReportIn_m.h"
+#include "openflow/messages/HF_SyncRequest_m.h"
+#include "openflow/messages/HF_SyncReply_m.h"
+#include "openflow/messages/HF_ChangeNotification_m.h"
+#include "openflow/hyperflow/HyperFlowStructs.h"
 
 
 

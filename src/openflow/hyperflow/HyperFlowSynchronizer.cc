@@ -1,8 +1,8 @@
 #include <omnetpp.h>
-#include <HyperFlowSynchronizer.h>
-#include "HF_SyncRequest_m.h"
-#include "HF_ReportIn_m.h"
-#include "HF_SyncReply_m.h"
+#include "openflow/hyperflow/HyperFlowSynchronizer.h"
+#include "openflow/messages/HF_SyncRequest_m.h"
+#include "openflow/messages/HF_ReportIn_m.h"
+#include "openflow/messages/HF_SyncReply_m.h"
 
 using namespace std;
 

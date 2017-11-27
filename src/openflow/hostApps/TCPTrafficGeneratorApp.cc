@@ -1,8 +1,8 @@
 
 
-#include "TCPTrafficGeneratorApp.h"
-#include "TCPSocket.h"
-#include "L3AddressResolver.h"
+#include "openflow/hostApps/TCPTrafficGeneratorApp.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
 
 using namespace std;
 using namespace inet;

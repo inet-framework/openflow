@@ -3,8 +3,8 @@
 #define KNLLDPAGENTFORWARDING_H_
 
 #include <omnetpp.h>
-#include "LLDPForwarding.h"
-#include "KandooAgent.h"
+#include "openflow/controllerApps/LLDPForwarding.h"
+#include "openflow/kandoo/KandooAgent.h"
 
 
 

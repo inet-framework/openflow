@@ -3,8 +3,8 @@
 #ifndef FLOW_TABLE_ENTRY_H_
 #define FLOW_TABLE_ENTRY_H_
 
-#include <openflow.h>
-#include <OFP_Flow_Mod_m.h>
+#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/messages/OFP_Flow_Mod_m.h"
 
 using namespace __gnu_cxx;
 

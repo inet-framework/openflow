@@ -1,25 +1,25 @@
-#include <OF_Switch.h>
-#include "openflow.h"
+#include "openflow/openflow/switch/OF_Switch.h"
+#include "openflow/openflow/protocol/openflow.h"
 
-#include "Open_Flow_Message_m.h"
-#include "OFP_Initialize_Handshake_m.h"
-#include "OFP_Features_Reply_m.h"
-#include "OFP_Hello_m.h"
+#include "openflow/messages/Open_Flow_Message_m.h"
+#include "openflow/messages/OFP_Initialize_Handshake_m.h"
+#include "openflow/messages/OFP_Features_Reply_m.h"
+#include "openflow/messages/OFP_Hello_m.h"
 
-#include "OFP_Packet_In_m.h"
-#include "OFP_Packet_Out_m.h"
-#include "OFP_Flow_Mod_m.h"
-#include "EtherMAC.h"
+#include "openflow/messages/OFP_Packet_In_m.h"
+#include "openflow/messages/OFP_Packet_Out_m.h"
+#include "openflow/messages/OFP_Flow_Mod_m.h"
+#include "inet/linklayer/ethernet/EtherMAC.h"
 
-#include "IPv4Datagram.h"
-#include "ARPPacket_m.h"
-#include "L3AddressResolver.h"
+#include "inet/networklayer/ipv4/IPv4Datagram.h"
+#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
+#include "inet/networklayer/common/L3AddressResolver.h"
 
-#include "ModuleAccess.h"
-#include "InterfaceTable.h"
+#include "inet/common/ModuleAccess.h"
+#include "inet/networklayer/common/InterfaceTable.h"
 
-#include "PingPayload_m.h"
-#include "ICMPMessage.h"
+#include "inet/applications/pingapp/PingPayload_m.h"
+#include "inet/networklayer/ipv4/ICMPMessage.h"
 
 
 #define MSGKIND_CONNECT                     1

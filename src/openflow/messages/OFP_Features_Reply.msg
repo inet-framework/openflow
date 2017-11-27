@@ -1,9 +1,9 @@
 
 
 cplusplus {{
-    #include "openflow.h"
-    #include "Open_Flow_Message_m.h"
-    #include "MACAddress.h"
+    #include "openflow/openflow/protocol/openflow.h"
+    #include "openflow/messages/Open_Flow_Message_m.h"
+    #include "inet/linklayer/common/MACAddress.h"
 }};
 
 class MACAddress extends void;

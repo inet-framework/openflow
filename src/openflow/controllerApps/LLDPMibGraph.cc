@@ -1,5 +1,5 @@
 #include <omnetpp.h>
-#include "LLDPMibGraph.h"
+#include "openflow/controllerApps/LLDPMibGraph.h"
 
 #include <vector>
 #include <sstream>

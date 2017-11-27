@@ -2,11 +2,11 @@
 #ifndef OF_CONTROLLER_H_
 #define OF_CONTROLLER_H_
 
-#include "TCPSocket.h"
-#include "Open_Flow_Message_m.h"
-#include "OFP_Packet_In_m.h"
-#include "OFP_Hello_m.h"
-#include "Switch_Info.h"
+#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "openflow/messages/Open_Flow_Message_m.h"
+#include "openflow/messages/OFP_Packet_In_m.h"
+#include "openflow/messages/OFP_Hello_m.h"
+#include "openflow/openflow/controller/Switch_Info.h"
 #include <omnetpp.h>
 
 class AbstractControllerApp;
