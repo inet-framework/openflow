@@ -1,7 +1,8 @@
 
 
 package openflow.kandoo;
-import openflow.controllerApps.*;
+import openflow.controllerApps.AbstractControllerApp;
+
 
 simple KN_LLDPBalancedMinHop like AbstractControllerApp
 {
@@ -12,5 +13,5 @@ simple KN_LLDPBalancedMinHop like AbstractControllerApp
         bool printMibGraph = default(false);
         bool dropIfNoRouteFound = default(true);
         bool ignoreArpRequests = default(false);
-        
+
 }

@@ -4,6 +4,8 @@ package openflow.openflow.controller;
 import inet.applications.contract.ITCPApp;
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
+import inet.networklayer.contract.INetworkLayer;
+import inet.networklayer.contract.IRoutingTable;
 import inet.transportlayer.contract.ITCP;
 import openflow.controllerApps.AbstractControllerApp;
 
@@ -14,21 +16,28 @@ import openflow.controllerApps.AbstractControllerApp;
 module Open_Flow_Controller
 {
     parameters:
-        @node();
+        @networkNode();
         @labels(node,ethernet-node);
         @display("i=device/server;bgb=795,445;i2=openflow/OpenFlow-Logo-small");
         int numControllerApps = default(0);
         int numTcpControllerApps = default(0);
 
+        string networkLayerType = default("IPv4NetworkLayer");
+        string routingTableType = default("IPv4RoutingTable");
+
 		//submodules
         string tcpType = default("TCP");  // tcp implementation (e.g. TCP, TCP_old, TCP_NSC)
-        bool IPForward = default(false);
+        bool forwarding = default(false);
+        bool multicastForwarding = default(false);
         string routingFile = default("");
         int numExtInterfaces = default(0);
         double serviceTime @unit("s") = default(0s);
 
-
-
+        routingTable.forwarding = forwarding;
+        routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
+        *.routingTableModule = default(absPath(".routingTable"));
+        *.interfaceTableModule = default(absPath(".interfaceTable"));
+        
     gates:
         inout ethg[] @labels(EtherFrame-conn);
     submodules:
@@ -42,37 +51,28 @@ module Open_Flow_Controller
             parameters:
                 @display("p=200,141,row,60");
         }
-
-        notificationBoard: NotificationBoard {
-            parameters:
-                @display("p=733,307");
-        }
-        interfaceTable: InterfaceTable {
-            parameters:
-                @display("p=733,226");
-        }
-        routingTable: RoutingTable {
-            parameters:
-                IPForward = IPForward;
-                routerId = "";
-                routingFile = routingFile;
-                @display("p=733,141");
-        }
         tcp: <tcpType> like ITCP {
             parameters:
                 @display("p=200,278");
         }
-        networkLayer: NetworkLayer {
+        routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
             parameters:
-                proxyARP = false;
+                @display("p=53,250;is=s");
+        }
+        networkLayer: <networkLayerType> like INetworkLayer {
+            parameters:
                 @display("p=355,278;q=queue");
             gates:
-                ifIn[sizeof(pppg)+sizeof(ethg)+numExtInterfaces];
-                ifOut[sizeof(pppg)+sizeof(ethg)+numExtInterfaces];
+                ifIn[sizeof(ethg)];
+                ifOut[sizeof(ethg)];
         }
         eth[sizeof(ethg)]: EthernetInterface {
             parameters:
                 @display("p=519,278,row,90;q=txQueue");
+        }
+        interfaceTable: InterfaceTable {
+            parameters:
+                @display("p=733,226");
         }
         OF_Controller: OF_Controller {
             @display("p=56,278");

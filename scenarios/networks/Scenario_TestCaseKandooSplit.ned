@@ -2,17 +2,14 @@
 
 package openflow.networks;
 
-import inet.nodes.ethernet.EtherSwitch;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
-import inet.networklayer.autorouting.ipv4.*;
-import inet.nodes.rip.RIPRouter;
-import inet.util.ThruputMeteringChannel;
-import openflow.utility.*;
-
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.StandardHost;
+import openflow.openflow.controller.Open_Flow_Controller;
+import openflow.openflow.switch.Open_Flow_Switch;
+import openflow.utility.OpenFlowGraphAnalyzer;
+import openflow.utility.StaticSpanningTree;
 
 
 network Scenario_TestCaseKandooSplit
@@ -73,7 +70,7 @@ network Scenario_TestCaseKandooSplit
         open_flow_controller1: Open_Flow_Controller {
             @display("p=348,134");
         }
-        open_flow_controller2: Open_Flow_Controller{
+        open_flow_controller2: Open_Flow_Controller {
             @display("p=622,128");
         }
 
@@ -95,7 +92,7 @@ network Scenario_TestCaseKandooSplit
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch3.gateControlPlane++;
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch4.gateControlPlane++;
 
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller1.ethg++ ;
+        etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller1.ethg++;
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller2.ethg++;
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller_knroot.ethg++;
 

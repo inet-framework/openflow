@@ -2,18 +2,15 @@
 
 package openflow.networks;
 
-import inet.nodes.ethernet.EtherSwitch;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
-import inet.networklayer.autorouting.ipv4.*;
-import inet.nodes.rip.RIPRouter;
-import inet.util.ThruputMeteringChannel;
-import openflow.utility.*;
-
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
-import openflow.hyperflow.*;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.EtherSwitch;
+import inet.node.inet.StandardHost;
+import openflow.hyperflow.Hyper_Flow_Synchronizer;
+import openflow.openflow.controller.Open_Flow_Controller;
+import openflow.openflow.switch.Open_Flow_Switch;
+import openflow.utility.ControllerInvolvementFilter;
+import openflow.utility.StaticSpanningTree;
 
 
 network Scenario_TestCase

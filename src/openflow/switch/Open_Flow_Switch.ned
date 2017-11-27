@@ -5,13 +5,15 @@ package openflow.openflow.switch;
 import inet.linklayer.contract.IWiredNic;
 import inet.linklayer.ethernet.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
+import inet.networklayer.contract.INetworkLayer;
+import inet.networklayer.contract.IRoutingTable;
 import inet.transportlayer.contract.ITCP;
 
 
 module Open_Flow_Switch
 {
     parameters:
-        @node();
+        @networkNode();
         @OF_Switch();
         @labels(node,ethernet-node);
         @display("i=device/switch;i2=openflow/OpenFlow-Logo-small;bgb=757,314");
@@ -20,11 +22,19 @@ module Open_Flow_Switch
         bool csmacdSupport = default(true);  // by default use CSMA/CD
         string macType = default(csmacdSupport ? "EtherMAC" : "EtherMACFullDuplex"); // ~EtherMAC or ~EtherMACFullDuplex
 
+        string networkLayerType = default("IPv4NetworkLayer");
+        string routingTableType = default("IPv4RoutingTable");
+
         //submodules
         string tcpType = default("TCP");  // tcp implementation (e.g. TCP, TCP_old, TCP_NSC)
-        bool IPForward = default(false);
+        bool forwarding = default(false);
+        bool multicastForwarding = default(false);
         string routingFile = default("");
 
+        routingTable.forwarding = forwarding;
+        routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
+        *.routingTableModule = default(absPath(".routingTable"));
+        *.interfaceTableModule = default(absPath(".interfaceTable"));
         etherMAC[*].encapType = "EtherEncapDummy";
         etherMAC[*].csmacdSupport = csmacdSupport;
         etherMAC[*].macType = macType;
@@ -35,30 +45,21 @@ module Open_Flow_Switch
 
     submodules:
 
-
-        notificationBoard: NotificationBoard {
-            parameters:
-                @display("p=263,246");
-        }
         interfaceTable: InterfaceTable {
             parameters:
                 @display("p=363,246");
-        }
-        routingTable: RoutingTable {
-            parameters:
-                IPForward = IPForward;
-                routerId = "";
-                routingFile = routingFile;
-                @display("p=464,246");
         }
         tcp: <tcpType> like ITCP {
             parameters:
                 @display("p=333,123");
         }
-        networkLayer: NetworkLayer {
+        routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
             parameters:
-                proxyARP = false;
-                @display("p=236,123;q=queue");
+                @display("p=53,250;is=s");
+        }
+        networkLayer: <networkLayerType> like INetworkLayer {
+            parameters:
+                @display("p=218,123;q=queue");
             gates:
                 ifIn[sizeof(gateControlPlane)];
                 ifOut[sizeof(gateControlPlane)];

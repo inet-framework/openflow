@@ -2,17 +2,14 @@
 
 package openflow.networks;
 
-import inet.nodes.ethernet.EtherSwitch;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
-import inet.util.ThruputMeteringChannel;
-import inet.networklayer.autorouting.ipv4.*;
-
-import openflow.utility.*;
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
-import openflow.hyperflow.*;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.node.ethernet.EtherSwitch;
+import openflow.hyperflow.Hyper_Flow_Synchronizer;
+import openflow.nodes.DynamicFatTree;
+import openflow.openflow.controller.Open_Flow_Controller;
+import openflow.utility.OpenFlowGraphAnalyzer;
+import openflow.utility.StaticSpanningTree;
 
 
 network Scenario_DynamicFatTree_HF

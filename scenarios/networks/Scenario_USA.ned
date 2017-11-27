@@ -2,16 +2,14 @@
 
 package openflow.networks;
 
-import inet.nodes.ethernet.EtherSwitch;
-import inet.nodes.inet.Router;
-import inet.nodes.inet.StandardHost;
-import inet.util.ThruputMeteringChannel;
-import inet.networklayer.autorouting.ipv4.*;
+import inet.common.misc.ThruputMeteringChannel;
+import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import openflow.nodes.DistanceChannel;
+import openflow.nodes.Open_Flow_Domain;
+import openflow.openflow.controller.Open_Flow_Controller;
+import openflow.utility.OpenFlowGraphAnalyzer;
+import openflow.utility.StaticSpanningTree;
 
-import openflow.utility.*;
-import openflow.nodes.*;
-import openflow.openflow.controller.*;
-import openflow.openflow.switch.*;
 
 network Scenario_USA
 {
@@ -35,7 +33,7 @@ network Scenario_USA
         spanningTree: StaticSpanningTree {
             @display("p=349,598");
         }
-        
+
         openFlowGraphAnalyzer: OpenFlowGraphAnalyzer {
             @display("p=218,598");
         }
