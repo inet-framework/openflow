@@ -3,9 +3,10 @@
 #ifndef LLDP_WRAPPER_H_
 #define LLDP_WRAPPER_H_
 
-#include "cobject.h"
+#include <omnetpp.h>
 
 using namespace std;
+using namespace omnetpp;
 
 class LLDP_Wrapper: public cObject {
 

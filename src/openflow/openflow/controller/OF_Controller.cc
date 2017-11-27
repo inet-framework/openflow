@@ -227,7 +227,7 @@ void OF_Controller::registerConnection(Open_Flow_Message *msg){
 TCPSocket *OF_Controller::findSocketFor(cMessage *msg) const{
     TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
     if (!ind)
-        opp_error("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
 
     int connId = ind->getConnId();
     for(auto i=switchesList.begin(); i != switchesList.end(); ++i) {

@@ -3,7 +3,7 @@
 #ifndef ARP_WRAPPER_H_
 #define ARP_WRAPPER_H_
 
-#include "cobject.h"
+#include <omnetpp.h>
 #include "inet/linklayer/common/MACAddress.h"
 
 using namespace std;

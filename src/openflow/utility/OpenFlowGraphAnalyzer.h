@@ -4,7 +4,6 @@
 
 #include <omnetpp.h>
 #include "openflow/openflow/switch/OF_Switch.h"
-#include "ctopology.h"
 
 class Node;
 

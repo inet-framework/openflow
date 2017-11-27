@@ -65,7 +65,7 @@ void PingAppRandom::handleMessage(cMessage *msg){
             processPingResponse(pingMsg);
 
         }
-        if (ev.isGUI()){
+        if (hasGUI()){
             char buf[40];
             sprintf(buf, "sent: %ld pks\nrcvd: %ld pks", sentCount, numPongs);
             getDisplayString().setTagArg("t", 0, buf);

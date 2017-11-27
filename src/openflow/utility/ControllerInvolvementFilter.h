@@ -4,6 +4,7 @@
 #define CONTROLLERINVOLVEMENTFILTER_H_
 
 #include <omnetpp.h>
+using namespace omnetpp;
 
 class ControllerInvolvementFilter : public cSimpleModule,  public cListener
 {

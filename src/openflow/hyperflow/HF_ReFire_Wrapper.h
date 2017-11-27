@@ -3,7 +3,7 @@
 #ifndef HF_REFIRE_WRAPPER_H_
 #define HF_REFIRE_WRAPPER_H_
 
-#include "cobject.h"
+#include <omnetpp.h>
 #include "inet/linklayer/common/MACAddress.h"
 #include "openflow/hyperflow/HyperFlowStructs.h"
 

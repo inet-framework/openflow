@@ -135,7 +135,7 @@ void HyperFlowSynchronizer::handleReportIn(HF_ReportIn * msg){
 TCPSocket * HyperFlowSynchronizer::findSocketFor(cMessage *msg){
     TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
     if (!ind)
-        opp_error("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
     int connId = ind->getConnId();
     std::map<int,TCPSocket*>::iterator i = socketMap.find(connId);
     ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());

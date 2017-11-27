@@ -2,9 +2,10 @@
 
 #ifndef LLDPMIB_H_
 #define LLDPMIB_H_
-
+#include <omnetpp.h>
 
 using namespace __gnu_cxx;
+using namespace omnetpp;
 
 class LLDPMib {
     public:
