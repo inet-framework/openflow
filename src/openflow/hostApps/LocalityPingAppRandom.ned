@@ -32,7 +32,7 @@ simple LocalityPingAppRandom extends inet.applications.pingapp.PingApp
         @display("i=block/app");
         @class(LocalityPingAppRandom);
         double localityRelation = default(0.5);
-        string destinationNedType = default("inet.nodes.inet.StandardHost");
+        string destinationNedType = default("inet.node.inet.StandardHost");
         string pathToGroupConfigFile = default("");
 
 }

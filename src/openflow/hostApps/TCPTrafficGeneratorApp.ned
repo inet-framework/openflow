@@ -20,7 +20,7 @@ simple TCPTrafficGeneratorApp like ITCPApp
         @display("i=block/app");
         double startSending @unit("s") = default(2s);
         int connectPort = default(1000);
-        string destinationNedType = default("inet.nodes.inet.StandardHost");
+        string destinationNedType = default("inet.node.inet.StandardHost");
         string pathToFlowSizes = default("");
 
     gates:
