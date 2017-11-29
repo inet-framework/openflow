@@ -23,7 +23,7 @@ class LocalityPingAppRandom : public PingApp {
     virtual bool isEnabled();
 
     cTopology topo;
-    const char *connectAddress;
+    std::string connectAddress;
     double localityRelation;
     std::string localId;
     std::map<std::string,std::vector<std::string> > groupToNodes;

@@ -39,16 +39,19 @@ void PingAppRandom::handleMessage(cMessage *msg){
         }
         if (msg == timer){
             // connect to random destination node
-            int random_num = intrand(topo.getNumNodes());
-            connectAddress =topo.getNode(random_num)->getModule()->getFullPath().c_str();
+            unsigned nodeNum = topo.getNumNodes();
+            if (nodeNum == 0)
+                throw cRuntimeError("No potential destination nodes found");
+            int random_num = intrand(nodeNum);
+            connectAddress =topo.getNode(random_num)->getModule()->getFullPath();
             while (topo.getNode(random_num)->getModule() == getParentModule()) {
 
                 // avoid same source and destination
                 random_num = intrand(topo.getNumNodes());
-                connectAddress =topo.getNode(random_num)->getModule()->getFullPath().c_str();
+                connectAddress =topo.getNode(random_num)->getModule()->getFullPath();
             }
 
-            destAddr = inet::L3AddressResolver().resolve(connectAddress);
+            destAddr = inet::L3AddressResolver().resolve(connectAddress.c_str());
             ASSERT(!destAddr.isUnspecified());
             srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";

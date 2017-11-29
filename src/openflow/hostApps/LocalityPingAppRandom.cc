@@ -67,7 +67,7 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
             if(dblrand() <= localityRelation){
                 //determine random local target
                 std::vector<std::string> tempVec = groupToNodes[localId];
-                connectAddress = (tempVec[intrand(groupToNodes[localId].size())]).c_str();
+                connectAddress = (tempVec[intrand(groupToNodes[localId].size())]);
 
             } else {
                 //determine random global target
@@ -79,11 +79,11 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
                 }
                 //determine host
                 std::vector<std::string> tempVec = groupToNodes[std::to_string(tempRand)];
-                connectAddress = (tempVec[intrand(groupToNodes[std::to_string(tempRand)].size())]).c_str();
+                connectAddress = (tempVec[intrand(groupToNodes[std::to_string(tempRand)].size())]);
             }
 
 
-            destAddr = L3AddressResolver().resolve(connectAddress);
+            destAddr = L3AddressResolver().resolve(connectAddress.c_str());
             ASSERT(!destAddr.isUnspecified());
             srcAddr = L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";

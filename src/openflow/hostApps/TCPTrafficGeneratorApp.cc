@@ -47,14 +47,14 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
         if(msg->getKind() == 1){
             //determine random target
             int random_num = intrand(topo.getNumNodes());
-            const char *connectAddress = topo.getNode(random_num)->getModule()->getFullPath().c_str();
-            L3Address destAddr = L3AddressResolver().resolve(connectAddress);
+            std::string connectAddress = topo.getNode(random_num)->getModule()->getFullPath();
+            L3Address destAddr = L3AddressResolver().resolve(connectAddress.c_str());
 
             while (topo.getNode(random_num)->getModule() == getParentModule() || destAddr.isUnspecified()) {
                 // avoid same source and destination
                 random_num = intrand(topo.getNumNodes());
-                connectAddress = topo.getNode(random_num)->getModule()->getFullPath().c_str();
-                destAddr = L3AddressResolver().resolve(connectAddress);
+                connectAddress = topo.getNode(random_num)->getModule()->getFullPath();
+                destAddr = L3AddressResolver().resolve(connectAddress.c_str());
             }
             //generate socket
             TCPSocket *tempSocket = new TCPSocket();
