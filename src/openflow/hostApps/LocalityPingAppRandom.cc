@@ -16,7 +16,7 @@ Define_Module(LocalityPingAppRandom);
 
 
 void LocalityPingAppRandom::initialize(int stage){
-    if(stage == 0){
+    if(stage == INITSTAGE_LOCAL){
         //set params
         localityRelation = par("localityRelation");
 

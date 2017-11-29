@@ -1,6 +1,6 @@
 
 #ifndef KANDOOSTRUCTS_H_
-#define KANDOOFLOWSTRUCTS_H_
+#define KANDOOSTRUCTS_H_
 
 
 struct KandooEntry{

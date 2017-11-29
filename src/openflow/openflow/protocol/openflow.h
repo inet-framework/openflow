@@ -236,8 +236,7 @@ enum ofp_packet_in_reason {
 };
 
 /* Send packet (controller -> datapath). */
-class ofp_action_header {
-public:
+struct ofp_action_header {
     uint16_t type; /* One of OFPAT_*. */
     uint16_t len; /* Length of action, including this
      header.  This is the length of action,

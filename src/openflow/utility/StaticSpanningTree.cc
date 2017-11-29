@@ -3,7 +3,7 @@ Define_Module(StaticSpanningTree);
 
 
 void StaticSpanningTree::initialize(int stage) {
-    if (stage == 4) {
+    if (stage == INITSTAGE_LINK_LAYER_2) {
         const char *NodeType = par("NodeType");
         int startNode = par("startNode");
 

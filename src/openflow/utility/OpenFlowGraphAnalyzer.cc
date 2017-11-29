@@ -1,4 +1,5 @@
 #include "openflow/utility/OpenFlowGraphAnalyzer.h"
+#include "inet/common/InitStages.h"
 #include <queue>
 #include <algorithm>
 #include <vector>
@@ -13,7 +14,7 @@ struct compNodeInt {
 
 
 void OpenFlowGraphAnalyzer::initialize(int stage) {
-    if (stage == 4) {
+    if (stage == INITSTAGE_LINK_LAYER_2) {
         const char *NodeType = par("NodeType");
         considerOnlyEndToEnd = par("considerOnlyEndToEnd");
 

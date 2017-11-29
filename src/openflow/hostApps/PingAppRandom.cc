@@ -14,11 +14,13 @@
 #include <string>
 #include <algorithm>
 
+using namespace inet;
+
 Define_Module(PingAppRandom);
 
 
 void PingAppRandom::initialize(int stage){
-    if(stage == 0){
+    if (stage == INITSTAGE_LOCAL){
         topo.extractByNedTypeName(cStringTokenizer(par("destinationNedType")).asVector());
         EV << "Number of extracted nodes: " << topo.getNumNodes() << endl;
     }
@@ -54,7 +56,7 @@ void PingAppRandom::handleMessage(cMessage *msg){
             sendPing();
             if (isEnabled())
                 scheduleNextPingRequest(simTime(), true);
-        }else{
+        } else {
             inet::PingPayload * pingMsg = check_and_cast<inet::PingPayload *>(msg);
 
             //generate and emit hash

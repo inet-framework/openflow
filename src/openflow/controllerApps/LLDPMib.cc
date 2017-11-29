@@ -1,4 +1,3 @@
-#include <omnetpp.h>
 #include "openflow/controllerApps/LLDPMib.h"
 
 using namespace std;
