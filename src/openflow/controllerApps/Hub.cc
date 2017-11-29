@@ -14,8 +14,8 @@ void Hub::initialize(){
     AbstractControllerApp::initialize();
 }
 
-void Hub::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void Hub::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     if(id == PacketInSignalId){
         EV << "Hub::PacketIn" << '\n';

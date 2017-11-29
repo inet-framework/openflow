@@ -69,7 +69,7 @@ void OF_Controller::initialize(){
 void OF_Controller::handleMessage(cMessage *msg){
     if (msg->isSelfMessage()) {
         if (msg->getKind()==MSGKIND_BOOTED){
-            emit(BootedSignalId,this);
+            emit(BootedSignalId, this);
         }else{
             //This is message which has been scheduled due to service time
             //Get the Original message

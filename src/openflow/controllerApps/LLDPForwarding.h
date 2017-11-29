@@ -24,7 +24,7 @@ public:
     ~LLDPForwarding();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize();
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
     virtual void computePath(std::string srcId, std::string dstId, std::list<LLDPPathSegment> &list);

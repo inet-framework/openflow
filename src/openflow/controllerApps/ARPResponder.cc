@@ -85,8 +85,8 @@ void ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
 }
 
 
-void ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     if(id == PacketInSignalId){
         EV << "ARPResponder::PacketIn" << '\n';

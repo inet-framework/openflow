@@ -114,7 +114,7 @@ void HF_ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
 }
 
 
-void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
+void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     //set hfagent link
     if(hfAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
@@ -128,7 +128,7 @@ void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
         }
     }
 
-    ARPResponder::receiveSignal(src,id,obj);
+    ARPResponder::receiveSignal(src,id,obj,details);
 
     //check for hf messages to refire
     if(id == HyperFlowReFireSignalId){

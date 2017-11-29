@@ -112,8 +112,8 @@ void LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 
 
-void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     //set lldp link
     if(lldpAgent == NULL && controller != NULL){

@@ -1,12 +1,11 @@
-
-
 package openflow.kandoo;
-import openflow.controllerApps.AbstractControllerApp;
 
+import openflow.controllerApps.AbstractControllerApp;
 
 simple KN_LLDPAgent like AbstractControllerApp
 {
     parameters:
+        @signal[KandooEvent];
         @display("i=block/app");
 
         //default value cisco
@@ -17,5 +16,4 @@ simple KN_LLDPAgent like AbstractControllerApp
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(60);
         bool printMibGraph = default(false);
-
 }

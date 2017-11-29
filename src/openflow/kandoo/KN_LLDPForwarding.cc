@@ -144,8 +144,8 @@ void KN_LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 
 
-void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    LLDPForwarding::receiveSignal(src,id,obj);
+void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    LLDPForwarding::receiveSignal(src,id,obj,details);
 
     //set knagent link
     if(knAgent == NULL && controller != NULL){

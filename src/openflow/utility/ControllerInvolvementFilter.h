@@ -17,7 +17,7 @@ protected:
         virtual void finish();
         virtual void handleMessage(cMessage *msg);
 
-        virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l);
+        virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) override;
 
         std::map<long,int> controllerInvolvements;
 

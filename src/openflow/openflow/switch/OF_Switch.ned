@@ -12,7 +12,7 @@ simple OF_Switch
         @statistic[cpPingPacketHash](title="CpPingPacketHash"; record=vector?,stats; interpolationmode=none);
         @signal[dpPingPacketHash](type="long");
         @statistic[dpPingPacketHash](title="DpPingPacketHash"; record=vector?,stats; interpolationmode=none);
-        @signal[queueSize](type="long");
+        @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats; interpolationmode=none);
         @signal[bufferSize](type="long");
         @statistic[bufferSize](title="BufferSize"; record=vector?,stats; interpolationmode=none);

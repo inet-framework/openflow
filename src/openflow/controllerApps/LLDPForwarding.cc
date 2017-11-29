@@ -120,8 +120,8 @@ void LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 
 
-void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     //set lldp link
     if(lldpAgent == NULL && controller != NULL){

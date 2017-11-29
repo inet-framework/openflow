@@ -1,7 +1,6 @@
 #include "openflow/utility/ControllerInvolvementFilter.h"
 
 
-
 Define_Module(ControllerInvolvementFilter);
 
 
@@ -10,7 +9,7 @@ void ControllerInvolvementFilter::initialize(int stage) {
     getParentModule()->subscribe("cpPingPacketHash",this);
 }
 
-void ControllerInvolvementFilter::receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l){
+void ControllerInvolvementFilter::receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) {
     if(signalID==cpPingPacketHash){
         if(controllerInvolvements.count(l) <=0){
             controllerInvolvements.insert(std::pair<long,int>(l,1));

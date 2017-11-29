@@ -21,7 +21,7 @@ public:
     LLDPMibGraph * getMibGraph();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize();
     virtual void handleMessage(cMessage *msg);
     void triggerFlowMod(Switch_Info * swInfo);

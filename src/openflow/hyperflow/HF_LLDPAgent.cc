@@ -94,7 +94,7 @@ void HF_LLDPAgent::handlePacketIn(OFP_Packet_In * packet_in_msg){
 }
 
 
-void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
+void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     //set hfagent link
     if(hfAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
@@ -108,7 +108,7 @@ void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) 
         }
     }
 
-    LLDPAgent::receiveSignal(src,id,obj);
+    LLDPAgent::receiveSignal(src,id,obj,details);
 
     //check for hf messages to refire
     if(id == HyperFlowReFireSignalId){

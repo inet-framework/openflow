@@ -17,8 +17,8 @@ void LearningSwitch::initialize(){
     hardTimeout = par("flowModHardTimeOut");
 }
 
-void LearningSwitch::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void LearningSwitch::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     if(id == PacketInSignalId){
         EV << "LearningSwitch::PacketIn" << endl;

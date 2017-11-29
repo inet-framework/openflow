@@ -36,7 +36,7 @@ void AbstractControllerApp::initialize(){
 }
 
 
-void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
+void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
 
     //register at controller
     if(id == BootedSignalId){

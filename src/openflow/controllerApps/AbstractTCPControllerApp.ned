@@ -29,7 +29,7 @@ simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
 {
     parameters:
         @display("i=block/app");
-        @signal[queueSize](type="long");
+        @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats; interpolationmode=none);
         @signal[waitingTime](type="simtime_t");
         @statistic[waitingTime](title="WaitingTime"; record=vector?,stats?; interpolationmode=none);

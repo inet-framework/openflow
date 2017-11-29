@@ -108,7 +108,7 @@ void KN_ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
 }
 
 
-void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
+void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     //set knagent link
     if(knAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
@@ -122,7 +122,7 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
         }
     }
 
-    ARPResponder::receiveSignal(src,id,obj);
+    ARPResponder::receiveSignal(src,id,obj,details);
 
     //check kandoo events
     if(id == kandooEventSignalId){

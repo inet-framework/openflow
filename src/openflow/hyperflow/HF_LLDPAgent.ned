@@ -7,6 +7,7 @@ import openflow.controllerApps.AbstractControllerApp;
 simple HF_LLDPAgent like AbstractControllerApp
 {
     parameters:
+        @signal[HyperFlowReFire];
         @display("i=block/app");
 
         //default value cisco

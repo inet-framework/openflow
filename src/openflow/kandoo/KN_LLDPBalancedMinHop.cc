@@ -124,8 +124,8 @@ void KN_LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 
 
-void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    LLDPBalancedMinHop::receiveSignal(src,id,obj);
+void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    LLDPBalancedMinHop::receiveSignal(src,id,obj,details);
 
     //set knagent link
     if(knAgent == NULL && controller != NULL){

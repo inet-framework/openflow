@@ -17,7 +17,7 @@ public:
     ~KN_LLDPBalancedMinHop();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize();
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
 

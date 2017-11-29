@@ -135,8 +135,8 @@ void LLDPAgent::triggerFlowMod(Switch_Info * swInfo) {
     sendFlowModMessage(OFPFC_ADD, match, outport, swInfo->getSocket(),idleTimeout,hardTimeout);
 }
 
-void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
-    AbstractControllerApp::receiveSignal(src,id,obj);
+void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    AbstractControllerApp::receiveSignal(src,id,obj,details);
 
     if(id == PacketInSignalId){
         EV << "LLDPAgent::PacketIn" << endl;

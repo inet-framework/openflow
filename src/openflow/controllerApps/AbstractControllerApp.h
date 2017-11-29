@@ -43,7 +43,7 @@ protected:
 
 
     virtual void initialize();
-    virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
 
     virtual OFP_Packet_Out * createFloodPacketFromPacketIn(OFP_Packet_In *packet_in_msg);
     virtual OFP_Packet_Out * createDropPacketFromPacketIn(OFP_Packet_In *packet_in_msg);

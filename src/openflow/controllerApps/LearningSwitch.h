@@ -14,7 +14,7 @@ public:
     ~LearningSwitch();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize();
     void doSwitching(OFP_Packet_In *packet_in_msg);
 

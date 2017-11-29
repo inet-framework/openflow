@@ -13,7 +13,7 @@ public:
     ~Hub();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj);
+    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize();
 };
 

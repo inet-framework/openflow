@@ -7,6 +7,7 @@ simple HyperFlowAgent extends openflow.controllerApps.AbstractTCPControllerApp
 {
     parameters:
         @class(HyperFlowAgent);
+        @signal[HyperFlowReFire];
         @display("i=block/app");
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(1);

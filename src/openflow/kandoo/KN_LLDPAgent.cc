@@ -109,7 +109,7 @@ void KN_LLDPAgent::handlePacketIn(OFP_Packet_In * packet_in_msg){
 }
 
 
-void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) {
+void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     //set knagent link
     if(kandooAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
@@ -123,7 +123,7 @@ void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj) 
         }
     }
 
-    LLDPAgent::receiveSignal(src,id,obj);
+    LLDPAgent::receiveSignal(src,id,obj,details);
 
     //check for kandoo events
     if(id == kandooEventSignalId){

@@ -25,6 +25,11 @@ package openflow.controllerApps;
 moduleinterface AbstractControllerApp
 {
     parameters:
+        @signal[PacketIn];
+        @signal[PacketOut];
+        @signal[PacketFeatureRequest];
+        @signal[PacketFeatureReply];
+        @signal[Booted];
         @display("i=block/app");
 }
 
