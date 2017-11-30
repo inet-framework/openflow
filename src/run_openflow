@@ -4,5 +4,5 @@ DIR=`dirname $0`
 if [ -x $DIR/openflow_exe -o -x $DIR/openflow_exe.exe ]; then
   $DIR/openflow_exe -n $DIR/../../inet/src:$DIR/../scenarios:$DIR $*
 else
-  opp_run -l $DIR/openflow_exe -n $DIR/../scenarios:$DIR $*
+  opp_run_dbg -l $DIR/openflow -n $DIR/../../inet/src:$DIR/../scenarios:$DIR $*
 fi
