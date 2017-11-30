@@ -4,6 +4,7 @@ simple KandooAgent extends openflow.controllerApps.AbstractTCPControllerApp
 {
     parameters:
         @display("i=block/app");
+        @class(KandooAgent);
         @signal[KandooEvent];
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(1);

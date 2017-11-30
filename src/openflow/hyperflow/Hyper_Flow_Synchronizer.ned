@@ -26,7 +26,7 @@ module Hyper_Flow_Synchronizer
         string networkLayerType = default("IPv4NetworkLayer");
         string routingTableType = default("IPv4RoutingTable");
 
-        bool IPForward = default(false);
+        bool forwarding = default(false);
         bool multicastForwarding = default(false);
         string routingFile = default("");
 
