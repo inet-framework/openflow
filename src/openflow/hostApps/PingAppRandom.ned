@@ -29,7 +29,7 @@ package openflow.hostApps;
 simple PingAppRandom extends inet.applications.pingapp.PingApp
 {
     parameters:
-        @signal[pingPacketHash](type="long");
+        @signal[pingPacketHash](type="unsigned long");
         @statistic[pingPacketHash](title="PingPacketHash"; record=vector?,stats?; interpolationmode=none);
         string destinationNedType = default("inet.node.inet.StandardHost");
         @display("i=block/app");
