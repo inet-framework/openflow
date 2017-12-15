@@ -37,7 +37,7 @@ module Open_Flow_Controller
         routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
         *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
-        
+
     gates:
         inout ethg[] @labels(EtherFrame-conn);
     submodules:
@@ -57,7 +57,7 @@ module Open_Flow_Controller
         }
         routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
             parameters:
-                @display("p=53,250;is=s");
+                @display("p=733,333");
         }
         networkLayer: <networkLayerType> like INetworkLayer {
             parameters:

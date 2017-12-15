@@ -16,7 +16,7 @@ module Open_Flow_Switch
         @networkNode();
         @OF_Switch();
         @labels(node,ethernet-node);
-        @display("i=device/switch;i2=openflow/OpenFlow-Logo-small;bgb=757,314");
+        @display("i=device/switch;i2=openflow/OpenFlow-Logo-small");
         bool sendCompletePacket = default(false);
         double serviceTime @unit("s") = default(0s);
         bool csmacdSupport = default(true);  // by default use CSMA/CD
@@ -47,35 +47,35 @@ module Open_Flow_Switch
 
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=363,246");
+                @display("p=446,203");
         }
         tcp: <tcpType> like ITCP {
             parameters:
-                @display("p=333,123");
+                @display("p=315,90");
         }
         routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
             parameters:
-                @display("p=53,250;is=s");
+                @display("p=200,203");
         }
         networkLayer: <networkLayerType> like INetworkLayer {
             parameters:
-                @display("p=218,123;q=queue");
+                @display("p=200,90;q=queue");
             gates:
                 ifIn[sizeof(gateControlPlane)];
                 ifOut[sizeof(gateControlPlane)];
         }
         eth[sizeof(gateControlPlane)]: EthernetInterface {
             parameters:
-                @display("p=93,123,row,90;q=txQueue");
+                @display("p=75,90,row,90;q=txQueue");
         }
         etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IWiredNic {
             parameters:
                 mac.promiscuous = true;
-                @display("p=651,123");
+                @display("p=633,90,c,70");
         }
 
         OF_Switch: OF_Switch {
-            @display("p=464,123");
+            @display("p=446,90");
             sendCompletePacket = sendCompletePacket;
             gates:
                 dataPlaneOut[sizeof(gateDataPlane)];

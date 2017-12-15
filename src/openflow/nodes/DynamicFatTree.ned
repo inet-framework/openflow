@@ -47,7 +47,7 @@ module DynamicFatTree
         }
 
         etherSwitch: EtherSwitch {
-            @display("p=79,200");
+            @display("p=79,250");
         }
 
         client[hostNum]: StandardHost {
