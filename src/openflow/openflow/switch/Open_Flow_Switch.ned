@@ -38,6 +38,7 @@ module Open_Flow_Switch
         etherMAC[*].encapType = "EtherEncapDummy";
         etherMAC[*].csmacdSupport = csmacdSupport;
         etherMAC[*].macType = macType;
+        networkLayer.proxyARP = false; 
 
     gates:
         inout gateControlPlane[] @labels(ControlPlane);
