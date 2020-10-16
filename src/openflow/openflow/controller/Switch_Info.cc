@@ -23,7 +23,7 @@ int Switch_Info::getVersion() const {
 }
 
 void Switch_Info::setVersion(int version) {
-        version = version;
+        this->version = version;
 }
 
 

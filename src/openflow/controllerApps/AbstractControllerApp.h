@@ -46,6 +46,7 @@ protected:
 
     virtual void initialize() override;
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
+    virtual void finish() override;
 
     virtual OFP_Packet_Out * createFloodPacketFromPacketIn(OFP_Packet_In *packet_in_msg);
     virtual OFP_Packet_Out * createDropPacketFromPacketIn(OFP_Packet_In *packet_in_msg);
@@ -62,7 +63,6 @@ protected:
 public:
     AbstractControllerApp();
     ~AbstractControllerApp();
-    virtual void finish() override;
 
 };
 
