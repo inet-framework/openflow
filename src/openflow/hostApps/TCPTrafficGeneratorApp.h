@@ -25,22 +25,22 @@ struct Stats{
     long transmittedBytes;
 };
 
-class INET_API TCPTrafficGeneratorApp : public cSimpleModule, public TCPSocket::CallbackInterface
+class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TCPSocket::CallbackInterface
 {
 
   protected:
     cTopology topo;
     int  lineNumbers;
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    virtual void initialize() override;
+    virtual void handleMessage(cMessage *msg) override;
     unsigned int FileRead( istream & is, vector <char> & buff );
     unsigned int CountLines( const vector <char> & buff, int sz );
-    virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent);
-    virtual void socketEstablished(int connId, void *yourPtr);
-    virtual void socketPeerClosed(int connId, void *yourPtr);
-    virtual void socketClosed(int connId, void *yourPtr);
-    virtual void socketFailure(int connId, void *yourPtr, int code);
-    virtual void socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status);
+    virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) override;
+    virtual void socketEstablished(int connId, void *yourPtr) override;
+    virtual void socketPeerClosed(int connId, void *yourPtr) override;
+    virtual void socketClosed(int connId, void *yourPtr) override;
+    virtual void socketFailure(int connId, void *yourPtr, int code) override;
+    virtual void socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status) override;
     std::map<TCPSocket *,Stats> statistics;
 
 

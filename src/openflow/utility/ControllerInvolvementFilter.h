@@ -13,9 +13,9 @@ protected:
         //stats
         simsignal_t cpPingPacketHash;
 
-        virtual void initialize(int stage);
-        virtual void finish();
-        virtual void handleMessage(cMessage *msg);
+        virtual void initialize(int stage) override;
+        virtual void finish() override;
+        virtual void handleMessage(cMessage *msg) override;
 
         virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) override;
 

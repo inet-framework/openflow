@@ -13,7 +13,15 @@ AbstractTCPControllerApp::AbstractTCPControllerApp()
 
 AbstractTCPControllerApp::~AbstractTCPControllerApp()
 {
+    for(auto&& msg : msgList) {
+      delete msg;
+    }
+    msgList.clear();
 
+    for(auto&& pair : socketMap){
+        delete pair.second;
+    }
+    socketMap.clear();
 }
 
 
@@ -76,7 +84,7 @@ void AbstractTCPControllerApp::handleMessage(cMessage *msg){
                 event->setContextPointer(msg);
                 scheduleAt(simTime()+serviceTime, event);
             }
-            emit(queueSize,msgList.size());
+            emit(queueSize,static_cast<unsigned long>(msgList.size()));
             if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
                 packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
             } else {

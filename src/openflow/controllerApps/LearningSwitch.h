@@ -15,7 +15,7 @@ public:
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize();
+    void initialize() override;
     void doSwitching(OFP_Packet_In *packet_in_msg);
 
     std::map<Switch_Info *,std::map<MACAddress,uint32_t> > lookupTable;

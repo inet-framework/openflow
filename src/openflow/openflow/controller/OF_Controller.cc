@@ -113,7 +113,7 @@ void OF_Controller::handleMessage(cMessage *msg){
         }
 
         calcAvgQueueSize(msgList.size());
-        emit(queueSize,msgList.size());
+        emit(queueSize,static_cast<unsigned long>(msgList.size()));
     }
 }
 

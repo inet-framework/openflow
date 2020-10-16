@@ -25,7 +25,7 @@ public:
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize();
+    void initialize() override;
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
     virtual std::list<LLDPPathSegment> computeBalancedMinHopPath(std::string srcId, std::string dstId);
 

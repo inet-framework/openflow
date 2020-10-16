@@ -17,14 +17,14 @@ class ARPResponder:public AbstractControllerApp {
 public:
     ARPResponder();
     ~ARPResponder();
-    virtual void finish();
+    virtual void finish() override;
 
     bool addEntry(std::string srcIp, MACAddress srcMac);
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize();
-    virtual void handleMessage(cMessage *msg);
+    void initialize() override;
+    virtual void handleMessage(cMessage *msg) override;
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
 
     virtual EtherFrame * createArpReply(IPv4Address srcIp, IPv4Address dstIp, MACAddress srcMac,MACAddress dstMac);

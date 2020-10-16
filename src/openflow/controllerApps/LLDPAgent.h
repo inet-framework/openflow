@@ -22,8 +22,8 @@ public:
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize();
-    virtual void handleMessage(cMessage *msg);
+    void initialize() override;
+    virtual void handleMessage(cMessage *msg) override;
     void triggerFlowMod(Switch_Info * swInfo);
     virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
     void sendLLDP();

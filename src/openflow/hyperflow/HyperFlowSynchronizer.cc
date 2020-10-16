@@ -15,7 +15,15 @@ HyperFlowSynchronizer::HyperFlowSynchronizer(){
 }
 
 HyperFlowSynchronizer::~HyperFlowSynchronizer(){
+    for(auto&& msg : msgList) {
+      delete msg;
+    }
+    msgList.clear();
 
+    for(auto&& pair : socketMap){
+        delete pair.second;
+    }
+    socketMap.clear();
 }
 
 void HyperFlowSynchronizer::initialize(){
@@ -73,7 +81,7 @@ void HyperFlowSynchronizer::handleMessage(cMessage *msg){
             event->setContextPointer(msg);
             scheduleAt(simTime()+serviceTime, event);
         }
-        emit(queueSize,msgList.size());
+        emit(queueSize,static_cast<unsigned long>(msgList.size()));
     }
 
 

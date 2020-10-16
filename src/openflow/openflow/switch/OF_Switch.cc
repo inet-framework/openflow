@@ -160,7 +160,7 @@ void OF_Switch::handleMessage(cMessage *msg){
                 event->setContextPointer(msg);
                 scheduleAt(simTime()+serviceTime, event);
             }
-            emit(queueSize,msgList.size());
+            emit(queueSize,static_cast<unsigned long>(msgList.size()));
             emit(bufferSize,buffer.size());
         }
     }
@@ -218,6 +218,8 @@ void OF_Switch::processQueuedMsg(cMessage *data_msg){
                     break;
                 case OFPT_PACKET_OUT:
                     handlePacketOutMessage(of_msg);
+                    break;
+                default:
                     break;
                 }
         }
