@@ -5,7 +5,7 @@ cplusplus {{
     #include "openflow/messages/Open_Flow_Message_m.h"
     #include "inet/linklayer/ethernet/EtherFrame_m.h"
     
-    
+    namespace openflow{
     inline std::ostream& operator<<(std::ostream& os, oxm_basic_match match)
     {
     	os << "OFB_ETH_TYPE: " << std::hex << match.OFB_ETH_TYPE << ", OFB_ETH_SRC: " << match.OFB_ETH_SRC;
@@ -15,13 +15,16 @@ cplusplus {{
 		os << ", OFB_ARP_TPA: " << match.OFB_ARP_TPA << endl;
 		return os;
 	}
+	} /*end namespace openflow*/
 }};
 
-struct ofp_header;
+struct openflow::ofp_header;
 //class EthernetIIFrame;
-struct oxm_basic_match;
-struct oxm_tlv;
-packet Open_Flow_Message;
+struct openflow::oxm_basic_match;
+struct openflow::oxm_tlv;
+packet openflow::Open_Flow_Message;
+
+namespace openflow;
 
 // When packets are received by the data plane and sent to the connected controller,
 // the OFP_PACKET_IN messages are used. If the complete packet needs to be sent to the controller, because it can not be

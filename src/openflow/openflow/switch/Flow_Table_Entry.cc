@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 Flow_Table_Entry::Flow_Table_Entry(){
     idleTimeout = 0.;
     hardTimeout = 0.;
@@ -98,3 +100,5 @@ void Flow_Table_Entry::setMatch(oxm_basic_match match){
 void Flow_Table_Entry::setPriority(int priority){
     this->priority = priority;
 }
+
+} /*end namespace openflow*/

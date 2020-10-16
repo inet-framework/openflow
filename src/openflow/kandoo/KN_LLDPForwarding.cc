@@ -4,6 +4,7 @@
 #include "inet/networklayer/ipv4/ICMPMessage.h"
 #include "inet/applications/pingapp/PingPayload_m.h"
 
+namespace openflow{
 
 Define_Module(KN_LLDPForwarding);
 
@@ -306,7 +307,4 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
     }
 }
 
-
-
-
-
+} /*end namespace openflow*/

@@ -5,6 +5,8 @@
 #define MSGKIND_TRIGGERLLDP 101
 #define MSGKIND_LLDPAGENTBOOTED 201
 
+namespace openflow{
+
 Define_Module(LLDPAgent);
 
 LLDPAgent::LLDPAgent(){
@@ -163,4 +165,6 @@ void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cOb
 LLDPMibGraph * LLDPAgent::getMibGraph(){
     return &mibGraph;
 }
+
+} /*end namespace openflow*/
 

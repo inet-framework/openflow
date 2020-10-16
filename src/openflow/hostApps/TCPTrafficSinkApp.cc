@@ -7,6 +7,7 @@
 
 using namespace std;
 
+namespace openflow{
 
 Define_Module(TCPTrafficSinkApp);
 
@@ -79,6 +80,7 @@ void TCPTrafficSinkApp::socketStatusArrived(int connId, void *yourPtr, TCPStatus
     delete status;
 }
 
+} /*end namespace openflow*/
 
 
 

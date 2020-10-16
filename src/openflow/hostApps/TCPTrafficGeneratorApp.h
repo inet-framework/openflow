@@ -14,6 +14,8 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
+
 /**
  * Single-connection TCP application.
  */
@@ -52,6 +54,8 @@ class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TCPSocket::C
 
 
 };
+
+} /*end namespace openflow*/
 
 #endif
 

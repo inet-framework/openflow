@@ -2,6 +2,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 LLDP_Wrapper::LLDP_Wrapper(){
 
 }
@@ -42,3 +44,5 @@ int LLDP_Wrapper::getSrcPort() const{
 void LLDP_Wrapper::setSrcPort(int srcPort){
     this->srcPort = srcPort;
 }
+
+} /*end namespace openflow*/

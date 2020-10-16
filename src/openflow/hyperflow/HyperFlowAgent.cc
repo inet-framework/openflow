@@ -9,6 +9,8 @@
 #define MSGKIND_CHECKALIVEEVERY 703
 #define MSGKIND_HFCONNECT 704
 
+namespace openflow{
+
 Define_Module(HyperFlowAgent);
 
 HyperFlowAgent::HyperFlowAgent(){
@@ -226,3 +228,4 @@ void HyperFlowAgent::handleFailure(std::string controllerId){
     //TODO
 }
 
+} /*end namespace openflow*/

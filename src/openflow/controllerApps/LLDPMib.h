@@ -7,6 +7,8 @@
 using namespace __gnu_cxx;
 using namespace omnetpp;
 
+namespace openflow{
+
 class LLDPMib {
     public:
         LLDPMib();
@@ -32,5 +34,7 @@ class LLDPMib {
         std::string dstID;
         SimTime expiresAt;
 };
+
+} /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */

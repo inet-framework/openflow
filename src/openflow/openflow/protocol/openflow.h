@@ -12,6 +12,8 @@
 
 using namespace inet;
 
+namespace openflow{
+
 struct oxm_basic_match {
     int OFB_IN_PORT;
     MACAddress OFB_ETH_DST;
@@ -368,5 +370,7 @@ enum ofp_port_features {
     OFPPF_PAUSE      = 1 << 14, /* Pause. */
     OFPPF_PAUSE_ASYM = 1 << 15  /* Asymmetric pause. */
 };
+
+}/*end namespace openflow*/
 
 #endif /* OPENFLOW_H_ */

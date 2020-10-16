@@ -9,7 +9,7 @@
 using namespace __gnu_cxx;
 
 
-
+namespace openflow{
 
 class Flow_Table {
 public:
@@ -25,6 +25,6 @@ private:
 
 
 
-
+} /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */

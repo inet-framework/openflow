@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <string>
 
+namespace openflow{
 
 Define_Module(KN_LLDPBalancedMinHop);
 
@@ -292,6 +293,7 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
     }
 }
 
+} /*end namespace openflow*/
 
 
 

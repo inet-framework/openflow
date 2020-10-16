@@ -8,7 +8,7 @@
 
 using namespace __gnu_cxx;
 
-
+namespace openflow{
 
 struct flow_table_counters {
 
@@ -78,5 +78,7 @@ class Flow_Table_Entry {
         double hardTimeout;
         SimTime expiresAt;
 };
+
+} /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */

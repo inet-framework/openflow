@@ -7,6 +7,8 @@
 
 using namespace __gnu_cxx;
 
+namespace openflow{
+
 class Switch_Info {
     public:
         Switch_Info();
@@ -31,5 +33,7 @@ class Switch_Info {
         int version;
 
 };
+
+} /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */

@@ -1,5 +1,6 @@
 #include "openflow/utility/ControllerInvolvementFilter.h"
 
+namespace openflow{
 
 Define_Module(ControllerInvolvementFilter);
 
@@ -31,3 +32,5 @@ void ControllerInvolvementFilter::finish(){
         recordScalar(name.str().c_str(),iterMap->second);
     }
 }
+
+} /*end namespace openflow*/

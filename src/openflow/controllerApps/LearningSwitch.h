@@ -6,6 +6,8 @@
 #include "openflow/controllerApps/AbstractControllerApp.h"
 #include "inet/linklayer/common/MACAddress.h"
 
+namespace openflow{
+
 class LearningSwitch:public AbstractControllerApp {
 
 
@@ -26,5 +28,6 @@ protected:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

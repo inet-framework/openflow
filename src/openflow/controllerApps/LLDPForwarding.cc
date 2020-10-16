@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 struct comp {
     bool operator() (const pair<string,int> &a, const pair<string,int> &b) {
         return a.second > b.second;
@@ -271,3 +273,5 @@ void LLDPForwarding::computePath(std::string srcId, std::string dstId,std::list<
     std::copy(result.begin(),result.end(), std::back_inserter(list));
     return;
 }
+
+} /*end namespace openflow*/

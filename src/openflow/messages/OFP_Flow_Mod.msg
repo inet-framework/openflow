@@ -4,10 +4,11 @@ cplusplus {{
     #include "openflow/messages/Open_Flow_Message_m.h"
 }};
 
+struct openflow::oxm_basic_match;
+struct openflow::ofp_action_output;
+packet openflow::Open_Flow_Message;
 
-struct oxm_basic_match;
-struct ofp_action_output;
-packet Open_Flow_Message;
+namespace openflow;
 
 // Modifications to a flow table by the controller.
 packet OFP_Flow_Mod extends Open_Flow_Message

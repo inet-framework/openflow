@@ -12,6 +12,8 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
+
 /**
  * Single-connection TCP application.
  */
@@ -32,6 +34,8 @@ class TCPTrafficSinkApp : public cSimpleModule, public virtual TCPSocket::Callba
     virtual void socketStatusArrived(int connId, void *yourPtr, inet::TCPStatusInfo *status) override;
 
 };
+
+} /*end namespace openflow*/
 
 #endif
 

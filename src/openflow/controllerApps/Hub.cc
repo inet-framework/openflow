@@ -1,5 +1,7 @@
 #include "openflow/controllerApps/Hub.h"
 
+namespace openflow{
+
 Define_Module(Hub);
 
 Hub::Hub(){
@@ -25,4 +27,6 @@ void Hub::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *
         }
     }
 }
+
+} /*end namespace openflow*/
 

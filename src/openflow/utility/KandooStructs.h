@@ -2,6 +2,7 @@
 #ifndef KANDOOSTRUCTS_H_
 #define KANDOOSTRUCTS_H_
 
+namespace openflow{
 
 struct KandooEntry{
     std::string srcController;
@@ -14,6 +15,6 @@ struct KandooEntry{
     int type; //0 inform, 1 request, 2 reply
 };
 
-
+} /*end namespace openflow*/
 
 #endif /* OF_CONTROLLER_H_ */

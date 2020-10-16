@@ -11,6 +11,8 @@
 #include "openflow/messages/HF_ChangeNotification_m.h"
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 
+namespace openflow{
+
 class HyperFlowAgent:public AbstractTCPControllerApp {
 
 
@@ -51,5 +53,7 @@ protected:
 
 };
 
+
+} /*end namespace openflow*/
 
 #endif

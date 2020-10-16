@@ -16,6 +16,8 @@
 
 using namespace inet;
 
+namespace openflow{
+
 Define_Module(PingAppRandom);
 
 
@@ -81,3 +83,5 @@ void PingAppRandom::handleMessage(cMessage *msg){
 bool PingAppRandom::isEnabled(){
     return (count == -1 || sentCount < count);
 }
+
+} /*end namespace openflow*/

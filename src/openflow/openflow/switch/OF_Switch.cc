@@ -21,9 +21,10 @@
 #include "inet/applications/pingapp/PingPayload_m.h"
 #include "inet/networklayer/ipv4/ICMPMessage.h"
 
-
 #define MSGKIND_CONNECT                     1
 #define MSGKIND_SERVICETIME                 3
+
+namespace openflow{
 
 
 Define_Module(OF_Switch);
@@ -463,3 +464,4 @@ void OF_Switch::finish(){
     recordScalar("flowTableMiss", flowTableMiss);
 }
 
+} /*end namespace openflow*/

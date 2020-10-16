@@ -1,5 +1,7 @@
 #include "openflow/controllerApps/AbstractControllerApp.h"
 
+namespace openflow{
+
 Define_Module(AbstractControllerApp);
 
 AbstractControllerApp::AbstractControllerApp()
@@ -223,3 +225,4 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(OFP_Packet_I
 
 }
 
+} /*end namespace openflow*/

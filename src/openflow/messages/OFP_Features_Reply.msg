@@ -6,8 +6,11 @@ cplusplus {{
     #include "inet/linklayer/common/MACAddress.h"
 }};
 
-class MACAddress extends void;
-packet Open_Flow_Message;
+//class MACAddress extends void;
+
+packet openflow::Open_Flow_Message;
+
+namespace openflow;
 
 // response  to an OFP_Features_Request message
 packet OFP_Features_Reply extends Open_Flow_Message

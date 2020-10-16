@@ -9,10 +9,7 @@
 
 using namespace __gnu_cxx;
 
-
-
-
-
+namespace openflow{
 
 class LLDPMibGraph {
     public:
@@ -35,5 +32,7 @@ class LLDPMibGraph {
         long numOfEdges;
         long version;
 };
+
+} /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */

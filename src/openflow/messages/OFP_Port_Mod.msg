@@ -5,6 +5,8 @@ cplusplus {{
     
 }};
 
+namespace openflow;
+
 //struct ofp_action_header;
 packet Open_Flow_Message;
 

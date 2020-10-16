@@ -14,6 +14,7 @@
 #include "openflow/kandoo/KandooAgent.h"
 #include "openflow/utility/LLDP_Wrapper.h"
 
+namespace openflow{
 
 class KN_LLDPAgent:public LLDPAgent {
 
@@ -32,5 +33,6 @@ protected:
     std::string appName;
 };
 
+} /*end namespace openflow*/
 
 #endif

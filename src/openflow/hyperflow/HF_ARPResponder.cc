@@ -1,8 +1,9 @@
 #include "openflow/hyperflow/HF_ARPResponder.h"
 #include <algorithm>
 
-
 #define MSGKIND_ARPRESPONDERBOOTED 801
+
+namespace openflow{
 
 Define_Module(HF_ARPResponder);
 
@@ -145,4 +146,5 @@ void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
 
 }
 
+} /*end namespace openflow*/
 

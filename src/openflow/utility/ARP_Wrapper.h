@@ -9,6 +9,8 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
+
 class ARP_Wrapper: public cObject {
 
 public:
@@ -29,6 +31,6 @@ protected:
 };
 
 
-
+} /*end namespace openflow*/
 
 #endif /* BUFFER_H_ */

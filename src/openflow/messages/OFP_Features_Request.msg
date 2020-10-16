@@ -5,8 +5,9 @@ cplusplus {{
     #include "openflow/messages/Open_Flow_Message_m.h"
 }};
 
+packet openflow::Open_Flow_Message;
 
-packet Open_Flow_Message;
+namespace openflow;
 
 
 //Upon session establishment, the controller sends an OFP Features Request message

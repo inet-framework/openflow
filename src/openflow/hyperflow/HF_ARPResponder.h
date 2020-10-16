@@ -14,6 +14,7 @@
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 #include "openflow/utility/ARP_Wrapper.h"
 
+namespace openflow{
 
 class HF_ARPResponder:public ARPResponder {
 
@@ -31,6 +32,8 @@ protected:
     HyperFlowAgent * hfAgent;
     simsignal_t HyperFlowReFireSignalId;
 };
+
+} /*end namespace openflow*/
 
 
 #endif

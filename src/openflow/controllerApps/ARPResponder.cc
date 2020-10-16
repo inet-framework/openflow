@@ -4,6 +4,8 @@
 
 #define MSGKIND_ARPRESPONDERBOOTED 801
 
+namespace openflow{
+
 Define_Module(ARPResponder);
 
 ARPResponder::ARPResponder(){
@@ -134,5 +136,7 @@ void ARPResponder::finish(){
     recordScalar("arpFlooded", floodedArp);
     recordScalar("arpAnswered", answeredArp);
 }
+
+} /*end namespace openflow*/
 
 

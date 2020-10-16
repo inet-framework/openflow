@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 Switch_Info::Switch_Info(){
 
 }
@@ -48,3 +50,5 @@ TCPSocket* Switch_Info::getSocket() const {
 void Switch_Info::setSocket(TCPSocket* socket) {
         this->socket = socket;
 }
+
+} /*end namespace openflow*/

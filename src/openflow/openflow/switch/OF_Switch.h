@@ -11,6 +11,8 @@
 #include "openflow/openflow/switch/Flow_Table.h"
 #include <vector>
 
+namespace openflow{
+
 class OF_Switch: public cSimpleModule
 {
 public:
@@ -58,5 +60,6 @@ protected:
     void handleMissMatchedPacket(EthernetIIFrame *frame);
 };
 
+} /*end namespace openflow*/
 
 #endif /* OF_SWITCH_H_ */

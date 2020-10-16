@@ -5,6 +5,8 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
+
 Buffer::Buffer(){
 
 }
@@ -59,3 +61,5 @@ EthernetIIFrame *Buffer::returnMessage(uint32_t buffer_id){
     pending_msgs.erase(buffer_id);
     return frame;
 }
+
+} /*end namespace openflow*/

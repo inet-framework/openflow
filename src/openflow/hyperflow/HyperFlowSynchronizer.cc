@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 Define_Module(HyperFlowSynchronizer);
 
 
@@ -173,4 +175,6 @@ void HyperFlowSynchronizer::processQueuedMsg(cMessage * msg){
         }
     }
 }
+
+} /*end namespace openflow*/
 

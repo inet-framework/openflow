@@ -1,4 +1,7 @@
 #include "openflow/utility/StaticSpanningTree.h"
+
+namespace openflow{
+
 Define_Module(StaticSpanningTree);
 
 
@@ -98,3 +101,5 @@ void StaticSpanningTree::initialize(int stage) {
 void StaticSpanningTree::handleMessage(cMessage *msg) {
     error("this module doesn't handle messages, it runs only in initialize()");
 }
+
+} /*end namespace openflow*/

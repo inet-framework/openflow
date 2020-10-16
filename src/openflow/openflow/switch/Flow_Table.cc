@@ -6,6 +6,7 @@
 
 using namespace std;
 
+namespace openflow{
 
 Flow_Table::Flow_Table() {
 
@@ -48,4 +49,4 @@ Flow_Table_Entry* Flow_Table::lookup(oxm_basic_match &match) {
     return NULL;
 }
 
-
+} /*end namespace openflow*/

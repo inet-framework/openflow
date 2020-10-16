@@ -7,6 +7,7 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
 
 Define_Module(TCPTrafficGeneratorApp);
 
@@ -207,6 +208,8 @@ unsigned int TCPTrafficGeneratorApp::CountLines( const vector <char> & buff, int
     }
     return newlines;
 }
+
+} /*end namespace openflow*/
 
 
 

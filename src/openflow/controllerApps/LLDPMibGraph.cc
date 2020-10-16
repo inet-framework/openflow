@@ -7,7 +7,7 @@
 
 using namespace std;
 
-
+namespace openflow{
 
 
 LLDPMibGraph::LLDPMibGraph(){
@@ -136,4 +136,6 @@ const std::map<std::string, std::vector<LLDPMib> >& LLDPMibGraph::getVerticies()
 long LLDPMibGraph::getVersion() const {
     return version;
 }
+
+} /*end namespace openflow*/
 

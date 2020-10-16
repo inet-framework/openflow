@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 class HF_ReFire_Wrapper: public cObject {
 
 public:
@@ -24,7 +26,7 @@ protected:
     DataChannelEntry dataChannelEntry;
 };
 
-
+} /*end namespace openflow*/
 
 
 #endif /* BUFFER_H_ */

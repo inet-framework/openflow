@@ -6,6 +6,8 @@
 #include <omnetpp.h>
 using namespace omnetpp;
 
+namespace openflow{
+
 class ControllerInvolvementFilter : public cSimpleModule,  public cListener
 {
 protected:
@@ -23,5 +25,6 @@ protected:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

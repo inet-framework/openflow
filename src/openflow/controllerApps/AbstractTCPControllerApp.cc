@@ -1,5 +1,7 @@
 #include "openflow/controllerApps/AbstractTCPControllerApp.h"
 
+namespace openflow{
+
 #define MSGKIND_TCPSERVICETIME                 3098
 
 Define_Module(AbstractTCPControllerApp);
@@ -134,3 +136,7 @@ void AbstractTCPControllerApp::finish(){
         recordScalar(name.str().c_str(),(iterMap2->second/1.0));
     }
 }
+
+} /*end namespace openflow*/
+
+

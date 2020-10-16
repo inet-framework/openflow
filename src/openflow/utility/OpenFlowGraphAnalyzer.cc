@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <vector>
 
+namespace openflow{
+
 Define_Module(OpenFlowGraphAnalyzer);
 
 struct compNodeInt {
@@ -212,3 +214,5 @@ void OpenFlowGraphAnalyzer::finish(){
 void OpenFlowGraphAnalyzer::handleMessage(cMessage *msg) {
     error("this module doesn't handle messages, it runs only in initialize()");
 }
+
+} /*end namespace openflow*/

@@ -7,6 +7,8 @@
 
 class Node;
 
+namespace openflow{
+
 class OpenFlowGraphAnalyzer : public cSimpleModule
 {
 
@@ -37,5 +39,6 @@ protected:
         virtual void handleMessage(cMessage *msg);
 };
 
+} /*end namespace openflow*/
 
 #endif /* SPANNINGTREE_H_ */

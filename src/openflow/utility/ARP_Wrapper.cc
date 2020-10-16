@@ -2,6 +2,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 ARP_Wrapper::ARP_Wrapper(){
 
 }
@@ -26,3 +28,5 @@ const MACAddress& ARP_Wrapper::getSrcMacAddress() const{
 void ARP_Wrapper::setSrcMacAddress(const MACAddress& macAddress){
     this->srcMac = macAddress;
 }
+
+} /*end namespace openflow*/

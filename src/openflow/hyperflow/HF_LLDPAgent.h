@@ -15,6 +15,7 @@
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 #include "openflow/utility/LLDP_Wrapper.h"
 
+namespace openflow{
 
 class HF_LLDPAgent:public LLDPAgent {
 
@@ -32,5 +33,6 @@ protected:
     simsignal_t HyperFlowReFireSignalId;
 };
 
+} /*end namespace openflow*/
 
 #endif

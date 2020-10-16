@@ -2,6 +2,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 LLDPMib::LLDPMib(){
 
 }
@@ -64,3 +66,6 @@ SimTime LLDPMib::getExpiresAt() const{
 void LLDPMib::setExpiresAt(SimTime expiresAt){
     this->expiresAt = expiresAt;
 }
+
+} /*end namespace openflow*/
+

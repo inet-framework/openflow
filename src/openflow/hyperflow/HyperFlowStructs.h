@@ -4,6 +4,8 @@
 
 #include "openflow/openflow/controller/Switch_Info.h"
 
+namespace openflow{
+
 struct ControlChannelEntry{
     std::list<Switch_Info *> switches;
     std::string controllerId;
@@ -17,6 +19,8 @@ struct DataChannelEntry{
     cObject * payload;
 };
 
+
+} /*end namespace openflow*/
 
 
 #endif /* OF_CONTROLLER_H_ */

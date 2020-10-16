@@ -11,6 +11,7 @@
 #include "openflow/messages/OFP_Features_Reply_m.h"
 #include "openflow/messages/OFP_Packet_In_m.h"
 
+namespace openflow{
 
 class LLDPAgent:public AbstractControllerApp {
 
@@ -35,5 +36,6 @@ protected:
     int hardTimeout;
 };
 
+} /*end namespace openflow*/
 
 #endif

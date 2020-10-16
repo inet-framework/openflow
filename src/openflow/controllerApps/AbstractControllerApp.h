@@ -13,6 +13,8 @@
 #include "openflow/messages/OFP_Flow_Mod_m.h"
 #include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
 
+namespace openflow{
+
 struct CommonHeaderFields{
     uint32_t buffer_id;
     Switch_Info * swInfo;
@@ -64,5 +66,6 @@ public:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

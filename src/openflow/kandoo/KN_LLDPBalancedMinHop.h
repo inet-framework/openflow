@@ -7,7 +7,7 @@
 #include "openflow/kandoo/KandooAgent.h"
 
 
-
+namespace openflow{
 
 class KN_LLDPBalancedMinHop:public LLDPBalancedMinHop {
 
@@ -28,5 +28,6 @@ protected:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

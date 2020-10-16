@@ -10,6 +10,7 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
 
+namespace openflow{
 
 class ARPResponder:public AbstractControllerApp {
 
@@ -36,5 +37,6 @@ protected:
     long floodedArp;
 };
 
+} /*end namespace openflow*/
 
 #endif

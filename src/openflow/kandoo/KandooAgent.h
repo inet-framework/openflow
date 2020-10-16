@@ -7,6 +7,8 @@
 #include "inet/transportlayer/contract/tcp/TCPSocket.h"
 #include "openflow/messages/KN_Packet_m.h"
 
+namespace openflow{
+
 struct SwitchControllerMapping {
     std::string switchId;
     std::string controllerId;
@@ -43,6 +45,8 @@ protected:
 
 
 };
+
+} /*end namespace openflow*/
 
 
 #endif

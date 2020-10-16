@@ -1,8 +1,9 @@
 #include "openflow/kandoo/KN_ARPResponder.h"
 #include <algorithm>
 
-
 #define MSGKIND_ARPRESPONDERBOOTED 801
+
+namespace openflow{
 
 Define_Module(KN_ARPResponder);
 
@@ -226,4 +227,6 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
     }
 }
 
+
+} /*end namespace openflow*/
 

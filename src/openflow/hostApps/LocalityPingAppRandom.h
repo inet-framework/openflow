@@ -9,6 +9,8 @@
 
 using namespace inet;
 
+namespace openflow{
+
 /**
  * Generates ping requests and calculates the packet loss and round trip
  * parameters of the replies. Uses cTopology class to get all available destinations
@@ -29,4 +31,4 @@ class LocalityPingAppRandom : public PingApp {
     std::map<std::string,std::vector<std::string> > groupToNodes;
 };
 
-
+} /*end namespace openflow*/

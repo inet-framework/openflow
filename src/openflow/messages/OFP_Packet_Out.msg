@@ -4,17 +4,22 @@ cplusplus {{
     #include "openflow/messages/Open_Flow_Message_m.h"
     #include "inet/linklayer/ethernet/EtherFrame_m.h"
     
+    namespace openflow{
     inline std::ostream& operator<<(std::ostream& os, ofp_action_output action)
     {
 		os << "Port (hex): " << std::hex << action.port << endl;
 		return os;
 	}
+	} /*end namespace openflow*/
 }};
 
+//class inet::EthernetIIFrame;
+
 //struct ofp_action_header;
-struct ofp_action_output;
-class EthernetIIFrame;
-packet Open_Flow_Message;
+struct openflow::ofp_action_output;
+packet openflow::Open_Flow_Message;
+
+namespace openflow;
 
 //When the controller decides to send a packet out through the data plane, it uses the
 //OFP PACKET OUT message.

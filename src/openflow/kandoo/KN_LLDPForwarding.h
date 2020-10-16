@@ -7,7 +7,7 @@
 #include "openflow/kandoo/KandooAgent.h"
 
 
-
+namespace openflow{
 
 class KN_LLDPForwarding:public LLDPForwarding {
 
@@ -29,5 +29,6 @@ protected:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

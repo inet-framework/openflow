@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace openflow{
+
 Define_Module(LLDPBalancedMinHop);
 
 struct comp {
@@ -274,5 +276,5 @@ std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::st
     return res2;
 }
 
-
+} /*end namespace openflow*/
 

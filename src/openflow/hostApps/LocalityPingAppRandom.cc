@@ -12,6 +12,8 @@
 using namespace std;
 using std::cout;
 
+namespace openflow{
+
 Define_Module(LocalityPingAppRandom);
 
 
@@ -106,3 +108,5 @@ void LocalityPingAppRandom::handleMessage(cMessage *msg){
 bool LocalityPingAppRandom::isEnabled(){
     return (count == -1 || sentCount < count);
 }
+
+} /*end namespace openflow*/

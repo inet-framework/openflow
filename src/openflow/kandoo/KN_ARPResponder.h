@@ -13,6 +13,7 @@
 #include "openflow/kandoo/KandooAgent.h"
 #include "openflow/utility/ARP_Wrapper.h"
 
+namespace openflow{
 
 class KN_ARPResponder:public ARPResponder {
 
@@ -32,5 +33,6 @@ protected:
     std::string appName;
 };
 
+} /*end namespace openflow*/
 
 #endif

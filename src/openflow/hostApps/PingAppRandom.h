@@ -3,6 +3,8 @@
 #include "inet/applications/pingapp/PingApp.h"
 #include "inet/networklayer/common/L3Address.h"
 
+namespace openflow{
+
 /**
  * Generates ping requests and calculates the packet loss and round trip
  * parameters of the replies. Uses cTopology class to get all available destinations
@@ -22,5 +24,7 @@ class PingAppRandom : public inet::PingApp {
     //stats
     simsignal_t pingPacketHash;
 };
+
+} /*end namespace openflow*/
 
 

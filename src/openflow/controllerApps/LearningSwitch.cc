@@ -1,6 +1,8 @@
 #include "openflow/controllerApps/LearningSwitch.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 
+namespace openflow{
+
 Define_Module(LearningSwitch);
 
 LearningSwitch::LearningSwitch(){
@@ -73,9 +75,5 @@ void LearningSwitch::doSwitching(OFP_Packet_In *packet_in_msg){
     }
 }
 
-
-
-
-
-
+} /*end namespace openflow*/
 

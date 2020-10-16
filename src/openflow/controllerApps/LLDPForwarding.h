@@ -11,6 +11,8 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
 
+namespace openflow{
+
 struct LLDPPathSegment{
     std::string chassisId;
     int outport;
@@ -51,5 +53,6 @@ protected:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

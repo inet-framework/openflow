@@ -14,9 +14,11 @@
 #include "openflow/controllerApps/AbstractControllerApp.h"
 
 
+using namespace std;
+
 #define MSGKIND_BOOTED 100
 
-using namespace std;
+namespace openflow{
 
 Define_Module(OF_Controller);
 
@@ -293,5 +295,5 @@ void OF_Controller::finish(){
     }
 }
 
-
+} /*end namespace openflow*/
 

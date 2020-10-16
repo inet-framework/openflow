@@ -5,6 +5,7 @@
 #include "openflow/controllerApps/AbstractControllerApp.h"
 #include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
+namespace openflow{
 
 class AbstractTCPControllerApp: public AbstractControllerApp {
 
@@ -42,5 +43,6 @@ public:
 
 };
 
+} /*end namespace openflow*/
 
 #endif

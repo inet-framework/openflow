@@ -11,6 +11,8 @@
 using namespace std;
 using namespace inet;
 
+namespace openflow{
+
 class Buffer {
 
 public:
@@ -32,6 +34,6 @@ protected:
 };
 
 
-
+} /*end namespace openflow*/
 
 #endif /* BUFFER_H_ */

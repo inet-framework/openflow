@@ -9,6 +9,8 @@
 #include "openflow/openflow/controller/Switch_Info.h"
 #include <omnetpp.h>
 
+namespace openflow{
+
 class AbstractControllerApp;
 
 class OF_Controller: public cSimpleModule
@@ -69,6 +71,6 @@ protected:
     virtual void handlePacketIn(Open_Flow_Message *of_msg);
 };
 
-
+} /*end namespace openflow*/
 
 #endif /* OF_CONTROLLER_H_ */

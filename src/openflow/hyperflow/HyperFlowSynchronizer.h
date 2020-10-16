@@ -12,7 +12,7 @@
 #include "openflow/hyperflow/HyperFlowStructs.h"
 
 
-
+namespace openflow{
 
 class HyperFlowSynchronizer: public cSimpleModule
 {
@@ -51,6 +51,6 @@ protected:
 
 };
 
-
+} /*end namespace openflow*/
 
 #endif /* OF_CONTROLLER_H_ */

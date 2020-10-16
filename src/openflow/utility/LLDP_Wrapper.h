@@ -8,6 +8,8 @@
 using namespace std;
 using namespace omnetpp;
 
+namespace openflow{
+
 class LLDP_Wrapper: public cObject {
 
 public:
@@ -33,6 +35,6 @@ protected:
 };
 
 
-
+} /*end namespace openflow*/
 
 #endif /* BUFFER_H_ */

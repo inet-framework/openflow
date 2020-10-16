@@ -6,6 +6,8 @@
 #include <omnetpp.h>
 #include "openflow/openflow/switch/OF_Switch.h"
 
+namespace openflow{
+
 class StaticSpanningTree : public cSimpleModule
 {
 protected:
@@ -27,5 +29,6 @@ protected:
         virtual void handleMessage(cMessage *msg);
 };
 
+} /*end namespace openflow*/
 
 #endif /* SPANNINGTREE_H_ */

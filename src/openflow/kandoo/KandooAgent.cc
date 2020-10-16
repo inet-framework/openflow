@@ -6,6 +6,8 @@
 
 #define MSGKIND_KNCONNECT 1404
 
+namespace openflow{
+
 Define_Module(KandooAgent);
 
 KandooAgent::KandooAgent(){
@@ -176,6 +178,8 @@ void KandooAgent::sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry
 void KandooAgent::handleKandooPacket(KN_Packet * knpck){
     emit(kandooEventSignalId,knpck);
 }
+
+} /*end namespace openflow*/
 
 
 
