@@ -29,6 +29,7 @@ package openflow.hostApps;
 simple LocalityPingAppRandom extends inet.applications.pingapp.PingApp
 {
     parameters:
+        @class(openflow::LocalityPingAppRandom);
         @display("i=block/app");
         @class(LocalityPingAppRandom);
         double localityRelation = default(0.5);

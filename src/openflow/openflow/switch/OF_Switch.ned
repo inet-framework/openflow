@@ -8,6 +8,7 @@ package openflow.openflow.switch;
 simple OF_Switch
 {
     parameters:
+        @class(openflow::OF_Switch);
         @signal[cpPingPacketHash](type="unsigned long");
         @statistic[cpPingPacketHash](title="CpPingPacketHash"; record=vector?,stats; interpolationmode=none);
         @signal[dpPingPacketHash](type="unsigned long");

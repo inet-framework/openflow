@@ -5,6 +5,7 @@ import openflow.controllerApps.AbstractControllerApp;
 simple KN_LLDPAgent like AbstractControllerApp
 {
     parameters:
+        @class(openflow::KN_LLDPAgent);
         @signal[KandooEvent];
         @display("i=block/app");
 

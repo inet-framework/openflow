@@ -8,6 +8,7 @@ package openflow.hyperflow;
 simple HyperFlowSynchronizer
 {
     parameters:
+        @class(openflow::HyperFlowSynchronizer);
         @display("i=block/app");
         @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats; interpolationmode=none);

@@ -9,6 +9,7 @@ import inet.applications.contract.ITCPApp;
 simple TCPTrafficGeneratorApp like ITCPApp
 {
     parameters:
+        @class(openflow::TCPTrafficGeneratorApp);
         @signal[connectionFinished](type="simtime_t");
         @statistic[connectionFinished](title="ConnectionFinished"; record=vector?,stats; interpolationmode=none);
         @signal[connectionStarted](type="simtime_t");

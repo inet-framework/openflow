@@ -18,6 +18,7 @@ package openflow.controllerApps;
 simple Hub like AbstractControllerApp
 {
     parameters:
+        @class(openflow::Hub);
         @display("i=block/app");
         
 }

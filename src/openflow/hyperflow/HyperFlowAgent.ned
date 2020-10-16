@@ -6,6 +6,7 @@ package openflow.hyperflow;
 simple HyperFlowAgent extends openflow.controllerApps.AbstractTCPControllerApp
 {
     parameters:
+        @class(openflow::HyperFlowAgent);
         @class(HyperFlowAgent);
         @signal[HyperFlowReFire];
         @display("i=block/app");

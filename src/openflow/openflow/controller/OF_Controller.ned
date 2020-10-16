@@ -9,12 +9,13 @@ package openflow.openflow.controller;
 simple OF_Controller
 {
     parameters:
+        @class(openflow::OF_Controller);
         @signal[PacketIn](type="cPacket");
         @signal[PacketOut](type="cPacket");
         @signal[PacketHello](type="cPacket");
         @signal[PacketFeatureRequest](type="cPacket");
         @signal[PacketFeatureReply](type="cPacket");
-        @signal[Booted](type="OF_Controller");
+        @signal[Booted](type="openflow::OF_Controller");
         @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats?; interpolationmode=none);
         @signal[waitingTime](type="simtime_t");

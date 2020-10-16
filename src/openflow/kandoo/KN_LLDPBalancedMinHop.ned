@@ -5,6 +5,7 @@ import openflow.controllerApps.AbstractControllerApp;
 simple KN_LLDPBalancedMinHop like AbstractControllerApp
 {
     parameters:
+        @class(openflow::KN_LLDPBalancedMinHop);
         @signal[KandooEvent];
         @display("i=block/app");
         int flowModHardTimeOut = default(0);

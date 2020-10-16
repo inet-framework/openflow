@@ -3,6 +3,7 @@ package openflow.kandoo;
 simple KandooAgent extends openflow.controllerApps.AbstractTCPControllerApp
 {
     parameters:
+        @class(openflow::KandooAgent);
         @display("i=block/app");
         @class(KandooAgent);
         @signal[KandooEvent];

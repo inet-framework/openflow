@@ -28,6 +28,7 @@ import inet.applications.contract.ITCPApp;
 simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
 {
     parameters:
+        @class(openflow::AbstractTCPControllerApp);
         @display("i=block/app");
         @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats; interpolationmode=none);

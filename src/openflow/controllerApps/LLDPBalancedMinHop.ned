@@ -18,6 +18,7 @@ package openflow.controllerApps;
 simple LLDPBalancedMinHop like AbstractControllerApp
 {
     parameters:
+        @class(openflow::LLDPBalancedMinHop);
         @display("i=block/app");
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(1);
