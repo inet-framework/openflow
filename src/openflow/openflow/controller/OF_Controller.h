@@ -34,14 +34,20 @@ public:
 
 
 protected:
+    /**
+     * Observer Signals
+     */
     simsignal_t PacketInSignalId;
     simsignal_t PacketOutSignalId;
     simsignal_t PacketHelloSignalId;
     simsignal_t PacketFeatureRequestSignalId;
     simsignal_t PacketFeatureReplySignalId;
+    simsignal_t PacketExperimenterSignalId;
     simsignal_t BootedSignalId;
 
-    //stats
+    /**
+     * Statistics
+     */
     simsignal_t queueSize;
     simsignal_t waitingTime;
     long numPacketIn;
@@ -51,14 +57,23 @@ protected:
     double lastChangeTime;
     std::map<int,double> avgQueueSize;
 
+    /**
+     * Message Processing
+     */
     bool booted = false;
     bool busy;
     double serviceTime;
     std::list<cMessage *> msgList;
 
+    /**
+     * Network and Controller State
+     */
     std::vector<Switch_Info > switchesList;
     std::vector<AbstractControllerApp *> apps;
 
+    /**
+     * Connection
+     */
     TCPSocket socket;
 
     virtual void initialize();
@@ -70,6 +85,7 @@ protected:
     void sendFeatureRequest(cMessage *msg);
     virtual void handleFeaturesReply(Open_Flow_Message *of_msg);
     virtual void handlePacketIn(Open_Flow_Message *of_msg);
+    virtual void handleExperimenter(Open_Flow_Message* of_msg);
 };
 
 } /*end namespace openflow*/

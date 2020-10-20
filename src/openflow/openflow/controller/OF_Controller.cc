@@ -42,6 +42,7 @@ void OF_Controller::initialize(){
     PacketHelloSignalId =registerSignal("PacketHello");
     PacketFeatureRequestSignalId = registerSignal("PacketFeatureRequest");
     PacketFeatureReplySignalId = registerSignal("PacketFeatureReply");
+    PacketExperimenterSignalId = registerSignal("PacketExperimenter");
     BootedSignalId = registerSignal("Booted");
 
     //stats
@@ -159,6 +160,10 @@ void OF_Controller::processQueuedMsg(cMessage *data_msg){
                 EV << "packet-in message from switch\n";
                 handlePacketIn(of_msg);
                 break;
+            case OFPT_VENDOR:
+                // the controller apps might want to implement vendor specific features so forward them.
+                handleExperimenter(of_msg);
+                break;
             default:
                 break;
         }
@@ -216,6 +221,11 @@ void OF_Controller::sendPacketOut(Open_Flow_Message *of_msg, TCPSocket *socket){
     socket->send(of_msg);
 }
 
+
+void OF_Controller::handleExperimenter(Open_Flow_Message* of_msg) {
+    EV << "OFA_controller::handleExperimenter" << endl;
+    emit(PacketExperimenterSignalId, of_msg);
+}
 
 
 void OF_Controller::registerConnection(Open_Flow_Message *msg){

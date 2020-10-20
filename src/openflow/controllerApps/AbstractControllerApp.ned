@@ -30,6 +30,7 @@ moduleinterface AbstractControllerApp
         @signal[PacketOut];
         @signal[PacketFeatureRequest];
         @signal[PacketFeatureReply];
+        @signal[PacketExperimenter];
         @signal[Booted];
         @display("i=block/app");
 }

@@ -15,6 +15,7 @@ simple OF_Controller
         @signal[PacketHello](type="cPacket");
         @signal[PacketFeatureRequest](type="cPacket");
         @signal[PacketFeatureReply](type="cPacket");
+        @signal[PacketExperimenter](type="cPacket");
         @signal[Booted](type="openflow::OF_Controller");
         @signal[queueSize](type="unsigned long");
         @statistic[queueSize](title="QueueSize"; record=vector?,stats?; interpolationmode=none);

@@ -34,6 +34,7 @@ protected:
     simsignal_t PacketOutSignalId;
     simsignal_t PacketFeatureRequestSignalId;
     simsignal_t PacketFeatureReplySignalId;
+    simsignal_t PacketExperimenterSignalId;
     simsignal_t BootedSignalId;
 
     long packetsFlooded;
