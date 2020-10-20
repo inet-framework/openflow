@@ -54,10 +54,6 @@ Flow_Table_Entry* Flow_Table::lookup(oxm_basic_match &match) {
 }
 
 void Flow_Table::clear() {
-    for(auto iter =entryList.begin();iter != entryList.end();++iter){
-        Flow_Table_Entry* entry = (*iter);
-       delete entry;
-    }
     entryList.clear();
 }
 
