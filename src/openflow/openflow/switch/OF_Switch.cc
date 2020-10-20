@@ -34,7 +34,10 @@ OF_Switch::OF_Switch(){
 }
 
 OF_Switch::~OF_Switch(){
-
+    for(auto&& msg : msgList) {
+      delete msg;
+    }
+    msgList.clear();
 }
 
 void OF_Switch::initialize(){

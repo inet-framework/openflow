@@ -14,9 +14,14 @@ namespace openflow{
 class Flow_Table {
 public:
     Flow_Table();
+    virtual ~Flow_Table();
     void addEntry(Flow_Table_Entry entry);
     Flow_Table_Entry * lookup(oxm_basic_match &match);
     void removeExpiredEntries();
+    /**
+     * @brief For lifecycle: clears all entries from the table.
+     */
+    virtual void clear();
 
 
 private:
