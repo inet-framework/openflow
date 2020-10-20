@@ -67,13 +67,14 @@ void OF_Controller::initialize(){
     //schedule booted message
     cMessage *booted = new cMessage("Booted");
     booted->setKind(MSGKIND_BOOTED);
-    scheduleAt(0, booted);
+    scheduleAt(simTime() + par("bootTime").doubleValue(), booted);
 }
 
 
 void OF_Controller::handleMessage(cMessage *msg){
     if (msg->isSelfMessage()) {
         if (msg->getKind()==MSGKIND_BOOTED){
+            this->booted = true;
             emit(BootedSignalId, this);
         }else{
             //This is message which has been scheduled due to service time
@@ -99,7 +100,7 @@ void OF_Controller::handleMessage(cMessage *msg){
         }
         //delete the msg for efficiency
         delete msg;
-    }else{
+    }else if (this->booted){
         //imlement service time
         if (busy) {
             msgList.push_back(msg);
@@ -119,6 +120,10 @@ void OF_Controller::handleMessage(cMessage *msg){
 
         calcAvgQueueSize(msgList.size());
         emit(queueSize,static_cast<unsigned long>(msgList.size()));
+    } else {
+        // this is not a self message and we are not yet booted
+        // ignore it.
+        delete msg;
     }
 }
 
