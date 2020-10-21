@@ -49,8 +49,15 @@ uint32_t Buffer::storeMessage(EthernetIIFrame *msg){
     }
 }
 bool Buffer::deleteMessage(EthernetIIFrame *msg){
-    //TODO
-    return true;
+    bool result = false;
+    for (std::map<uint32_t, inet::EthernetIIFrame *>::const_iterator it = pending_msgs.begin(); it != pending_msgs.end(); ++it) {
+      if (it->second == msg) {
+          pending_msgs.erase(it);
+          result = true;
+      }
+    }
+
+    return result;
 }
 
 
