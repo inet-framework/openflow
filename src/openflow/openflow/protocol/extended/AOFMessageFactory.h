@@ -15,41 +15,40 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_
-#define OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_
 
-#include "openflow/openflow/protocol/openflow.h"
+#ifndef OPENFLOW_OPENFLOW_UTIL_AOFMESSAGEFACTORY_H_
+#define OPENFLOW_OPENFLOW_UTIL_AOFMESSAGEFACTORY_H_
 
-#include "openflow/messages/Open_Flow_Message_m.h"
-#include "openflow/messages/OFP_Features_Reply_m.h"
-#include "openflow/messages/OFP_Features_Request_m.h"
-#include "openflow/messages/OFP_Hello_m.h"
-#include "openflow/messages/OFP_Packet_In_m.h"
-#include "openflow/messages/OFP_Packet_Out_m.h"
-#include "openflow/messages/OFP_Flow_Mod_m.h"
+#include <openflow/openflow/protocol/extended/OpenFlow.h>
+#include <string>
+
+namespace openflow {
+class OFP_Features_Reply;
+class OFP_Features_Request;
+class OFP_Hello;
+class OFP_Packet_In;
+class OFP_Packet_Out;
+class OFP_Flow_Mod;
+} /* namespace openflow */
+
+namespace inet {
+class EthernetIIFrame;
+} /* namespace inet */
 
 namespace openflow {
 
 /**
- * Class for static OFMessageFactory creation.
- * Provides access to a message factory for the ofp version currently in use.
+ * Interface for OpenFlow Message Factories. Allows version independent creation of messages.
  *
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OF_Message_Factory {
+class AOFMessageFactory {
+
+protected:
+    AOFMessageFactory(){}
+    virtual ~AOFMessageFactory(){}
 
 public:
-    /**
-     * Provides an instance of OF_Message_Factory.
-     * @return Reference to the factory.
-     */
-    static OF_Message_Factory* getInstance() {
-        if (!instance) {
-            instance = new OF_Message_Factory;
-        }
-        return instance;
-    }
-
     /**
      * Create an OFP_Features_Reply message.
      * @param dpid          The switche ID / MAC Address
@@ -59,15 +58,13 @@ public:
      * @param n_ports       Number of Ports.
      * @return              The created message.
      */
-    virtual OFP_Features_Reply* createFeaturesReply(std::string dpid,
-            uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities,
-            uint32_t n_ports = 0);
+    virtual OFP_Features_Reply* createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0) = 0;
 
     /**
      * Create an OFP_Features_Request message.
      * @return              The created message.
      */
-    virtual OFP_Features_Request* createFeatureRequest();
+    virtual OFP_Features_Request* createFeatureRequest() = 0;
 
     /**
      * Create an OFP_Flow_Mod message.
@@ -80,15 +77,13 @@ public:
      * @param hardTimeOut   The hard Timeout for the flow entry.
      * @return              The created message.
      */
-    virtual OFP_Flow_Mod* createFlowModMessage(ofp_flow_mod_command mod_com,
-            const oxm_basic_match& match, int pritority, uint32_t* outports,
-            int n_outports, uint32_t idleTimeOut = 1, uint32_t hardTimeOut = 0);
+    virtual OFP_Flow_Mod* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0) = 0;
 
     /**
      * Create an OFP_Hello message.
      * @return              The created message.
      */
-    virtual OFP_Hello* createHello();
+    virtual OFP_Hello* createHello() = 0;
 
     /**
      * Create an OFP_Packet_In message.
@@ -98,9 +93,7 @@ public:
      * @param sendFullFrame True if the full frame should be transmitted.
      * @return              The created message.
      */
-    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason,
-            inet::EthernetIIFrame *frame, uint32_t buffer_id = OFP_NO_BUFFER,
-            bool sendFullFrame = true);
+    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::EthernetIIFrame *frame, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
 
     /**
      * Create an OFP_Packet_Out message.
@@ -111,23 +104,9 @@ public:
      * @param frame         The frame to encapsulate if not buffered.
      * @return              The created message.
      */
-    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports,
-            int in_port, uint32_t buffer_id = OFP_NO_BUFFER,
-            inet::EthernetIIFrame *frame = nullptr);
-
-
-    virtual ~OF_Message_Factory(){
-
-    }
-
-private:
-    static OF_Message_Factory* instance;
-
-    OF_Message_Factory() {
-
-    }
+    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::EthernetIIFrame *frame = nullptr) = 0;
 };
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_ */
+#endif /* OPENFLOW_OPENFLOW_UTIL_AOFMESSAGEFACTORY_H_ */
