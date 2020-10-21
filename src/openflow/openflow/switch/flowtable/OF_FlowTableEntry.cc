@@ -16,7 +16,7 @@
 //
 
  #if OFP_VERSION_IN_USE == OFP_100
-#include <openflow/openflow/switch/extended/OF100_FlowTableEntry.h>
+#include "openflow/openflow/switch/flowtable/OF100_FlowTableEntry.h"
 #elif OFP_VERSION_IN_USE == OFP_135
 #elif OFP_VERSION_IN_USE == OFP_141
 #elif OFP_VERSION_IN_USE == OFP_151

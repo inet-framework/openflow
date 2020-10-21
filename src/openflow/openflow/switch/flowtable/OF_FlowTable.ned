@@ -16,9 +16,9 @@
 // 
 
 
-package openflow.openflow.switch.extended;
+package openflow.openflow.switch.flowtable;
 
-import openflow.openflow.switch.extended.IOpenFlowFlowTable;
+import openflow.openflow.switch.flowtable.IOpenFlowFlowTable;
 
 //
 // The FlowTable module displays the flow table in an OF Switch.

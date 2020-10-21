@@ -18,7 +18,7 @@
 #ifndef OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_
 #define OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_
 
-#include <openflow/openflow/switch/extended/OF_FlowTableEntry.h>
+#include "openflow/openflow/switch/flowtable/OF_FlowTableEntry.h"
 
 namespace openflow {
 

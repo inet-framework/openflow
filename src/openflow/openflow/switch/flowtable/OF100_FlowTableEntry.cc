@@ -15,7 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#include <openflow/openflow/switch/extended/OF100_FlowTableEntry.h>
+#include "openflow/openflow/switch/flowtable/OF100_FlowTableEntry.h"
+
 #include "inet/linklayer/common/MACAddress.h"
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
 #include <string>

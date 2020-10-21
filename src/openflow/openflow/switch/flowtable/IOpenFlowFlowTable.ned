@@ -16,7 +16,7 @@
 // 
 
 
-package openflow.openflow.switch.extended;
+package openflow.openflow.switch.flowtable;
 
 //
 // Interface module for OpenFlow FlowTables implementing the flow table management.

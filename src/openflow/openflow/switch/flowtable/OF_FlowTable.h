@@ -22,7 +22,8 @@
 #include <omnetpp.h>
 #include <vector>
 #include <string>
-#include <openflow/openflow/switch/extended/OF_FlowTableEntry.h>
+
+#include "openflow/openflow/switch/flowtable/OF_FlowTableEntry.h"
 
 using namespace omnetpp;
 

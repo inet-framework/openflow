@@ -15,7 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 // 
 
-#include "openflow/openflow/switch/extended/OF_FlowTable.h"
+#include "openflow/openflow/switch/flowtable/OF_FlowTable.h"
+
 #include <string>
 #include <sstream>
 #include <algorithm>
