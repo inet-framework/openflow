@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#include "openflow/openflow/protocol/extended/OF100MessageFactory.h"
-#include <openflow/openflow/protocol/extended/OpenFlow.h>
+#include "openflow/openflow/protocol/OF100MessageFactory.h"
+#include <openflow/openflow/protocol/OpenFlow.h>
 #include <openflow/messages/OFP_Features_Reply_m.h>
 #include <openflow/messages/OFP_Features_Request_m.h>
 #include <openflow/messages/OFP_Flow_Mod_m.h>
@@ -131,17 +131,17 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
    } else {
        // packet in buffer so only send header fields
        oxm_basic_match match = oxm_basic_match();
-       match.in_port = frame->getArrivalGate()->getIndex();
+       match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
 
-       match.dl_src = frame->getSrc();
-       match.dl_dst = frame->getDest();
-       match.dl_type = frame->getEtherType();
+       match.OFB_ETH_SRC = frame->getSrc();
+       match.OFB_ETH_DST = frame->getDest();
+       match.OFB_ETH_TYPE = frame->getEtherType();
        //extract ARP specific match fields if present
        if(frame->getEtherType()==ETHERTYPE_ARP){
            ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
-           match.nw_proto = arpPacket->getOpcode();
-           match.nw_src = arpPacket->getSrcIPAddress();
-           match.nw_dst = arpPacket->getDestIPAddress();
+           match.OFB_IP_PROTO = arpPacket->getOpcode();
+           match.OFB_IPV4_SRC = arpPacket->getSrcIPAddress();
+           match.OFB_IPV4_DST = arpPacket->getDestIPAddress();
        }
        msg->setMatch(match);
        msg->setBuffer_id(buffer_id);

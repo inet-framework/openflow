@@ -6,6 +6,7 @@
 #include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
 using namespace __gnu_cxx;
+using namespace inet;
 
 namespace openflow{
 

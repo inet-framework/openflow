@@ -12,26 +12,29 @@
 #include "inet/linklayer/common/MACAddress.h"
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
 
+using namespace inet;
+
 namespace openflow{
 
 /* Fields to match against flows */
 struct oxm_basic_match {
-    uint16_t in_port;          /* Input switch port. */
+    uint16_t OFB_IN_PORT;          /* Input switch port. */
     
-    inet::MACAddress dl_src; /* Ethernet source address. */
-    inet::MACAddress dl_dst; /* Ethernet destination address. */
-    uint16_t dl_vlan;          /* Input VLAN id. */
-    uint8_t dl_vlan_pcp;       /* Input VLAN priority. */
-    uint8_t pad1[1];           /* Align to 64-bits */
-    uint16_t dl_type;          /* Ethernet frame type. */
-    uint8_t nw_tos;            /* IP ToS (actually DSCP field, 6 bits). */
-    uint8_t nw_proto;          /* IP protocol or lower 8 bits of
-                                * ARP opcode. */
-    uint8_t pad2[2];           /* Align to 64-bits */
-    inet::IPv4Address nw_src;           /* IP source address. */
-    inet::IPv4Address nw_dst;           /* IP destination address. */
-    uint16_t tp_src;           /* TCP/UDP source port. */
-    uint16_t tp_dst;           /* TCP/UDP destination port. */
+    inet::MACAddress OFB_ETH_SRC; /* Ethernet source address. */
+    inet::MACAddress OFB_ETH_DST; /* Ethernet destination address. */
+    uint16_t OFB_VLAN_VID;          /* Input VLAN id. */
+    uint8_t OFB_VLAN_PCP;       /* Input VLAN priority. */
+    //uint8_t pad1[1];           /* Align to 64-bits */
+    uint16_t OFB_ETH_TYPE;          /* Ethernet frame type. */
+
+    uint8_t OFB_IP_DSCP;            /* IP ToS (actually DSCP field, 6 bits). */
+    uint8_t OFB_IP_PROTO;          /* IP protocol or lower 8 bits of*/
+    //uint8_t pad2[2];           /* Align to 64-bits */
+    inet::IPv4Address OFB_IPV4_SRC;           /* IP source address. */
+    inet::IPv4Address OFB_IPV4_DST;           /* IP destination address. */
+
+    uint16_t OFB_TP_SRC;           /* TCP/UDP source port. */
+    uint16_t OFB_TP_DST;           /* TCP/UDP destination port. */
 
     //from old implementation
     int OFB_ARP_OP; /* ARP opcode. */

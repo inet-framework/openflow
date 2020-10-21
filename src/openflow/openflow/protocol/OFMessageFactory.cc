@@ -15,9 +15,9 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#include <openflow/openflow/protocol/extended/OFMessageFactory.h>
+#include <openflow/openflow/protocol/OFMessageFactory.h>
 
-#include <openflow/openflow/protocol/extended/OF100MessageFactory.h>
+#include <openflow/openflow/protocol/OF100MessageFactory.h>
 
 namespace openflow {
 

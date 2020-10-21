@@ -29,20 +29,20 @@ namespace openflow {
 
 OF_FlowTableEntry::OF_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_FlowTableEntry(){
     if(const char* value = xmlDoc->getAttribute("idleTimeout"))
-        _idleTimeout = atoi(value);//idle timeout
+        idleTimeout = atoi(value);//idle timeout
     if(const char* value = xmlDoc->getAttribute("hardTimeout"))
-        _hardTimeout = atoi(value);//hard timeout
+        hardTimeout = atoi(value);//hard timeout
 }
 
 OF_FlowTableEntry::OF_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry(){
-    _hardTimeout = flow_mod->getHard_timeout();
-    _idleTimeout = flow_mod->getIdle_timeout();
+    hardTimeout = flow_mod->getHard_timeout();
+    idleTimeout = flow_mod->getIdle_timeout();
 }
 
 OF_FlowTableEntry::OF_FlowTableEntry() {
     simtime_t now = simTime();
-    _creationTime = now;
-    _lastMatched = now;
+    creationTime = now;
+    lastMatched = now;
 }
 
 OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion(OFP_Flow_Mod* flow_mod) {
@@ -85,14 +85,14 @@ simtime_t OF_FlowTableEntry::getTimeOut() {
     simtime_t timeout = simtime_t::getMaxTime();//never timeout.
 
     //check if hard timeout or idle timeOut are earlier.
-    if(_idleTimeout > 0) {
-        simtime_t idleTimeout =  _lastMatched + _idleTimeout;
+    if(this->idleTimeout > 0) {
+        simtime_t idleTimeout =  this->lastMatched + this->idleTimeout;
         if(timeout > idleTimeout) {
             timeout = idleTimeout;
         }
     }
-    if(_hardTimeout > 0) {
-        simtime_t hardTimeout =  _creationTime + _hardTimeout;
+    if(this->hardTimeout > 0) {
+        simtime_t hardTimeout =  this->creationTime + this->hardTimeout;
         if(timeout > hardTimeout) {
             timeout = hardTimeout;
         }
@@ -104,10 +104,10 @@ simtime_t OF_FlowTableEntry::getTimeOut() {
 std::string OF_FlowTableEntry::print() const {
     ostringstream oss;
     oss << "OF_FlowTableEntry{ ";
-    oss << "creationTime(" << _creationTime.str() << ") ";
-    oss << "lastMatched(" << _lastMatched.str() << ") ";
-    oss << "hardTimeout(" << _hardTimeout << ") ";
-    oss << "idleTimeout(" << _idleTimeout << ") ";
+    oss << "creationTime(" << creationTime.str() << ") ";
+    oss << "lastMatched(" << lastMatched.str() << ") ";
+    oss << "hardTimeout(" << hardTimeout << ") ";
+    oss << "idleTimeout(" << idleTimeout << ") ";
     oss << " }";
     return oss.str();
 }
@@ -117,8 +117,8 @@ std::string OF_FlowTableEntry::exportToXML() {
     string tab = "    ";
     //begin flow entry
     oss << "<flowEntry";
-    oss << " hardTimeout=\"" << _hardTimeout << "\"";
-    oss << " idleTimeout=\"" << _idleTimeout << "\"";
+    oss << " hardTimeout=\"" << hardTimeout << "\"";
+    oss << " idleTimeout=\"" << idleTimeout << "\"";
     oss << " />" << endl;//end flow entry
     return oss.str();
 }

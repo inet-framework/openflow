@@ -42,19 +42,19 @@ public:
      */
     friend bool operator<(const OF100_FlowTableEntry& l, const OF100_FlowTableEntry& r)
     {
-        if(l._priority < r._priority){
+        if(l.priority < r.priority){
             return true;
-        } else if (l._priority > r._priority){
+        } else if (l.priority > r.priority){
             return false;
         } else { // l._priority = r._priority
-            if(l._lastMatched < r._lastMatched){
+            if(l.lastMatched < r.lastMatched){
                 return true;
-            } else if (l._lastMatched > r._lastMatched){
+            } else if (l.lastMatched > r.lastMatched){
                 return false;
             } else {
-                if(l._creationTime < r._creationTime){
+                if(l.creationTime < r.creationTime){
                     return true;
-                } else if (l._creationTime > r._creationTime){
+                } else if (l.creationTime > r.creationTime){
                     return false;
                 } else{
                     return false;
@@ -93,42 +93,42 @@ public:
     virtual bool tryMatch(oxm_basic_match& other, uint32_t wildcards) override;
 
     uint64_t getCookie() const {
-        return _cookie;
+        return cookie;
     }
     void setCookie(uint64_t cookie) {
-        _cookie = cookie;
+        this->cookie = cookie;
     }
-    const std::vector<ofp_action_output>& getInstructions() const {
-        return _instructions;
+    const std::vector<ofp_action_output>& getInstructions() const override {
+        return instructions;
     }
     void setInstructions(const std::vector<ofp_action_output>& instructions) {
-        _instructions = instructions;
+        this->instructions = instructions;
     }
     const oxm_basic_match& getMatch() const {
-        return _match;
+        return match;
     }
     void setMatch(const oxm_basic_match& match) {
-        _match = match;
+        this->match = match;
     }
     int getPriority() const {
-        return _priority;
+        return priority;
     }
     void setPriority(int priority) {
-        _priority = priority;
+        this->priority = priority;
     }
     uint32_t getFlags() const {
-        return _flags;
+        return flags;
     }
     void setFlags(uint32_t flags) {
-        this->_flags = flags;
+        this->flags = flags;
     }
 
 protected:
-    uint64_t _cookie;
-    int _priority;
-    uint32_t _flags;
-    oxm_basic_match _match;
-    std::vector<ofp_action_output> _instructions;
+    uint64_t cookie;
+    int priority;
+    uint32_t flags;
+    oxm_basic_match match;
+    std::vector<ofp_action_output> instructions;
     //TODO counters?
 
 };

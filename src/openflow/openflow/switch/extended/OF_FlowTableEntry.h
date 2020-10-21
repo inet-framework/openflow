@@ -19,7 +19,7 @@
 #ifndef OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
 #define OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
 
-#include <openflow/openflow/protocol/extended/OpenFlow.h>
+#include <openflow/openflow/protocol/OpenFlow.h>
 #include <openflow/messages/OFP_Flow_Mod_m.h>
 #include <omnetpp.h>
 
@@ -68,14 +68,14 @@ public:
      * @return true if l<r
      */
     friend bool operator<(const OF_FlowTableEntry& l, const OF_FlowTableEntry& r){
-        if(l._lastMatched < r._lastMatched){
+        if(l.lastMatched < r.lastMatched){
             return true;
-        } else if (l._lastMatched > r._lastMatched){
+        } else if (l.lastMatched > r.lastMatched){
             return false;
         } else {
-            if(l._creationTime < r._creationTime){
+            if(l.creationTime < r.creationTime){
                 return true;
-            } else if (l._creationTime > r._creationTime){
+            } else if (l.creationTime > r.creationTime){
                 return false;
             } else{
                 return false;
@@ -128,48 +128,48 @@ public:
 
 //getter and setter
     const simtime_t& getCreationTime() const {
-        return _creationTime;
+        return creationTime;
     }
     void setCreationTime(const simtime_t& creationTime) {
-        _creationTime = creationTime;
+        this->creationTime = creationTime;
     }
     double getHardTimeout() const {
-        return _hardTimeout;
+        return hardTimeout;
     }
     void setHardTimeout(double hardTimeout) {
-        _hardTimeout = hardTimeout;
+        this->hardTimeout = hardTimeout;
     }
     double getIdleTimeout() const {
-        return _idleTimeout;
+        return idleTimeout;
     }
     void setIdleTimeout(double idleTimeout) {
-        _idleTimeout = idleTimeout;
+        this->idleTimeout = idleTimeout;
     }
     const simtime_t& getLastMatched() const {
-        return _lastMatched;
+        return lastMatched;
     }
     void setLastMatched(const simtime_t& lastMatched) {
-        _lastMatched = lastMatched;
+        this->lastMatched = lastMatched;
     }
 
 protected:
     /**
      * Simulation timestamp on creation of this entry.
      */
-    simtime_t _creationTime;
+    simtime_t creationTime;
     /**
      * Simulation timestamp on the last match for this entry
      */
-    simtime_t _lastMatched;
+    simtime_t lastMatched;
 
     /**
      * in seconds
      */
-    double _hardTimeout;
+    double hardTimeout;
     /**
      * in seconds
      */
-    double _idleTimeout;
+    double idleTimeout;
 };
 
 } /* namespace openflow */

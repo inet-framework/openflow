@@ -19,7 +19,7 @@
 #ifndef OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
 #define OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
 
-#include "openflow/openflow/protocol/extended/AOFMessageFactory.h"
+#include "openflow/openflow/protocol/AOFMessageFactory.h"
 
 namespace openflow {
 
