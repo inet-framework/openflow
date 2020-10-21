@@ -1,5 +1,5 @@
 #include "openflow/openflow/switch/OF_Switch.h"
-#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/openflow/protocol/OpenFlow.h"
 
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/messages/OFP_Initialize_Handshake_m.h"

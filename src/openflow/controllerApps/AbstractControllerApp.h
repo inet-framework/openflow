@@ -6,7 +6,7 @@
 #include <list>
 #include "openflow/openflow/controller/OF_Controller.h"
 #include "inet/transportlayer/contract/tcp/TCPSocket.h"
-#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/openflow/protocol/OpenFlow.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "openflow/messages/OFP_Packet_Out_m.h"

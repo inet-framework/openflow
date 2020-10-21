@@ -2,7 +2,7 @@
 #ifndef SWITCH_INFO_H_
 #define SWITCH_INFO_H_
 
-#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/openflow/protocol/OpenFlow.h"
 #include "inet/transportlayer/contract/tcp/TCPSocket.h"
 
 using namespace __gnu_cxx;

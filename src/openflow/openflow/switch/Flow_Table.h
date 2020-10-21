@@ -3,7 +3,7 @@
 #define FLOW_TABLE_H_
 
 #include <vector>
-#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/openflow/protocol/OpenFlow.h"
 #include "openflow/openflow/switch/Flow_Table_Entry.h"
 
 using namespace __gnu_cxx;

@@ -16,8 +16,8 @@ namespace openflow{
 
 /* Fields to match against flows */
 struct oxm_basic_match {
-    uint32_t wildcards;        /* Wildcard fields. */
     uint16_t in_port;          /* Input switch port. */
+    
     inet::MACAddress dl_src; /* Ethernet source address. */
     inet::MACAddress dl_dst; /* Ethernet destination address. */
     uint16_t dl_vlan;          /* Input VLAN id. */
@@ -32,7 +32,28 @@ struct oxm_basic_match {
     inet::IPv4Address nw_dst;           /* IP destination address. */
     uint16_t tp_src;           /* TCP/UDP source port. */
     uint16_t tp_dst;           /* TCP/UDP destination port. */
+
+    //from old implementation
+    int OFB_ARP_OP; /* ARP opcode. */
+    IPv4Address OFB_ARP_SPA; /* ARP source IPv4 address. */
+    IPv4Address OFB_ARP_TPA; /* ARP target IPv4 address. */
+    MACAddress OFB_ARP_SHA; /* ARP source hardware address. */
+    MACAddress OFB_ARP_THA; /* ARP target hardware address. */
+
+    uint32_t wildcards;        /* Wildcard fields. */
 };
+
+inline bool operator==(const oxm_basic_match &m1, const oxm_basic_match& m2) {
+    return m2.OFB_IN_PORT == m1.OFB_IN_PORT
+            && m2.OFB_ETH_DST == m1.OFB_ETH_DST
+            && m2.OFB_ETH_SRC == m1.OFB_ETH_SRC
+            && m2.OFB_ETH_TYPE == m1.OFB_ETH_TYPE
+            && m2.OFB_ARP_OP == m1.OFB_ARP_OP
+            && m2.OFB_ARP_SHA == m1.OFB_ARP_SHA
+            && m2.OFB_ARP_SPA == m1.OFB_ARP_SPA
+            && m2.OFB_ARP_THA == m1.OFB_ARP_THA
+            && m2.OFB_ARP_TPA == m1.OFB_ARP_TPA;
+}
 
 struct oxm_tlv {
     uint16_t oxm_class; /* One of ofp_oxm_class */

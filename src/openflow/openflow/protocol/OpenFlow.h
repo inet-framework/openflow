@@ -8,18 +8,18 @@
 #endif
 
 #if OFP_VERSION_IN_USE == OFP_100
-    #include <openflow/openflow/protocol/extended/openflow_100.h>
+    #include <openflow/openflow/protocol/openflow_100.h>
 #elif OFP_VERSION_IN_USE == OFP_135
 //TODO add implementation for ofp135
-    #include <openflow/openflow/protocol/extended/openflow_135.h>
+    #include <openflow/openflow/protocol/openflow_135.h>
 
 #elif OFP_VERSION_IN_USE == OFP_141
 //TODO add implementation for ofp141
-    #include <openflow/openflow/protocol/extended/openflow_141.h>
+    #include <openflow/openflow/protocol/openflow_141.h>
 
 #elif OFP_VERSION_IN_USE == OFP_151
 //TODO add implementation for ofp151
-    #include <openflow/openflow/protocol/extended/openflow_151.h>
+    #include <openflow/openflow/protocol/openflow_151.h>
 
 #endif
 

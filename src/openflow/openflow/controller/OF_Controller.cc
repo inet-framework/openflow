@@ -2,7 +2,7 @@
 #include "openflow/openflow/controller/OF_Controller.h"
 
 #include "inet/applications/tcpapp/GenericAppMsg_m.h"
-#include "openflow/openflow/protocol/openflow.h"
+#include "openflow/openflow/protocol/OpenFlow.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/messages/OFP_Packet_Out_m.h"
 #include "inet/transportlayer/contract/tcp/TCPCommand_m.h"

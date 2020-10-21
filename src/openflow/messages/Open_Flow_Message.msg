@@ -1,7 +1,7 @@
 
 
 cplusplus {{
-    #include "openflow/openflow/protocol/openflow.h"
+    #include "openflow/openflow/protocol/OpenFlow.h"
 }};
 
 class openflow::ofp_header extends void;
