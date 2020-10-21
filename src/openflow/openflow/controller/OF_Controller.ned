@@ -6,7 +6,7 @@ package openflow.openflow.controller;
 //Sending Packet-Out messages;
 //Sending Flow Modification messages;
 
-simple OF_Controller
+simple OF_Controller like IOpenFlowController
 {
     parameters:
         @class(openflow::OF_Controller);

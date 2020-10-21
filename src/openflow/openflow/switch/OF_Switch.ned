@@ -5,7 +5,7 @@ package openflow.openflow.switch;
 ////The Switch Application module is a TCP application and therefore directly connected
 //to the TCP module. It belongs to the control plane and is responsible for
 //the communication with the controller.
-simple OF_Switch
+simple OF_Switch like IOpenFlowRelayUnit
 {
     parameters:
         @class(openflow::OF_Switch);
