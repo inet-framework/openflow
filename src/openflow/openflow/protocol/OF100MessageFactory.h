@@ -19,7 +19,7 @@
 #ifndef OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
 #define OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
 
-#include "openflow/openflow/protocol/AOFMessageFactory.h"
+#include "openflow/openflow/protocol/OFMessageFactory.h"
 
 namespace openflow {
 
@@ -28,11 +28,13 @@ namespace openflow {
  *
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OF100MessageFactory: public AOFMessageFactory {
-public:
+class OF100MessageFactory: public OFMessageFactory {
+    friend OFMessageFactory;
+protected:
     OF100MessageFactory();
     virtual ~OF100MessageFactory();
 
+public:
     virtual OFP_Features_Reply* createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0);
     virtual OFP_Features_Request* createFeatureRequest();
     virtual OFP_Flow_Mod* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0);

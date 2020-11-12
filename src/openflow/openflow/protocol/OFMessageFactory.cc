@@ -21,8 +21,8 @@
 
 namespace openflow {
 
-AOFMessageFactory* OFMessageFactory::instance() {
-    static AOFMessageFactory* _messageFactoryInstance = nullptr;
+OFMessageFactory* OFMessageFactory::instance() {
+    static OFMessageFactory* _messageFactoryInstance = nullptr;
     if (!_messageFactoryInstance) {
 #if OFP_VERSION_IN_USE == OFP_100
         _messageFactoryInstance = new OF100MessageFactory();
