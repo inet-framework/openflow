@@ -27,7 +27,7 @@ import openflow.openflow.switch.flowtable.IOpenFlowFlowTable;
 simple OF_FlowTable like IOpenFlowFlowTable
 {
     parameters:
-        @class(ofp::OF_FlowTable);
+        @class(openflow::OF_FlowTable);
         @display("i=block/table2,#008002");
         
         // The maximum numbers of entries this table can hold, 

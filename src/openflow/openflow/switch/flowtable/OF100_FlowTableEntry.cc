@@ -98,17 +98,17 @@ bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other) {
 
 bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other, uint32_t wildcards) {
     //debuggable
-//    bool port = ((wildcards & OFPFW_IN_PORT) || _match.in_port == other.in_port) ;
-//    bool dl_type = ((wildcards & OFPFW_DL_TYPE) || _match.dl_type == other.dl_type ) ;
-//    bool dl_src = ((wildcards & OFPFW_DL_SRC) || !_match.dl_src.compareTo(other.dl_src)) ;
-//    bool dl_dst = ((wildcards & OFPFW_DL_DST) || !_match.dl_dst.compareTo(other.dl_dst)) ;
-//    bool dl_vlan = ((wildcards & OFPFW_DL_VLAN) || _match.dl_vlan == other.dl_vlan ) ;
-//    bool dl_vlan_pcb = ((wildcards & OFPFW_DL_VLAN_PCP) || _match.dl_vlan_pcp == other.dl_vlan_pcp ) ;
-//    bool nw_proto = ((wildcards & OFPFW_NW_PROTO) || _match.nw_proto == other.nw_proto ) ;
-//    bool nw_src = ((wildcards & OFPFW_NW_SRC_ALL) || _match.nw_src.equals(other.nw_src) ) ;
-//    bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || _match.nw_dst.equals(other.nw_dst) ) ;
-//    bool tp_src = ((wildcards & OFPFW_TP_SRC) || _match.tp_src == other.tp_src ) ;
-//    bool tp_dst = ((wildcards & OFPFW_TP_DST) || _match.tp_src == other.tp_src ) ;
+    bool port = ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) ;
+    bool dl_type = ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) ;
+    bool dl_src = ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) ;
+    bool dl_dst = ((wildcards & OFPFW_DL_DST) || !match.OFB_ETH_DST.compareTo(other.OFB_ETH_DST)) ;
+    bool dl_vlan = ((wildcards & OFPFW_DL_VLAN) || match.OFB_VLAN_VID == other.OFB_VLAN_VID ) ;
+    bool dl_vlan_pcb = ((wildcards & OFPFW_DL_VLAN_PCP) || match.OFB_VLAN_PCP == other.OFB_VLAN_PCP ) ;
+    bool nw_proto = ((wildcards & OFPFW_NW_PROTO) || match.OFB_IP_PROTO == other.OFB_IP_PROTO ) ;
+    bool nw_src = ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) ;
+    bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) ;
+    bool tp_src = ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
+    bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
     return ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) &&
         ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) &&
         ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) &&
