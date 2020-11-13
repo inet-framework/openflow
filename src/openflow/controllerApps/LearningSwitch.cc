@@ -1,5 +1,6 @@
 #include "openflow/controllerApps/LearningSwitch.h"
 #include "openflow/openflow/controller/Switch_Info.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 
 namespace openflow{
 
@@ -55,18 +56,12 @@ void LearningSwitch::doSwitching(OFP_Packet_In *packet_in_msg){
         } else {
             uint32_t outport = lookupTable[headerFields.swInfo][headerFields.dst_mac];
 
-            oxm_basic_match match = oxm_basic_match();
-            match.OFB_ETH_DST = headerFields.dst_mac;
-            match.OFB_ETH_TYPE = headerFields.eth_type;
-            match.OFB_ETH_SRC = headerFields.src_mac;
-            match.OFB_IN_PORT = headerFields.inport;
-
-            match.wildcards= 0;
-            match.wildcards |= OFPFW_IN_PORT;
-            match.wildcards |=  OFPFW_DL_SRC;
-            match.wildcards |= OFPFW_DL_TYPE;
-
-
+            auto builder = OFMatchFactory::getBuilder();
+            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+            builder->setField(OFPXMT_OFB_ETH_TYPE, &headerFields.eth_type);
+            builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
+            builder->setField(OFPXMT_OFB_IN_PORT, &headerFields.inport);
+            oxm_basic_match match = builder->build();
 
             TCPSocket * socket = controller->findSocketFor(packet_in_msg);
             sendFlowModMessage(OFPFC_ADD, match, outport, socket,idleTimeout,hardTimeout);

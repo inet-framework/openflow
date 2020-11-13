@@ -1,4 +1,5 @@
 #include "openflow/controllerApps/LLDPAgent.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 #include <algorithm>
 
 
@@ -127,12 +128,10 @@ void LLDPAgent::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 void LLDPAgent::triggerFlowMod(Switch_Info * swInfo) {
     uint32_t outport = OFPP_CONTROLLER;
-    oxm_basic_match match = oxm_basic_match();
-    match.OFB_ETH_TYPE = 0x88CC;
-    match.wildcards= 0;
-    match.wildcards |= OFPFW_IN_PORT;
-    match.wildcards |=  OFPFW_DL_SRC;
-    match.wildcards |=  OFPFW_DL_DST;
+    auto builder = OFMatchFactory::getBuilder();
+    uint16_t lldp_type = 0x88CC;
+    builder->setField(OFPXMT_OFB_ETH_TYPE, &lldp_type);
+    oxm_basic_match match = builder->build();
 
     sendFlowModMessage(OFPFC_ADD, match, outport, swInfo->getSocket(),idleTimeout,hardTimeout);
 }

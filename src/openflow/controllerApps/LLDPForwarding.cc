@@ -1,4 +1,5 @@
 #include "openflow/controllerApps/LLDPForwarding.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 #include <algorithm>
 #include <string>
 #include <queue>
@@ -77,13 +78,9 @@ void LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
         sendPacket(packet_in_msg,seg.outport);
 
         //set flow mods for all switches under my controller's command
-        oxm_basic_match match = oxm_basic_match();
-        match.OFB_ETH_DST = headerFields.dst_mac;
-
-        match.wildcards= 0;
-        match.wildcards |= OFPFW_IN_PORT;
-        match.wildcards |=  OFPFW_DL_SRC;
-        match.wildcards |= OFPFW_DL_TYPE;
+        auto builder = OFMatchFactory::getBuilder();
+        builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+        oxm_basic_match match = builder->build();
 
         TCPSocket * socket = controller->findSocketFor(packet_in_msg);
         sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
@@ -95,13 +92,10 @@ void LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
         while(!route.empty()){
             seg = route.front();
             route.pop_front();
-            oxm_basic_match match = oxm_basic_match();
-            match.OFB_ETH_DST = headerFields.dst_mac;
 
-            match.wildcards= 0;
-            match.wildcards |= OFPFW_IN_PORT;
-            match.wildcards |=  OFPFW_DL_SRC;
-            match.wildcards |= OFPFW_DL_TYPE;
+            auto builder = OFMatchFactory::getBuilder();
+            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+            oxm_basic_match match = builder->build();
 
             computedRoute += seg.chassisId + " -> ";
 

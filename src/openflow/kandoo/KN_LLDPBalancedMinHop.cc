@@ -1,4 +1,5 @@
 #include "openflow/kandoo/KN_LLDPBalancedMinHop.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 #include <algorithm>
 #include <string>
 
@@ -80,13 +81,10 @@ void KN_LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
         sendPacket(packet_in_msg,seg.outport);
 
         //set flow mods for all switches under my controller's command
-        oxm_basic_match match = oxm_basic_match();
-        match.OFB_ETH_DST = headerFields.dst_mac;
-        match.OFB_ETH_SRC = headerFields.src_mac;
-
-        match.wildcards= 0;
-        match.wildcards |= OFPFW_IN_PORT;
-        match.wildcards |= OFPFW_DL_TYPE;
+        auto builder = OFMatchFactory::getBuilder();
+        builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+        builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
+        oxm_basic_match match = builder->build();
 
         TCPSocket * socket = controller->findSocketFor(packet_in_msg);
         sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
@@ -98,13 +96,11 @@ void KN_LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
         while(!route.empty()){
             seg = route.front();
             route.pop_front();
-            oxm_basic_match match = oxm_basic_match();
-            match.OFB_ETH_DST = headerFields.dst_mac;
-            match.OFB_ETH_SRC = headerFields.src_mac;
 
-            match.wildcards= 0;
-            match.wildcards |= OFPFW_IN_PORT;
-            match.wildcards |= OFPFW_DL_TYPE;
+            auto builder = OFMatchFactory::getBuilder();
+            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+            builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
+            oxm_basic_match match = builder->build();
 
             computedRoute += seg.chassisId + " -> ";
 
@@ -222,13 +218,10 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
                             knAgent->sendReply(knpck,entry);
 
                             //set flow mods for all switches under my controller's command
-                            oxm_basic_match match = oxm_basic_match();
-                            match.OFB_ETH_DST = headerFields.dst_mac;
-                            match.OFB_ETH_SRC = headerFields.src_mac;
-
-                            match.wildcards= 0;
-                            match.wildcards |= OFPFW_IN_PORT;
-                            match.wildcards |= OFPFW_DL_TYPE;
+                            auto builder = OFMatchFactory::getBuilder();
+                            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+                            builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
+                            oxm_basic_match match = builder->build();
 
 
                             entry = KandooEntry();
@@ -248,13 +241,11 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
                             while(!route.empty()){
                                 seg = route.front();
                                 route.pop_front();
-                                oxm_basic_match match = oxm_basic_match();
-                                match.OFB_ETH_DST = headerFields.dst_mac;
-                                match.OFB_ETH_SRC = headerFields.src_mac;
 
-                                match.wildcards= 0;
-                                match.wildcards |= OFPFW_IN_PORT;
-                                match.wildcards |= OFPFW_DL_TYPE;
+                                auto builder = OFMatchFactory::getBuilder();
+                                builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+                                builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
+                                oxm_basic_match match = builder->build();
 
                                 computedRoute += seg.chassisId + ":" + std::to_string(seg.outport) + " -> ";
 

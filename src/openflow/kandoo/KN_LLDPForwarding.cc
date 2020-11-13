@@ -3,6 +3,7 @@
 #include <string>
 #include "inet/networklayer/ipv4/ICMPMessage.h"
 #include "inet/applications/pingapp/PingPayload_m.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 
 namespace openflow{
 
@@ -100,13 +101,9 @@ void KN_LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
         sendPacket(packet_in_msg,seg.outport);
 
         //set flow mods for all switches under my controller's command
-        oxm_basic_match match = oxm_basic_match();
-        match.OFB_ETH_DST = headerFields.dst_mac;
-
-        match.wildcards= 0;
-        match.wildcards |= OFPFW_IN_PORT;
-        match.wildcards |=  OFPFW_DL_SRC;
-        match.wildcards |= OFPFW_DL_TYPE;
+        auto builder = OFMatchFactory::getBuilder();
+        builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+        oxm_basic_match match = builder->build();
 
         TCPSocket * socket = controller->findSocketFor(packet_in_msg);
         sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
@@ -118,13 +115,10 @@ void KN_LLDPForwarding::handlePacketIn(OFP_Packet_In * packet_in_msg){
         while(!route.empty()){
             seg = route.front();
             route.pop_front();
-            oxm_basic_match match = oxm_basic_match();
-            match.OFB_ETH_DST = headerFields.dst_mac;
 
-            match.wildcards= 0;
-            match.wildcards |= OFPFW_IN_PORT;
-            match.wildcards |=  OFPFW_DL_SRC;
-            match.wildcards |= OFPFW_DL_TYPE;
+            auto builder = OFMatchFactory::getBuilder();
+            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+            oxm_basic_match match = builder->build();
 
             computedRoute += seg.chassisId + " -> ";
 
@@ -242,14 +236,9 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                             knAgent->sendReply(knpck,entry);
 
                             //set flow mods for all switches under my controller's command
-                            oxm_basic_match match = oxm_basic_match();
-                            match.OFB_ETH_DST = headerFields.dst_mac;
-
-                            match.wildcards= 0;
-                            match.wildcards |= OFPFW_IN_PORT;
-                            match.wildcards |=  OFPFW_DL_SRC;
-                            match.wildcards |= OFPFW_DL_TYPE;
-
+                            auto builder = OFMatchFactory::getBuilder();
+                            builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+                            oxm_basic_match match = builder->build();
 
                             entry = KandooEntry();
                             entry.trgApp = "KN_LLDPForwarding";
@@ -268,13 +257,10 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                             while(!route.empty()){
                                 seg = route.front();
                                 route.pop_front();
-                                oxm_basic_match match = oxm_basic_match();
-                                match.OFB_ETH_DST = headerFields.dst_mac;
 
-                                match.wildcards= 0;
-                                match.wildcards |= OFPFW_IN_PORT;
-                                match.wildcards |=  OFPFW_DL_SRC;
-                                match.wildcards |= OFPFW_DL_TYPE;
+                                auto builder = OFMatchFactory::getBuilder();
+                                builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
+                                oxm_basic_match match = builder->build();
 
                                 entry = KandooEntry();
                                 entry.trgApp = "KN_LLDPForwarding";
