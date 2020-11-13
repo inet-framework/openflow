@@ -22,7 +22,7 @@ namespace openflow {
 
 
 
-OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields& field, void* value){
+OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* value){
     //interpret the field, cast & set the value, update wildcard.
     switch (field){
     case OFPXMT_OFB_IN_PORT:
@@ -70,6 +70,14 @@ OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields& field, void* v
         match.wildcards &= ~OFPFW_TP_SRC;
         break;
     case OFPXMT_OFB_TCP_DST:
+        match.OFB_TP_DST = *static_cast<uint16_t*>(value);
+        match.wildcards &= ~OFPFW_TP_DST;
+        break;
+    case OFPXMT_OFB_UDP_SRC:
+        match.OFB_TP_SRC = *static_cast<uint16_t*>(value);
+        match.wildcards &= ~OFPFW_TP_SRC;
+        break;
+    case OFPXMT_OFB_UDP_DST:
         match.OFB_TP_DST = *static_cast<uint16_t*>(value);
         match.wildcards &= ~OFPFW_TP_DST;
         break;

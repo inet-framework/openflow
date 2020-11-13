@@ -27,7 +27,7 @@ public:
     OF100MatchBuilder() : OFMatchBuilder(){}
     virtual ~OF100MatchBuilder(){}
 
-    virtual OFMatchBuilder* setField(oxm_ofb_match_fields& field, void* value);
+    virtual OFMatchBuilder* setField(oxm_ofb_match_fields field, void* value);
 
 };
 

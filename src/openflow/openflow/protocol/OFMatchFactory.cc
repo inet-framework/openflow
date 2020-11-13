@@ -23,9 +23,9 @@ using namespace std;
 
 namespace openflow {
 
-OFMatchBuilder* OFMatchFactory::getBuilder(){
+std::unique_ptr<OFMatchBuilder> OFMatchFactory::getBuilder(){
 #if OFP_VERSION_IN_USE == OFP_100
-        return new OF100MatchBuilder();
+        return std::unique_ptr<OFMatchBuilder>(new OF100MatchBuilder());
 #endif
 }
 

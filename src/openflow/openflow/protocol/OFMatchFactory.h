@@ -39,7 +39,7 @@ public:
     /**
      * Creates a match builder for the current openflow version. Make sure to delete it!
      */
-    static OFMatchBuilder* getBuilder();
+    static std::unique_ptr<OFMatchBuilder> getBuilder();
 };
 
 class OFMatchBuilder {
@@ -56,7 +56,7 @@ public:
      *
      * @return this match builder
      */
-    virtual OFMatchBuilder* setField(oxm_ofb_match_fields& field, void* value) = 0;
+    virtual OFMatchBuilder* setField(oxm_ofb_match_fields field, void* value) = 0;
 
     oxm_basic_match build(){
         return match;
