@@ -42,19 +42,18 @@ OFP_Features_Reply* OF100MessageFactory::createFeaturesReply(std::string dpid,
         uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports) {
     OFP_Features_Reply* msg = new OFP_Features_Reply("FeaturesReply");
 
-    //set openflow header
+    //set openflow header 8 Byte
     msg->getHeader().version = OFP_VERSION;
     msg->getHeader().type = OFPT_FEATURES_REPLY;
 
     //set data fields
-    msg->setDatapath_id(dpid.c_str());
-    msg->setN_buffers(n_buffers);
-    msg->setN_tables(n_tables);
-    msg->setCapabilities(capabilities);
-    msg->setPortsArraySize(n_ports);
-
-    //set message params
-    msg->setByteLength(32);
+    msg->setDatapath_id(dpid.c_str()); // 8 Byte
+    msg->setN_buffers(n_buffers); // 4 Byte
+    msg->setN_tables(n_tables); // 4 Byte (= 1 Byte + 3 Byte Padding)
+    msg->setCapabilities(capabilities); // 4 Byte + actions 4 Byte = 8 Byte
+    msg->setPortsArraySize(n_ports); // 10 Byte per port --> n_ports * 10
+    //set message size
+    msg->setByteLength(24 + n_ports*10);
 
     return msg;
 }
@@ -63,7 +62,7 @@ OFP_Features_Request* OF100MessageFactory::createFeatureRequest() {
 
     OFP_Features_Request *featuresRequest = new OFP_Features_Request("FeaturesRequest");
 
-    //set header info
+    //set header info 8 Byte
     featuresRequest->getHeader().version = OFP_VERSION;
     featuresRequest->getHeader().type = OFPT_FEATURES_REQUEST;
 
@@ -77,22 +76,23 @@ OFP_Features_Request* OF100MessageFactory::createFeatureRequest() {
 OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut, uint32_t hardTimeOut) {
     OFP_Flow_Mod *msg = new OFP_Flow_Mod("flow_mod");
 
-    //set header info
+    //set header info 8 Byte
     msg->getHeader().version = OFP_VERSION;
     msg->getHeader().type = OFPT_FLOW_MOD;
 
     //set data fields
-    msg->setCommand(mod_com);
-    //TODO create OFP Match for version 1.0 - 1.3
-    //msg->setMatch(match->toOXMBasicMatch);
-    msg->setMatch(match);
-    msg->setHard_timeout(hardTimeOut);
-    msg->setIdle_timeout(idleTimeOut);
+    msg->setMatch(match); //40 Byte
+    msg->setCommand(mod_com); // 2 Byte
+    msg->setHard_timeout(hardTimeOut); // 1 Byte
+    msg->setIdle_timeout(idleTimeOut); // 1 Byte
+    msg->setPriority(1); // 1 Byte TODO set Priority to real value!!!
+    // 4 Byte buffer_id
 
-    msg->setFlags(0);
-    msg->setCookie(42);
+    msg->setFlags(0); // 2 Byte
+    msg->setCookie(42); // 8 Byte
+    msg->setOut_port(outports[0]); // 2 Byte
 
-    msg->setActionsArraySize(n_outports);
+    msg->setActionsArraySize(n_outports); // 4 Byte per output action.
     for(int i=0; i<n_outports; i++) {
         ofp_action_output* action_output = new ofp_action_output();
         action_output->port = outports[i];
@@ -100,7 +100,7 @@ OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod
     }
 
     //set message params
-    msg->setByteLength(56);
+    msg->setByteLength(69+4*n_outports);
 
     return msg;
 }
@@ -114,20 +114,22 @@ OFP_Hello* OF100MessageFactory::createHello() {
 }
 
 OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame) {
-
-   //TODO maybe use custom reason to abstract from differing openflow versions
-
    OFP_Packet_In *msg = new OFP_Packet_In("packetIn");
 
-   //create header
+   //create header 8 Byte
    msg->getHeader().version = OFP_VERSION;
    msg->getHeader().type = OFPT_PACKET_IN;
 
    //set data fields
-   msg->setReason(reason);
+   msg->setBuffer_id(buffer_id); // 4 Byte
+   // total_len 2 Byte
+   // in_port 2 Byte
+   msg->setReason(reason); // 1 Byte
+   // pad 1 Byte
+
    if(sendFullFrame){
+       msg->setByteLength(18);
        msg->encapsulate(frame->dup());
-       msg->setBuffer_id(buffer_id);
    } else {
        // packet in buffer so only send header fields
        oxm_basic_match match = oxm_basic_match();
@@ -143,12 +145,9 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
            match.OFB_IPV4_SRC = arpPacket->getSrcIPAddress();
            match.OFB_IPV4_DST = arpPacket->getDestIPAddress();
        }
-       msg->setMatch(match);
-       msg->setBuffer_id(buffer_id);
+       msg->setMatch(match);// 6 Byte
+       msg->setByteLength(24);
    }
-
-
-   msg->setByteLength(32);
 
     return msg;
 }
@@ -156,32 +155,31 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
 OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, EthernetIIFrame *frame) {
     OFP_Packet_Out *msg = new OFP_Packet_Out("packetOut");
 
-    //create header
+    //create header 8 Byte
     msg->getHeader().version = OFP_VERSION;
     msg->getHeader().type = OFPT_PACKET_OUT;
-    msg->setBuffer_id(buffer_id);
 
-    if (buffer_id == OFP_NO_BUFFER)
-    {   //No Buffer so send full frame.
-        if(frame){
-            msg->encapsulate(frame->dup());
-            msg->setIn_port(in_port);
-        } else {
-            throw cRuntimeError("OF100MessageFactory::createPacketOut: OFP_NO_BUFFER was set but no frame was provided.");
-        }
-    } else {
-        msg->setIn_port(in_port);
-    }
+    msg->setBuffer_id(buffer_id); // 4 Byte
+    msg->setIn_port(in_port); // 2 Byte
+    // actions_len 2 Byte
 
-    msg->setActionsArraySize(n_outports);
+    msg->setActionsArraySize(n_outports); // 4 Byte per output action.
     for(int i=0; i<n_outports; i++) {
         ofp_action_output* action_output = new ofp_action_output();
         action_output->port = outports[i];
         msg->setActions(i, *action_output);
     }
 
+    msg->setByteLength(16 + 4*n_outports);
 
-    msg->setByteLength(24);
+    if (buffer_id == OFP_NO_BUFFER)
+    {   //No Buffer so send full frame.
+        if(frame){
+            msg->encapsulate(frame->dup());
+        } else {
+            throw cRuntimeError("OF100MessageFactory::createPacketOut: OFP_NO_BUFFER was set but no frame was provided.");
+        }
+    }
 
     return msg;
 }
