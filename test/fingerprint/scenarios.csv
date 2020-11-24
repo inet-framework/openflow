@@ -33,8 +33,8 @@
 /scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_3C.ini -c General -r 0, 101s,            5e27-538f
 /scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_4C.ini -c General -r 0, 101s,            cfcc-e7b4
 /scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_5C.ini -c General -r 0, 101s,            92ba-4afc
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_2CK4.ini -c General -r 0, 101s,            cfc5-acaa
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_3C.ini -c General -r 0, 101s,            dbe2-8038
+#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_2CK4.ini -c General -r 0, 101s,            cfc5-acaa
+#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_3C.ini -c General -r 0, 101s,            dbe2-8038
 /scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_2C.ini -c General -r 0, 101s,            4bb6-15c1
 /scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_3C.ini -c General -r 0, 101s,            9768-3cf9
 /scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            0a46-3be8
