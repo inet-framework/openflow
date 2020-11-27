@@ -1,3 +1,11 @@
+#Try to detect INET if variable is not set
+ifndef INET_PROJ
+    ifneq ($(wildcard ../inet),)
+        INET_PROJ=../../inet
+    else
+        $(error "Cannot find INET framework in the usual location. You have to set the PATH to INET in the INET_PROJ variable")
+    endif
+endif
 all: checkmakefiles
 	cd src && $(MAKE)
 
@@ -10,7 +18,7 @@ cleanall: checkmakefiles
 	rm -f src/Makefile
 
 makefiles:
-	cd src && opp_makemake --make-so -f --deep -O out -KINET_PROJ=../../inet -DINET_IMPORT -I. -I$$\(INET_PROJ\)/src -L$$\(INET_PROJ\)/src -lINET$$\(D\)
+	cd src && opp_makemake --make-so -f --deep --no-deep-includes -O out -KINET_PROJ=../../inet -I. -I$$\(INET_PROJ\)/src -L$$\(INET_PROJ\)/src -lINET$$\(D\)
 
 checkmakefiles:
 	@if [ ! -f src/Makefile ]; then \
@@ -21,3 +29,4 @@ checkmakefiles:
 	echo; \
 	exit 1; \
 	fi
+	
