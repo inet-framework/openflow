@@ -67,7 +67,7 @@ void OF_FlowTable::initialize()
     _nextAging = simtime_t::getMaxTime();
 
     WATCH(_nextAging);
-    WATCH_VECTOR(_entries);
+    WATCH_PTRVECTOR(_entries);
 
 
     if(_agingInterval > 0){
