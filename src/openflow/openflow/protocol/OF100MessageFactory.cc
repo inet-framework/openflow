@@ -85,7 +85,7 @@ OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod
     msg->setCommand(mod_com); // 2 Byte
     msg->setHard_timeout(hardTimeOut); // 1 Byte
     msg->setIdle_timeout(idleTimeOut); // 1 Byte
-    msg->setPriority(1); // 1 Byte TODO set Priority to real value!!!
+    msg->setPriority(pritority);       // 1 Byte
     // 4 Byte buffer_id
 
     msg->setFlags(0); // 2 Byte

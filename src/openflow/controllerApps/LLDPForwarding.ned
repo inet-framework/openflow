@@ -25,5 +25,5 @@ simple LLDPForwarding like AbstractControllerApp
         bool printMibGraph = default(false);
         bool dropIfNoRouteFound = default(true);
         bool ignoreArpRequests = default(false);
-        
+        int priority = default(1);
 }

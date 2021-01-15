@@ -35,6 +35,7 @@ simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
         @signal[waitingTime](type="simtime_t");
         @statistic[waitingTime](title="WaitingTime"; record=vector?,stats?; interpolationmode=none);
         double serviceTime @unit("s") = default(0s);
+        int priority = default(1);
 
     gates:
         input tcpIn @labels(TCPCommand/up);

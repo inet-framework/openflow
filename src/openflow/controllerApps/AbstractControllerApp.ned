@@ -33,6 +33,7 @@ moduleinterface AbstractControllerApp
         @signal[PacketExperimenter];
         @signal[Booted];
         @display("i=block/app");
+        int priority;
 }
 
 

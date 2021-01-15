@@ -20,5 +20,5 @@ simple Hub like AbstractControllerApp
     parameters:
         @class(openflow::Hub);
         @display("i=block/app");
-        
+        int priority = default(1);
 }

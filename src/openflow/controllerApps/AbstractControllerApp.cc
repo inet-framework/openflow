@@ -39,6 +39,11 @@ void AbstractControllerApp::initialize(){
     controller= NULL;
 }
 
+void AbstractControllerApp::handleParameterChange(const char *parname){
+    if(!parname || strcmp(parname, "priority")==0){
+        this->priority = par("priority").intValue();
+    }
+}
 
 void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
 
@@ -95,8 +100,12 @@ void AbstractControllerApp::finish(){
 
 }
 
-
 OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int idleTimeOut =1 , int hardTimeOut=0){
+
+    return createFlowMod(mod_com, match, outport, this->priority, idleTimeOut, hardTimeOut);
+}
+
+OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport, int priority, int idleTimeOut=1, int hardTimeOut=0){
     OFP_Flow_Mod *flow_mod_msg = new OFP_Flow_Mod("flow_mod");
     flow_mod_msg->getHeader().version = OFP_VERSION;
     flow_mod_msg->getHeader().type = OFPT_FLOW_MOD;
@@ -109,12 +118,10 @@ OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com
     action_output->port = outport;
     flow_mod_msg->setActionsArraySize(1);
     flow_mod_msg->setActions(0, *action_output);
-
     flow_mod_msg->setKind(TCP_C_SEND);
-
+    flow_mod_msg->setPriority(priority);
     return flow_mod_msg;
 }
-
 
 OFP_Packet_Out * AbstractControllerApp::createPacketOutFromPacketIn(OFP_Packet_In *packet_in_msg, uint32_t outport){
     OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");

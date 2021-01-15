@@ -19,5 +19,6 @@ simple HF_LLDPAgent like AbstractControllerApp
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(60);
         bool printMibGraph = default(false);
+        int priority = default(1);
 
 }

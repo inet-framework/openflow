@@ -34,6 +34,7 @@ module Hyper_Flow_Synchronizer
         routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
         *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
+        int priority = default(0);
  
     gates:
         inout ethg[] @labels(EtherFrame-conn);

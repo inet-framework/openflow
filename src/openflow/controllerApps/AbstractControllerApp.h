@@ -41,11 +41,13 @@ protected:
     long packetsDropped;
     long numPacketOut;
     long numFlowMod;
+    int priority;
 
     OF_Controller * controller;
 
 
     virtual void initialize() override;
+    virtual void handleParameterChange(const char *parname) override;
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void finish() override;
 
@@ -53,6 +55,7 @@ protected:
     virtual OFP_Packet_Out * createDropPacketFromPacketIn(OFP_Packet_In *packet_in_msg);
     virtual OFP_Packet_Out * createPacketOutFromPacketIn(OFP_Packet_In *packet_in_msg, uint32_t outport);
     virtual OFP_Flow_Mod * createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport,int idleTimeOut, int hardTimeOut);
+    virtual OFP_Flow_Mod * createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int priority, int idleTimeOut, int hardTimeOut);
 
     virtual CommonHeaderFields extractCommonHeaderFields(OFP_Packet_In *packet_in_msg);
 
@@ -60,6 +63,7 @@ protected:
     virtual void dropPacket(OFP_Packet_In *packet_in_msg);
     virtual void sendPacket(OFP_Packet_In *packet_in_msg, uint32_t outport);
     virtual void sendFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport, TCPSocket *socket,int idleTimeOut, int hardTimeOut);
+
 
 public:
     AbstractControllerApp();
