@@ -154,6 +154,10 @@ void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
     }
 }
 
+vector<OF_FlowTableEntry*> OF_FlowTable::getEntrys(){
+    return _entries;
+}
+
 void OF_FlowTable::handleFlowMod(OFP_Flow_Mod* flow_mod) {
     Enter_Method("handleFlowMod()");
     //check flow mod command

@@ -78,6 +78,11 @@ public:
     OF_FlowTableEntry* lookup(oxm_basic_match &match);
 
     /**
+     * @return returns a vector containing all saved FlowTableEntrys
+     */
+    std::vector<OF_FlowTableEntry*> getEntrys();
+
+    /**
      * @brief For lifecycle: clears all entries from the table.
      */
     virtual void clear();
