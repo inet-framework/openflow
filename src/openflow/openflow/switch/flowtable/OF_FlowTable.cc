@@ -143,6 +143,7 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
 }
 
 void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
+    Enter_Method("deleteMatchingEntries()");
     //check all entries
     for(auto iter =_entries.begin();iter != _entries.end(); ){
         OF_FlowTableEntry* entry = (*iter);
@@ -154,6 +155,7 @@ void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
             ++iter;
         }
     }
+    updateDisplayString();
 }
 
 vector<OF_FlowTableEntry*> OF_FlowTable::getEntrys(){
@@ -179,11 +181,13 @@ void OF_FlowTable::handleFlowMod(OFP_Flow_Mod* flow_mod) {
 }
 
 void OF_FlowTable::clear() {
+    Enter_Method("clear()");
     for(auto iter =_entries.begin();iter != _entries.end();++iter){
         OF_FlowTableEntry* entry = (*iter);
        delete entry;
     }
     _entries.clear();
+    updateDisplayString();
 }
 
 void OF_FlowTable::removeAgedEntriesIfNeeded() {
