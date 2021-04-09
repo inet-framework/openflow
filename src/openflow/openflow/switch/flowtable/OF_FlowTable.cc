@@ -144,12 +144,14 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
 
 void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
     //check all entries
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
+    for(auto iter =_entries.begin();iter != _entries.end(); ){
         OF_FlowTableEntry* entry = (*iter);
         //flow table entrys matches are equal
         if(entry->tryMatch(match, match.wildcards)) {
             _entries.erase(iter);
             delete entry;
+        }else{
+            ++iter;
         }
     }
 }
