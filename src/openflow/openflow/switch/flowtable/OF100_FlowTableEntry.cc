@@ -92,6 +92,14 @@ OF100_FlowTableEntry::~OF100_FlowTableEntry() {
     instructions.clear();
 }
 
+bool OF100_FlowTableEntry::tryMatch(OF_FlowTableEntry* other) {
+    OF100_FlowTableEntry* casted = dynamic_cast<OF100_FlowTableEntry*> (other);
+    if(casted->match.wildcards == this->match.wildcards) {
+        return tryMatch(casted->match, casted->match.wildcards);
+    }
+    return false;
+}
+
 bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other) {
     return tryMatch(other, match.wildcards);
 }

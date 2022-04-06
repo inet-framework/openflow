@@ -125,8 +125,9 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
     //check if entry already exists.
     for(auto iter =_entries.begin();iter != _entries.end();++iter){
         //flow table entrys matches are equal
-        if(entry == (*iter)) {
-            return false;
+        if(entry->tryMatch((*iter))) {
+            _entries.erase(iter);
+            break;
         }
     }
 

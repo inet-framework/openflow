@@ -97,6 +97,13 @@ public:
     virtual std::string print() const;
 
     /**
+     * Checks if the flow entry matches another flow entry
+     * @param other flow table entry.
+     * @return true if the rules match.
+     */
+    virtual bool tryMatch(OF_FlowTableEntry* other) = 0;
+
+    /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.

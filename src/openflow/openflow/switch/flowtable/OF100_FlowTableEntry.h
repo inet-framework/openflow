@@ -78,6 +78,13 @@ public:
     virtual std::string print() const override;
 
     /**
+     * Checks if the flow entry matches another flow entry
+     * @param other flow table entry.
+     * @return true if the rules match.
+     */
+    virtual bool tryMatch(OF_FlowTableEntry* other) override;
+
+    /**
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.
      * @return true if the rules match.
