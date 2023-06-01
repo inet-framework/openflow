@@ -27,6 +27,7 @@ simple OF_Controller like IOpenFlowController
         int port = default(6633);
         double serviceTime @unit("s") = default(0s);
         double bootTime @unit("s") = default(0s);
+		bool parallelProcessing = default(false);
         
     gates:
         input tcpIn @labels(TCPCommand/up);

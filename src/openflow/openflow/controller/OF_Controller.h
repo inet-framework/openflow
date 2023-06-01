@@ -62,6 +62,7 @@ protected:
      */
     bool booted = false;
     bool busy;
+    bool parallelProcessing;
     double serviceTime;
     std::list<cMessage *> msgList;
 

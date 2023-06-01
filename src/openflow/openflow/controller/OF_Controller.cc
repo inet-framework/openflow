@@ -56,6 +56,7 @@ void OF_Controller::initialize(){
     //parameters
     serviceTime = par("serviceTime");
     busy = false;
+    parallelProcessing = par("parallelProcessing").boolValue();
 
     // TCP socket; listen on incoming connections
     const char *address = par("address");
@@ -103,7 +104,7 @@ void OF_Controller::handleMessage(cMessage *msg){
         delete msg;
     }else if (this->booted){
         //imlement service time
-        if (busy) {
+        if (!parallelProcessing && busy) {
             msgList.push_back(msg);
         }else{
             busy = true;
