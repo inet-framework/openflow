@@ -116,7 +116,7 @@ bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other, uint32_t wildcards) 
     bool nw_src = ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) ;
     bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) ;
     bool tp_src = ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
-    bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
+    bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST ) ;
     return ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) &&
         ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) &&
         ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) &&
@@ -127,7 +127,7 @@ bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other, uint32_t wildcards) 
         ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) &&
         ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) &&
         ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) &&
-        ((wildcards & OFPFW_TP_DST) || match.OFB_TP_SRC == other.OFB_TP_SRC );
+        ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST );
 }
 
 std::string OF100_FlowTableEntry::exportToXML() {
