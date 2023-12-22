@@ -14,9 +14,6 @@ cplusplus {{
 	} /*end namespace openflow*/
 }};
 
-//class inet::EthernetIIFrame;
-
-//struct ofp_action_header;
 struct openflow::ofp_action_output {
 	    @existingClass;
 	    @opaque;
@@ -35,7 +32,8 @@ packet OFP_Packet_Out extends Open_Flow_Message
 
 	 ofp_action_output actions[]; // Action list. 
 //	 EthernetIIFrame frame;
-	 uint8_t data[0];   // Packet data. The length is inferred
+// this is only a placeholder and has never been used
+//	 uint8_t data[0];   // Packet data. The length is inferred
 							//from the length field in the header.
 							//(Only meaningful if buffer_id == -1.) 
 }

@@ -3,6 +3,8 @@
 #include "inet/applications/pingapp/PingApp.h"
 #include "inet/networklayer/common/L3Address.h"
 
+using namespace omnetpp;
+
 namespace openflow{
 
 /**
