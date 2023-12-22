@@ -187,10 +187,8 @@ void OF_Switch::connect(const char *addressToConnect){
 
     socket.connect(L3AddressResolver().resolve(connectAddress), connectPort);
     OFP_Hello *msg = new OFP_Hello("Hello");
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_HELLO;
-    msg->setHeader(header); 
+    msg->getHeader().version = OFP_VERSION;
+    msg->getHeader().type = OFPT_HELLO;
     msg->setByteLength(8);
     msg->setKind(TCP_C_SEND);
     socket.send(msg);
@@ -277,10 +275,8 @@ void OF_Switch::processFrame(EthernetIIFrame *frame){
        if(outport == OFPP_CONTROLLER){
            //send it to the controller
            OFP_Packet_In *packetIn = new OFP_Packet_In("packetIn");
-           ofp_header header = packetIn->getHeader();
-           header.version = OFP_VERSION;
-           header.type = OFPT_PACKET_IN;
-           packetIn->setHeader(header); 
+           packetIn->getHeader().version = OFP_VERSION;
+           packetIn->getHeader().type = OFPT_PACKET_IN;
            packetIn->setReason(OFPR_ACTION);
            packetIn->setByteLength(32);
            packetIn->encapsulate(frame);
@@ -309,10 +305,8 @@ void OF_Switch::processFrame(EthernetIIFrame *frame){
 
 void OF_Switch::handleFeaturesRequestMessage(Open_Flow_Message *of_msg){
     OFP_Features_Reply *featuresReply = new OFP_Features_Reply("FeaturesReply");
-    ofp_header header = featuresReply->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FEATURES_REPLY;
-    featuresReply->setHeader(header); 
+    featuresReply->getHeader().version = OFP_VERSION;
+    featuresReply->getHeader().type = OFPT_FEATURES_REPLY;
 
     IInterfaceTable *inet_ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 
@@ -345,10 +339,8 @@ void OF_Switch::handleFlowModMessage(Open_Flow_Message *of_msg){
 
 void OF_Switch::handleMissMatchedPacket(EthernetIIFrame *frame){
     OFP_Packet_In *packetIn = new OFP_Packet_In("packetIn");
-    ofp_header header = packetIn->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_IN;
-    packetIn->setHeader(header); 
+    packetIn->getHeader().version = OFP_VERSION;
+    packetIn->getHeader().type = OFPT_PACKET_IN;
     packetIn->setReason(OFPR_NO_MATCH);
 
     packetIn->setByteLength(32);

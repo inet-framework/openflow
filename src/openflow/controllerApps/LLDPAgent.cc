@@ -80,10 +80,8 @@ void LLDPAgent::sendLLDP(){
 
             //create packet out*/
             OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");
-            ofp_header header = packetOut->getHeader();
-            header.version = OFP_VERSION;
-            header.type = OFPT_PACKET_OUT;
-            packetOut->setHeader(header); 
+            packetOut->getHeader().version = OFP_VERSION;
+            packetOut->getHeader().type = OFPT_PACKET_OUT;
             packetOut->setBuffer_id(OFP_NO_BUFFER);
             packetOut->setByteLength(24);
             packetOut->encapsulate(frame);

@@ -108,10 +108,8 @@ OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com
 
 OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport, int priority, int idleTimeOut=1, int hardTimeOut=0){
     OFP_Flow_Mod *flow_mod_msg = new OFP_Flow_Mod("flow_mod");
-    ofp_header header = flow_mod_msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FLOW_MOD;
-    flow_mod_msg->setHeader(header); 
+    flow_mod_msg->getHeader().version = OFP_VERSION;
+    flow_mod_msg->getHeader().type = OFPT_FLOW_MOD;
     flow_mod_msg->setCommand(mod_com);
     flow_mod_msg->setMatch(match);
     flow_mod_msg->setByteLength(56);
@@ -128,10 +126,8 @@ OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com
 
 OFP_Packet_Out * AbstractControllerApp::createPacketOutFromPacketIn(OFP_Packet_In *packet_in_msg, uint32_t outport){
     OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");
-    ofp_header header = packetOut->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_OUT;
-    packetOut->setHeader(header); 
+    packetOut->getHeader().version = OFP_VERSION;
+    packetOut->getHeader().type = OFPT_PACKET_OUT;
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setByteLength(24);
 
@@ -157,10 +153,8 @@ OFP_Packet_Out * AbstractControllerApp::createPacketOutFromPacketIn(OFP_Packet_I
 
 OFP_Packet_Out * AbstractControllerApp::createFloodPacketFromPacketIn(OFP_Packet_In *packet_in_msg){
     OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");
-    ofp_header header = packetOut->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_OUT;
-    packetOut->setHeader(header); 
+    packetOut->getHeader().version = OFP_VERSION;
+    packetOut->getHeader().type = OFPT_PACKET_OUT;
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setByteLength(24);
 
@@ -184,10 +178,8 @@ OFP_Packet_Out * AbstractControllerApp::createFloodPacketFromPacketIn(OFP_Packet
 
 OFP_Packet_Out * AbstractControllerApp::createDropPacketFromPacketIn(OFP_Packet_In *packet_in_msg){
     OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");
-    ofp_header header = packetOut->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_OUT;
-    packetOut->setHeader(header); 
+    packetOut->getHeader().version = OFP_VERSION;
+    packetOut->getHeader().type = OFPT_PACKET_OUT;
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setByteLength(24);
 

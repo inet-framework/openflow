@@ -43,10 +43,8 @@ OFP_Features_Reply* OF100MessageFactory::createFeaturesReply(std::string dpid,
     OFP_Features_Reply* msg = new OFP_Features_Reply("FeaturesReply");
 
     //set openflow header 8 Byte
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FEATURES_REPLY;
-    msg->setHeader(header); 
+    msg->getHeader().version = OFP_VERSION;
+    msg->getHeader().type = OFPT_FEATURES_REPLY;
 
     //set data fields
     msg->setDatapath_id(dpid.c_str()); // 8 Byte
@@ -65,10 +63,8 @@ OFP_Features_Request* OF100MessageFactory::createFeatureRequest() {
     OFP_Features_Request *featuresRequest = new OFP_Features_Request("FeaturesRequest");
 
     //set header info 8 Byte
-    ofp_header header = featuresRequest->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FEATURES_REQUEST;
-    featuresRequest->setHeader(header); 
+    featuresRequest->getHeader().version = OFP_VERSION;
+    featuresRequest->getHeader().type = OFPT_FEATURES_REQUEST;
 
 
     //set message params
@@ -81,10 +77,8 @@ OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod
     OFP_Flow_Mod *msg = new OFP_Flow_Mod("flow_mod");
 
     //set header info 8 Byte
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FLOW_MOD;
-    msg->setHeader(header); 
+    msg->getHeader().version = OFP_VERSION;
+    msg->getHeader().type = OFPT_FLOW_MOD;
 
     //set data fields
     msg->setMatch(match); //40 Byte
@@ -113,51 +107,47 @@ OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod
 
 OFP_Hello* OF100MessageFactory::createHello() {
     OFP_Hello *msg = new OFP_Hello("Hello");
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_HELLO;
-    msg->setHeader(header); 
+    msg->getHeader().version = OFP_VERSION;
+    msg->getHeader().type = OFPT_HELLO;
     msg->setByteLength(8);
     return msg;
 }
 
 OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame) {
-    OFP_Packet_In *msg = new OFP_Packet_In("packetIn");
+   OFP_Packet_In *msg = new OFP_Packet_In("packetIn");
 
-    //create header 8 Byte
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_IN;
-    msg->setHeader(header); 
+   //create header 8 Byte
+   msg->getHeader().version = OFP_VERSION;
+   msg->getHeader().type = OFPT_PACKET_IN;
 
-    //set data fields
-    msg->setBuffer_id(buffer_id); // 4 Byte
-    // total_len 2 Byte
-    // in_port 2 Byte
-    msg->setReason(reason); // 1 Byte
-    // pad 1 Byte
+   //set data fields
+   msg->setBuffer_id(buffer_id); // 4 Byte
+   // total_len 2 Byte
+   // in_port 2 Byte
+   msg->setReason(reason); // 1 Byte
+   // pad 1 Byte
 
-    if(sendFullFrame){
-        msg->setByteLength(18);
-        msg->encapsulate(frame->dup());
-    } else {
-        // packet in buffer so only send header fields
-        oxm_basic_match match = oxm_basic_match();
-        match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
+   if(sendFullFrame){
+       msg->setByteLength(18);
+       msg->encapsulate(frame->dup());
+   } else {
+       // packet in buffer so only send header fields
+       oxm_basic_match match = oxm_basic_match();
+       match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
 
-        match.OFB_ETH_SRC = frame->getSrc();
-        match.OFB_ETH_DST = frame->getDest();
-        match.OFB_ETH_TYPE = frame->getEtherType();
-        //extract ARP specific match fields if present
-        if(frame->getEtherType()==ETHERTYPE_ARP){
-            ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
-            match.OFB_IP_PROTO = arpPacket->getOpcode();
-            match.OFB_IPV4_SRC = arpPacket->getSrcIPAddress();
-            match.OFB_IPV4_DST = arpPacket->getDestIPAddress();
-        }
-        msg->setMatch(match);// 6 Byte
-        msg->setByteLength(24);
-    }
+       match.OFB_ETH_SRC = frame->getSrc();
+       match.OFB_ETH_DST = frame->getDest();
+       match.OFB_ETH_TYPE = frame->getEtherType();
+       //extract ARP specific match fields if present
+       if(frame->getEtherType()==ETHERTYPE_ARP){
+           ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
+           match.OFB_IP_PROTO = arpPacket->getOpcode();
+           match.OFB_IPV4_SRC = arpPacket->getSrcIPAddress();
+           match.OFB_IPV4_DST = arpPacket->getDestIPAddress();
+       }
+       msg->setMatch(match);// 6 Byte
+       msg->setByteLength(24);
+   }
 
     return msg;
 }
@@ -166,10 +156,8 @@ OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_o
     OFP_Packet_Out *msg = new OFP_Packet_Out("packetOut");
 
     //create header 8 Byte
-    ofp_header header = msg->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_PACKET_OUT;
-    msg->setHeader(header); 
+    msg->getHeader().version = OFP_VERSION;
+    msg->getHeader().type = OFPT_PACKET_OUT;
 
     msg->setBuffer_id(buffer_id); // 4 Byte
     msg->setIn_port(in_port); // 2 Byte

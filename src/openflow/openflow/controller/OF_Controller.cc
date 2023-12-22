@@ -174,10 +174,8 @@ void OF_Controller::processQueuedMsg(cMessage *data_msg){
 
 void OF_Controller::sendHello(Open_Flow_Message *msg){
     OFP_Hello *hello = new OFP_Hello("Hello");
-    ofp_header header = hello->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_HELLO;
-    hello->setHeader(header);    
+    hello->getHeader().version = OFP_VERSION;
+    hello->getHeader().type = OFPT_HELLO;
     hello->setByteLength(8);
     hello->setKind(TCP_C_SEND);
 
@@ -188,10 +186,8 @@ void OF_Controller::sendHello(Open_Flow_Message *msg){
 
 void OF_Controller::sendFeatureRequest(cMessage *msg){
     OFP_Features_Request *featuresRequest = new OFP_Features_Request("FeaturesRequest");
-    ofp_header header = featuresRequest->getHeader();
-    header.version = OFP_VERSION;
-    header.type = OFPT_FEATURES_REQUEST;
-    featuresRequest->setHeader(header);    
+    featuresRequest->getHeader().version = OFP_VERSION;
+    featuresRequest->getHeader().type = OFPT_FEATURES_REQUEST;
     featuresRequest->setByteLength(8);
     featuresRequest->setKind(TCP_C_SEND);
 
