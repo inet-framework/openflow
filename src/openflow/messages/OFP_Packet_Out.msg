@@ -1,8 +1,9 @@
 
+import openflow.messages.Open_Flow_Message;
+import inet.linklayer.ethernet.EtherFrame;
+
 cplusplus {{
     #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     
     namespace openflow{
     inline std::ostream& operator<<(std::ostream& os, ofp_action_output action)
@@ -16,8 +17,11 @@ cplusplus {{
 //class inet::EthernetIIFrame;
 
 //struct ofp_action_header;
-struct openflow::ofp_action_output;
-packet openflow::Open_Flow_Message;
+struct openflow::ofp_action_output {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
 
 namespace openflow;
 
@@ -27,7 +31,7 @@ packet OFP_Packet_Out extends Open_Flow_Message
 {
 	uint32_t buffer_id; // ID assigned by datapath (OFP_NO_BUFFER
                         //if none). 
-	uint32_t in_port; // Packet�s input port or OFPP_CONTROLLER. 
+	uint32_t in_port; // Packet���s input port or OFPP_CONTROLLER. 
 
 	 ofp_action_output actions[]; // Action list. 
 //	 EthernetIIFrame frame;

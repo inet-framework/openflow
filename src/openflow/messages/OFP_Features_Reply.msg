@@ -1,14 +1,7 @@
 
-
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"
-    #include "inet/linklayer/common/MACAddress.h"
-}};
-
-//class MACAddress extends void;
-
-packet openflow::Open_Flow_Message;
+import inet.linklayer.common.MACAddress;
+//import openflow.openflow.protocol.OpenFlow;
+import openflow.messages.Open_Flow_Message;
 
 namespace openflow;
 

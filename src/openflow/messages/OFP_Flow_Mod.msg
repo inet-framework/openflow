@@ -1,12 +1,20 @@
 
+import openflow.messages.Open_Flow_Message;
+
 cplusplus {{
     #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"
 }};
 
-struct openflow::oxm_basic_match;
-struct openflow::ofp_action_output;
-packet openflow::Open_Flow_Message;
+struct openflow::oxm_basic_match {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
+struct openflow::ofp_action_output {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
 
 namespace openflow;
 

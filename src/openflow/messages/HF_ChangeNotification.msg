@@ -1,11 +1,15 @@
 
+import inet.linklayer.ethernet.EtherFrame;
+
 cplusplus {{
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
-    #include "openflow/hyperflow/HyperFlowStructs.h"
-    
+  #include "openflow/hyperflow/HyperFlowStructs.h"  
 }};
 
-struct openflow::DataChannelEntry;
+struct openflow::DataChannelEntry {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
 
 namespace openflow;
 

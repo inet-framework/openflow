@@ -1,11 +1,5 @@
 
-
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"
-}};
-
-packet openflow::Open_Flow_Message;
+import openflow.messages.Open_Flow_Message;
 
 namespace openflow;
 

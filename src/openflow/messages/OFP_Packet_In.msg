@@ -1,9 +1,9 @@
 
+import openflow.messages.Open_Flow_Message;
+import inet.linklayer.ethernet.EtherFrame;
 
 cplusplus {{
     #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     
     namespace openflow{
     inline std::ostream& operator<<(std::ostream& os, oxm_basic_match match)
@@ -18,11 +18,12 @@ cplusplus {{
 	} /*end namespace openflow*/
 }};
 
-struct openflow::ofp_header;
 //class EthernetIIFrame;
-struct openflow::oxm_basic_match;
-struct openflow::oxm_tlv;
-packet openflow::Open_Flow_Message;
+struct openflow::oxm_basic_match {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
 
 namespace openflow;
 

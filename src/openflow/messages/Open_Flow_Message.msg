@@ -4,7 +4,11 @@ cplusplus {{
     #include "openflow/openflow/protocol/OpenFlow.h"
 }};
 
-class openflow::ofp_header extends void;
+class openflow::ofp_header {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
 
 namespace openflow;
 
