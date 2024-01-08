@@ -67,7 +67,7 @@ public:
      * Deletes all entries matching the match.
      * @param match the match description.
      */
-    void deleteMatchingEntries(oxm_basic_match& match);
+    void deleteMatchingEntries(const oxm_basic_match& match);
 
     /**
      * TODO maybe use abstract flow description type that is not protocol dependent.

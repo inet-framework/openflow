@@ -82,14 +82,14 @@ public:
      * @param other flow table entry.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(OF_FlowTableEntry* other) override;
+    virtual bool tryMatch(const OF_FlowTableEntry* other) override;
 
     /**
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other) override;
+    virtual bool tryMatch(const oxm_basic_match& other) override;
 
     /**
      * Checks if the flow matches the rules in this entry.
@@ -97,7 +97,7 @@ public:
      * @param wildcards The wildcards for matching.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other, uint32_t wildcards) override;
+    virtual bool tryMatch(const oxm_basic_match& other, uint32_t wildcards) override;
 
     uint64_t getCookie() const {
         return cookie;

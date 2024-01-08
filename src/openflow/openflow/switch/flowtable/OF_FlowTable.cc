@@ -143,7 +143,7 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
     return true;
 }
 
-void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
+void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match) {
     Enter_Method("deleteMatchingEntries()");
     //check all entries
     for(auto iter =_entries.begin();iter != _entries.end(); ){

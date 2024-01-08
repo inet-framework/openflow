@@ -101,7 +101,7 @@ public:
      * @param other flow table entry.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(OF_FlowTableEntry* other) = 0;
+    virtual bool tryMatch(const OF_FlowTableEntry* other) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -109,7 +109,7 @@ public:
      * @param other The incoming flow.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other) = 0;
+    virtual bool tryMatch(const oxm_basic_match& other) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -118,7 +118,7 @@ public:
      * @param wildcards The wildcards for matching.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other, uint32_t wildcards) = 0;
+    virtual bool tryMatch(const oxm_basic_match& other, uint32_t wildcards) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.

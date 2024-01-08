@@ -402,7 +402,8 @@ void OF_Switch::handlePacketOutMessage(Open_Flow_Message *of_msg){
 
     //execute
     for (unsigned int i = 0; i < actions_size; ++i){
-        executePacketOutAction(&(packet_out_msg->getActions(i)), frame, inPort);
+        auto action = packet_out_msg->getActions(i);
+        executePacketOutAction(&(action), frame, inPort);
     }
 }
 

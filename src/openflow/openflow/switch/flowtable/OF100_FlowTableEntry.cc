@@ -92,19 +92,19 @@ OF100_FlowTableEntry::~OF100_FlowTableEntry() {
     instructions.clear();
 }
 
-bool OF100_FlowTableEntry::tryMatch(OF_FlowTableEntry* other) {
-    OF100_FlowTableEntry* casted = dynamic_cast<OF100_FlowTableEntry*> (other);
+bool OF100_FlowTableEntry::tryMatch(const OF_FlowTableEntry* other) {
+    const OF100_FlowTableEntry* casted = dynamic_cast<const OF100_FlowTableEntry*> (other);
     if(casted->match.wildcards == this->match.wildcards) {
         return tryMatch(casted->match, casted->match.wildcards);
     }
     return false;
 }
 
-bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other) {
+bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other) {
     return tryMatch(other, match.wildcards);
 }
 
-bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other, uint32_t wildcards) {
+bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other, uint32_t wildcards) {
     //debuggable
     bool port = ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) ;
     bool dl_type = ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) ;
@@ -117,17 +117,18 @@ bool OF100_FlowTableEntry::tryMatch(oxm_basic_match& other, uint32_t wildcards) 
     bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) ;
     bool tp_src = ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
     bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST ) ;
-    return ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) &&
-        ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) &&
-        ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) &&
-        ((wildcards & OFPFW_DL_DST) || !match.OFB_ETH_DST.compareTo(other.OFB_ETH_DST)) &&
-        ((wildcards & OFPFW_DL_VLAN) || match.OFB_VLAN_VID == other.OFB_VLAN_VID ) &&
-        ((wildcards & OFPFW_DL_VLAN_PCP) || match.OFB_VLAN_PCP == other.OFB_VLAN_PCP ) &&
-        ((wildcards & OFPFW_NW_PROTO) || match.OFB_IP_PROTO == other.OFB_IP_PROTO ) &&
-        ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) &&
-        ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) &&
-        ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) &&
-        ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST );
+    return port && dl_type && dl_src && dl_dst && dl_vlan && dl_vlan_pcb && nw_proto && nw_src && nw_dst && tp_src && tp_dst;
+//    return ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) &&
+//        ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) &&
+//        ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) &&
+//        ((wildcards & OFPFW_DL_DST) || !match.OFB_ETH_DST.compareTo(other.OFB_ETH_DST)) &&
+//        ((wildcards & OFPFW_DL_VLAN) || match.OFB_VLAN_VID == other.OFB_VLAN_VID ) &&
+//        ((wildcards & OFPFW_DL_VLAN_PCP) || match.OFB_VLAN_PCP == other.OFB_VLAN_PCP ) &&
+//        ((wildcards & OFPFW_NW_PROTO) || match.OFB_IP_PROTO == other.OFB_IP_PROTO ) &&
+//        ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) &&
+//        ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) &&
+//        ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) &&
+//        ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST );
 }
 
 std::string OF100_FlowTableEntry::exportToXML() {

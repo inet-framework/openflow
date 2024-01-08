@@ -2,6 +2,9 @@
 #ifndef KANDOOSTRUCTS_H_
 #define KANDOOSTRUCTS_H_
 
+#include "omnetpp.h"
+using namespace omnetpp;
+
 namespace openflow{
 
 struct KandooEntry{
