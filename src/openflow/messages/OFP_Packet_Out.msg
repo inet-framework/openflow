@@ -2,23 +2,6 @@
 import openflow.messages.Open_Flow_Message;
 import inet.linklayer.ethernet.EtherFrame;
 
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-    
-    namespace openflow{
-    inline std::ostream& operator<<(std::ostream& os, ofp_action_output action)
-    {
-		os << "Port (hex): " << std::hex << action.port << endl;
-		return os;
-	}
-	} /*end namespace openflow*/
-}};
-
-struct openflow::ofp_action_output {
-	    @existingClass;
-	    @opaque;
-	    @descriptor(false);
-}
 
 namespace openflow;
 
@@ -30,7 +13,7 @@ packet OFP_Packet_Out extends Open_Flow_Message
                         //if none). 
 	uint32_t in_port; // Packet���s input port or OFPP_CONTROLLER. 
 
-	 ofp_action_output actions[]; // Action list. 
+	ofp_action_output actions[]; // Action list. 
 //	 EthernetIIFrame frame;
 // this is only a placeholder and has never been used
 //	 uint8_t data[0];   // Packet data. The length is inferred

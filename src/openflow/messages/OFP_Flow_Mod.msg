@@ -1,21 +1,6 @@
 
 import openflow.messages.Open_Flow_Message;
 
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-}};
-
-struct openflow::oxm_basic_match {
-	    @existingClass;
-	    @opaque;
-	    @descriptor(false);
-}
-struct openflow::ofp_action_output {
-	    @existingClass;
-	    @opaque;
-	    @descriptor(false);
-}
-
 namespace openflow;
 
 // Modifications to a flow table by the controller.

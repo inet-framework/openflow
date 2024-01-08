@@ -2,29 +2,6 @@
 import openflow.messages.Open_Flow_Message;
 import inet.linklayer.ethernet.EtherFrame;
 
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-    
-    namespace openflow{
-    inline std::ostream& operator<<(std::ostream& os, oxm_basic_match match)
-    {
-    	os << "OFB_ETH_TYPE: " << std::hex << match.OFB_ETH_TYPE << ", OFB_ETH_SRC: " << match.OFB_ETH_SRC;
-    	os << ", OFB_ETH_DST: " << match.OFB_ETH_DST << ", OFB_IN_PORT: " << match.OFB_IN_PORT << endl; 
-		os << ", OFB_ARP_OP: " << match.OFB_ARP_OP << ", OFB_ARP_SHA: " << match.OFB_ARP_SHA;
-		os << ", OFB_ARP_THA: " << match.OFB_ARP_THA << ", OFB_ARP_SPA: " << match.OFB_ARP_SPA;
-		os << ", OFB_ARP_TPA: " << match.OFB_ARP_TPA << endl;
-		return os;
-	}
-	} /*end namespace openflow*/
-}};
-
-//class EthernetIIFrame;
-struct openflow::oxm_basic_match {
-	    @existingClass;
-	    @opaque;
-	    @descriptor(false);
-}
-
 namespace openflow;
 
 // When packets are received by the data plane and sent to the connected controller,
