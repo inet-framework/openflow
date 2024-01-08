@@ -17,6 +17,7 @@ AbstractControllerApp::~AbstractControllerApp()
 
 void AbstractControllerApp::initialize(){
     //register signals
+    handleParameterChange(nullptr);
     PacketInSignalId =registerSignal("PacketIn");
     PacketOutSignalId =registerSignal("PacketOut");
     PacketFeatureRequestSignalId = registerSignal("PacketFeatureRequest");
