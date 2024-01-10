@@ -1,6 +1,6 @@
 
 
-package openflow.networks;
+package openflow.scenarios.networks;
 
 import inet.common.misc.ThruputMeteringChannel;
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;

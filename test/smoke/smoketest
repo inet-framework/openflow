@@ -42,7 +42,7 @@ openflowLib = openflowRoot + os.sep + "src" + os.sep + projectName
 inetLib = inetRoot + os.sep + "src" + os.sep + "INET"
 opp_run = "opp_run"
 
-cpuTimeLimit = "3s"
+cpuTimeLimit = "1s"
 logFile = "test.out"
 
 if spawn.find_executable("opp_run_dbg"):
