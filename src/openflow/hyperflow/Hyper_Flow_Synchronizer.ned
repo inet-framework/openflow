@@ -30,8 +30,8 @@ module Hyper_Flow_Synchronizer
         bool multicastForwarding = default(false);
         string routingFile = default("");
 
-        routingTable.forwarding = forwarding;
-        routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
+        routingTable.forwarding = this.forwarding;
+        routingTable.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
         *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         int priority = default(0);
@@ -56,10 +56,10 @@ module Hyper_Flow_Synchronizer
             parameters:
                 @display("p=355,278;q=queue");
             gates:
-                ifIn[sizeof(ethg)];
-                ifOut[sizeof(ethg)];
+                ifIn[sizeof(parent.ethg)];
+                ifOut[sizeof(parent.ethg)];
         }
-        eth[sizeof(ethg)]: EthernetInterface {
+        eth[sizeof(this.ethg)]: EthernetInterface {
             parameters:
                 @display("p=432,138,row,90;q=txQueue");
         }
@@ -70,7 +70,7 @@ module Hyper_Flow_Synchronizer
         tcp.ipOut --> networkLayer.transportIn++;
         tcp.ipIn <-- networkLayer.transportOut++;
 
-        for i=0..sizeof(ethg)-1 {
+        for i=0..sizeof(this.ethg)-1 {
             ethg[i] <--> eth[i].phys;
             eth[i].upperLayerOut --> networkLayer.ifIn[i];
             eth[i].upperLayerIn <-- networkLayer.ifOut[i];
