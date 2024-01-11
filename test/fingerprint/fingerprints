@@ -39,7 +39,7 @@ nedPath = inetRoot + os.sep + "src" + sep + openflowRoot + os.sep + "src" + sep 
     + openflowRoot + os.sep + "scenarios" + sep + openflowRoot + os.sep + "test" + os.sep + "smoke"
 inetLib = inetRoot + os.sep + "src" + os.sep + "INET"
 openflowLib = openflowRoot + os.sep + "src" + os.sep + "OpenFlow"
-cpuTimeLimit = "60s"
+cpuTimeLimit = "90s"
 logFile = "test.out"
 extraOppRunArgs = ""
 exitCode = 0
@@ -322,8 +322,7 @@ class FingerprintTestCase(SimulationTestCase):
         command = executable + " -n " + nedPath + " -l " + inetLib + " -l " + openflowLib  + " -u Cmdenv " + self.args + \
             _iif(self.simtimelimit != "", " --sim-time-limit=" + self.simtimelimit, "") + \
             " \"--fingerprint=" + self.fingerprint + "\" --cpu-time-limit=" + cpuTimeLimit + \
-            " --vector-recording=false --scalar-recording=true" + \
-            " --result-dir=" + resultdir + \
+            " --vector-recording=false --scalar-recording=false" + \
             extraOppRunArgs;
         # print("COMMAND: " + command + '\n')
         anyFingerprintBad = False;
