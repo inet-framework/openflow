@@ -40,6 +40,18 @@ public:
     virtual ~OF_FlowTableEntry(){}
 
     /**
+     * Allows to sort flow table entries.
+     * first sorts on entry priority (higher l priority number will result in greater)
+     * if equal sorts on creationTime (larger l creation time will result in greater)
+     * if equal sorts on lastMatched (larger l last match time will result in greater).
+     *
+     * @param l the left hand side of the > operation
+     * @param r the right hand side of the > operation
+     * @return true if l > r
+     */
+    bool operator>(const OF_FlowTableEntry& other) const;
+
+    /**
      * Creates an OF_FlowTableEntry for the currently used Openflow protocol version.
      * @return              A new Entry.
      */
@@ -60,30 +72,7 @@ public:
      */
     static OF_FlowTableEntry* createEntryForOFVersion(omnetpp::cXMLElement* xmlDoc);
 
-//interface methods.
-    /**
-     * Smaller (<) comparison operator needs to be overwritten to allow sorting FlowTableEntries.
-     * @param l the left hand side
-     * @param r the write hand side
-     * @return true if l<r
-     */
-    friend bool operator<(const OF_FlowTableEntry& l, const OF_FlowTableEntry& r){
-        if(l.lastMatched < r.lastMatched){
-            return true;
-        } else if (l.lastMatched > r.lastMatched){
-            return false;
-        } else {
-            if(l.creationTime < r.creationTime){
-                return true;
-            } else if (l.creationTime > r.creationTime){
-                return false;
-            } else{
-                return false;
-            }
-        }
-        return false;
-    }
-
+    //interface methods.
     /**
      * Export this flow entry as an XML formatted String.
      * @return XML formatted string value.
@@ -134,6 +123,12 @@ public:
     virtual simtime_t getTimeOut();
 
 //getter and setter
+    int getPriority() const {
+        return priority;
+    }
+    void setPriority(int priority) {
+        this->priority = priority;
+    }
     const simtime_t& getCreationTime() const {
         return creationTime;
     }
@@ -161,6 +156,10 @@ public:
 
 protected:
     /**
+     * The priority of the flow entry.
+     */
+    int priority;
+    /**
      * Simulation timestamp on creation of this entry.
      */
     simtime_t creationTime;
@@ -177,6 +176,12 @@ protected:
      * in seconds
      */
     double idleTimeout;
+};
+
+struct Compare_OF_FlowTableEntry {
+    bool operator() (const OF_FlowTableEntry* a, const OF_FlowTableEntry* b) {
+        return *a > *b;
+    }
 };
 
 } /* namespace openflow */

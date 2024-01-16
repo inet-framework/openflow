@@ -34,7 +34,6 @@ OF100_FlowTableEntry::OF100_FlowTableEntry() {
 
 OF100_FlowTableEntry::OF100_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry(flow_mod){
     cookie = flow_mod->getCookie();
-    priority = flow_mod->getPriority();
     flags = flow_mod->getFlags();
     match = flow_mod->getMatch();
     for (size_t i = 0 ; i < flow_mod->getActionsArraySize(); i++){
@@ -48,8 +47,6 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
         cookie = atoi(value);//cookie
     if(const char* value = xmlDoc->getAttribute("flags"))
         flags = atoi(value);//flags
-    if(const char* value = xmlDoc->getAttribute("priority"))
-        priority = atoi(value);//priority
 
     auto builder = OFMatchFactory::getBuilder();
     if(cXMLElement* xmlMatch = xmlDoc->getFirstChildWithTag("match")){
@@ -233,6 +230,10 @@ std::string OF100_FlowTableEntry::print() const{
     oss << "cookie(" << cookie << ") ";
     oss << "priority(" << priority << ") ";
     oss << "flags(" << flags << ") ";
+    oss << "creationTime(" << creationTime.str() << ") ";
+    oss << "lastMatched(" << lastMatched.str() << ") ";
+    oss << "hardTimeout(" << hardTimeout << ") ";
+    oss << "idleTimeout(" << idleTimeout << ") ";
     oss << "instructions[" ;
     // oxm_basic_match match;
     uint32_t w = match.wildcards;
@@ -266,7 +267,6 @@ std::string OF100_FlowTableEntry::print() const{
         oss << "ofp_action_output( " << "port(" << iter->port << ") ) ";
     }
     oss << "] ";
-    oss << OF_FlowTableEntry::print();
     oss << " }";
     return oss.str();
 }

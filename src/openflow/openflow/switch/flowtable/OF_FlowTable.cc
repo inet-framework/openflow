@@ -113,7 +113,7 @@ void OF_FlowTable::updateDisplayString() {
 
 void OF_FlowTable::sortEntries() {
     Enter_Method("sortEntries()");
-    std::sort(_entries.rbegin(), _entries.rend());
+    std::sort(_entries.begin(), _entries.end(), Compare_OF_FlowTableEntry());
 }
 
 bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
@@ -136,7 +136,6 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
     const simtime_t now = simTime();
     entry->setCreationTime(now);
     entry->setLastMatched(now);
-    removeAgedEntries();
     sortEntries();
     updateDisplayString();
 
@@ -156,6 +155,7 @@ void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match) {
             ++iter;
         }
     }
+    sortEntries();
     updateDisplayString();
 }
 

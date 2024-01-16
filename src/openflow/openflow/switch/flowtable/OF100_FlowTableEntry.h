@@ -33,37 +33,6 @@ public:
     OF100_FlowTableEntry();
     virtual ~OF100_FlowTableEntry();
 
-    /**
-     * Allows to sort flow table entries.
-     * first sorts on entry priority if equal sorts on lastMatched if equal sorts on creationTime.
-     * @param l the left hand side of the < operation
-     * @param r the right hand side of the < operation
-     * @return true if l < r
-     */
-    friend bool operator<(const OF100_FlowTableEntry& l, const OF100_FlowTableEntry& r)
-    {
-        if(l.priority < r.priority){
-            return true;
-        } else if (l.priority > r.priority){
-            return false;
-        } else { // l._priority = r._priority
-            if(l.lastMatched < r.lastMatched){
-                return true;
-            } else if (l.lastMatched > r.lastMatched){
-                return false;
-            } else {
-                if(l.creationTime < r.creationTime){
-                    return true;
-                } else if (l.creationTime > r.creationTime){
-                    return false;
-                } else{
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
     //interface methods.
     /**
      * Export this flow entry as an XML formatted String.
@@ -117,12 +86,6 @@ public:
     void setMatch(const oxm_basic_match& match) {
         this->match = match;
     }
-    int getPriority() const {
-        return priority;
-    }
-    void setPriority(int priority) {
-        this->priority = priority;
-    }
     uint32_t getFlags() const {
         return flags;
     }
@@ -132,7 +95,6 @@ public:
 
 protected:
     uint64_t cookie;
-    int priority;
     uint32_t flags;
     oxm_basic_match match;
     std::vector<ofp_action_output> instructions;
