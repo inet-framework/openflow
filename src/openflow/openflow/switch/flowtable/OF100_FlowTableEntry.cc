@@ -16,6 +16,7 @@
 //
 
 #include "openflow/openflow/switch/flowtable/OF100_FlowTableEntry.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 
 #include "inet/linklayer/common/MACAddress.h"
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
@@ -50,31 +51,70 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
     if(const char* value = xmlDoc->getAttribute("priority"))
         priority = atoi(value);//priority
 
+    auto builder = OFMatchFactory::getBuilder();
     if(cXMLElement* xmlMatch = xmlDoc->getFirstChildWithTag("match")){
-        if(const char* value = xmlMatch->getAttribute("in_port"))
-            match.OFB_IN_PORT = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("dl_src"))
-            match.OFB_ETH_SRC = MACAddress(value);
-        if(const char* value = xmlMatch->getAttribute("dl_dst"))
-            match.OFB_ETH_DST = MACAddress(value);
-        if(const char* value = xmlMatch->getAttribute("dl_vlan"))
-            match.OFB_VLAN_VID = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("dl_vlan_pcp"))
-            match.OFB_VLAN_PCP = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("dl_type"))
-            match.OFB_ETH_TYPE = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("nw_proto"))
-            match.OFB_IP_PROTO = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("nw_src"))
-            match.OFB_IPV4_SRC = IPv4Address(value);
-        if(const char* value = xmlMatch->getAttribute("nw_dst"))
-            match.OFB_IPV4_DST = IPv4Address(value);
-        if(const char* value = xmlMatch->getAttribute("tp_src"))
-            match.OFB_TP_SRC = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("tp_dst"))
-            match.OFB_TP_DST = atoi(value);
-        if(const char* value = xmlMatch->getAttribute("wildcards"))
-            match.wildcards = atoi(value);
+        if (const char* value = xmlMatch->getAttribute("in_port"))
+        {
+            int parsedValue =  atoi(value);
+            builder->setField(OFPXMT_OFB_IN_PORT, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("dl_src"))
+        {
+            MACAddress parsedValue = MACAddress(value);
+            builder->setField(OFPXMT_OFB_ETH_SRC, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("dl_dst"))
+        {
+            MACAddress parsedValue = MACAddress(value);
+            builder->setField(OFPXMT_OFB_ETH_DST, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("dl_vlan"))
+        {
+            uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_VLAN_VID, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("dl_vlan_pcp"))
+        {
+            uint8_t parsedValue = static_cast<uint8_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_VLAN_PCP, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("dl_type"))
+        {
+            uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_ETH_TYPE, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("nw_proto"))
+        {
+            uint8_t parsedValue = static_cast<uint8_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_IP_PROTO, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("nw_src"))
+        {
+            IPv4Address parsedValue = IPv4Address(value);
+            builder->setField(OFPXMT_OFB_IPV4_SRC, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("nw_dst"))
+        {
+            IPv4Address parsedValue = IPv4Address(value);
+            builder->setField(OFPXMT_OFB_IPV4_DST, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("tp_src"))
+        {
+            uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_TCP_SRC, &parsedValue);
+        }
+        if (const char* value = xmlMatch->getAttribute("tp_dst"))
+        {
+            uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
+            builder->setField(OFPXMT_OFB_TCP_DST, &parsedValue);
+        }
+
+        match = builder->build();
+        if (const char* value = xmlMatch->getAttribute("wildcards"))
+        {
+            // overrides calcualted wildcard with a static value.
+            match.wildcards = static_cast<uint32_t>(stoul(value));
+        }
     }
 
     //get instructions
