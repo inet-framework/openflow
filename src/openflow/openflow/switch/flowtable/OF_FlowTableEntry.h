@@ -96,9 +96,10 @@ public:
      * TODO maybe introduce an abstract type that is not protocol dependent.
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.
+     * @param intersectWildcards if true, uses the intersection of this wildcards and other wildcards, else use this wildcards
      * @return true if the rules match.
      */
-    virtual bool tryMatch(const oxm_basic_match& other) = 0;
+    virtual bool tryMatch(const oxm_basic_match& other, bool intersectWildcards = false) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -152,6 +153,17 @@ public:
     }
     void setLastMatched(const simtime_t& lastMatched) {
         this->lastMatched = lastMatched;
+    }
+
+protected:
+    /**
+     * Intersects two wild cards only keeping those wildcards that are set in both left and right.
+     * @param leftWildcards wildcards of the first openflow match
+     * @param rightWildcards wildcards of the seconds openflow match
+     * @return a new wildcard containing only the intersection
+     */
+    uint32_t intersectWildCards(uint32_t leftWildcards, uint32_t rightWildcards) {
+        return leftWildcards & rightWildcards;
     }
 
 protected:

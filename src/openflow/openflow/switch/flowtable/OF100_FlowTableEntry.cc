@@ -137,7 +137,11 @@ bool OF100_FlowTableEntry::tryMatch(const OF_FlowTableEntry* other) {
     return false;
 }
 
-bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other) {
+bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other, bool intersectWildcards) {
+    if(intersectWildcards)
+    {
+        return tryMatch(other, intersectWildCards(match.wildcards, other.wildcards));
+    }
     return tryMatch(other, match.wildcards);
 }
 

@@ -142,16 +142,21 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
     return true;
 }
 
-void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match) {
+void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match, int priority) {
     Enter_Method("deleteMatchingEntries()");
     //check all entries
     for(auto iter =_entries.begin();iter != _entries.end(); ){
         OF_FlowTableEntry* entry = (*iter);
-        //flow table entrys matches are equal
-        if(entry->tryMatch(match, match.wildcards)) {
-            _entries.erase(iter);
-            delete entry;
-        }else{
+        bool deleted = false;
+        if(entry->getPriority() == priority) {
+            //flow table entrys matches are equal
+            if (entry->tryMatch(match, true)) {
+                _entries.erase(iter);
+                delete entry;
+                deleted = true;
+            }
+        }
+        if (!deleted) {
             ++iter;
         }
     }

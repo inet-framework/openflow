@@ -56,9 +56,10 @@ public:
     /**
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.
+     * @param intersectWildcards if true, uses the intersection of this wildcards and other wildcards, else use this wildcards
      * @return true if the rules match.
      */
-    virtual bool tryMatch(const oxm_basic_match& other) override;
+    virtual bool tryMatch(const oxm_basic_match& other, bool intersectWildcards = false) override;
 
     /**
      * Checks if the flow matches the rules in this entry.
