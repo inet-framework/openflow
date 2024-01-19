@@ -26,7 +26,7 @@ OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* va
     //interpret the field, cast & set the value, update wildcard.
     switch (field){
     case OFPXMT_OFB_IN_PORT:
-        match.OFB_IN_PORT = *static_cast<uint16_t*>(value);
+        match.OFB_IN_PORT = *static_cast<int*>(value);
         match.wildcards &= ~OFPFW_IN_PORT;
         break;
     case OFPXMT_OFB_ETH_SRC:

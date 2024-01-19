@@ -1,16 +1,24 @@
 
+import inet.linklayer.ethernet.EtherFrame;
+
 cplusplus {{
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     #include "openflow/hyperflow/HyperFlowStructs.h"
     namespace openflow{
     typedef std::list<ControlChannelEntry> ControlChannel;
     typedef std::list<DataChannelEntry> DataChannel;
     } /*end namespace openflow*/
-    
 }};
 
-class noncobject openflow::ControlChannel;
-class noncobject openflow::DataChannel;   
+class openflow::ControlChannel {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
+class openflow::DataChannel {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}   
 
 namespace openflow;
 

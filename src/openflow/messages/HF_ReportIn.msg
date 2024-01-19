@@ -1,14 +1,19 @@
 
+import inet.linklayer.ethernet.EtherFrame;
 
 cplusplus {{
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
+//    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     #include "openflow/openflow/controller/Switch_Info.h"    
     namespace openflow{
     typedef std::list<Switch_Info *> SwitchInfoList;
     } /*end namespace openflow*/
 }};
 
-class noncobject openflow::SwitchInfoList;   
+class openflow::SwitchInfoList {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}   
 
 namespace openflow;
 

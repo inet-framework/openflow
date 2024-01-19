@@ -19,6 +19,7 @@
 #ifndef __OPENFLOW_OF_FLOWTABLE_H_
 #define __OPENFLOW_OF_FLOWTABLE_H_
 
+#include "OF_FlowTable.h"
 #include <omnetpp.h>
 #include <vector>
 #include <string>
@@ -67,7 +68,7 @@ public:
      * Deletes all entries matching the match.
      * @param match the match description.
      */
-    void deleteMatchingEntries(oxm_basic_match& match);
+    void deleteMatchingEntries(const oxm_basic_match& match, int priority = -1);
 
     /**
      * TODO maybe use abstract flow description type that is not protocol dependent.

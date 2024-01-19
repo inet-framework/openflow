@@ -1,15 +1,7 @@
 
-cplusplus {{
-    #include "openflow/openflow/protocol/OpenFlow.h"
-    #include "openflow/messages/Open_Flow_Message_m.h"    
-    
-}};
+import openflow.messages.Open_Flow_Message;
 
 namespace openflow;
-
-//struct ofp_action_header;
-packet Open_Flow_Message;
-
 
 packet OFP_Port_Mod extends Open_Flow_Message
 {

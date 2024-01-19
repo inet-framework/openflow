@@ -26,17 +26,36 @@
 using namespace std;
 namespace openflow {
 
+bool OF_FlowTableEntry::operator>(const OF_FlowTableEntry& other) const
+{
+    if(this->priority > other.priority){
+        return true;
+    } else if (this->priority == other.priority){
+        if(this->creationTime > other.creationTime){
+            return true;
+        } else if (this->creationTime == other.creationTime) {
+            if(this->lastMatched > other.lastMatched) {
+                return true;
+            }
+        }
+    }
+    // return false if smaller or equal
+    return false;
+}
 
 OF_FlowTableEntry::OF_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_FlowTableEntry(){
     if(const char* value = xmlDoc->getAttribute("idleTimeout"))
         idleTimeout = atoi(value);//idle timeout
     if(const char* value = xmlDoc->getAttribute("hardTimeout"))
         hardTimeout = atoi(value);//hard timeout
+    if(const char* value = xmlDoc->getAttribute("priority"))
+        priority = atoi(value);//priority
 }
 
 OF_FlowTableEntry::OF_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry(){
     hardTimeout = flow_mod->getHard_timeout();
     idleTimeout = flow_mod->getIdle_timeout();
+    priority = flow_mod->getPriority();
 }
 
 OF_FlowTableEntry::OF_FlowTableEntry() {
@@ -104,6 +123,7 @@ simtime_t OF_FlowTableEntry::getTimeOut() {
 std::string OF_FlowTableEntry::print() const {
     ostringstream oss;
     oss << "OF_FlowTableEntry{ ";
+    oss << "priority(" << priority << ") ";
     oss << "creationTime(" << creationTime.str() << ") ";
     oss << "lastMatched(" << lastMatched.str() << ") ";
     oss << "hardTimeout(" << hardTimeout << ") ";
@@ -117,6 +137,7 @@ std::string OF_FlowTableEntry::exportToXML() {
     string tab = "    ";
     //begin flow entry
     oss << "<flowEntry";
+    oss << " priority=\"" << priority << "\"";
     oss << " hardTimeout=\"" << hardTimeout << "\"";
     oss << " idleTimeout=\"" << idleTimeout << "\"";
     oss << " />" << endl;//end flow entry

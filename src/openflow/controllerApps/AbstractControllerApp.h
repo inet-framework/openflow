@@ -18,7 +18,7 @@ namespace openflow{
 struct CommonHeaderFields{
     uint32_t buffer_id;
     Switch_Info * swInfo;
-    uint32_t inport;
+    int inport;
     MACAddress src_mac;
     MACAddress dst_mac;
     int eth_type;

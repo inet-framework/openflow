@@ -40,6 +40,18 @@ public:
     virtual ~OF_FlowTableEntry(){}
 
     /**
+     * Allows to sort flow table entries.
+     * first sorts on entry priority (higher l priority number will result in greater)
+     * if equal sorts on creationTime (larger l creation time will result in greater)
+     * if equal sorts on lastMatched (larger l last match time will result in greater).
+     *
+     * @param l the left hand side of the > operation
+     * @param r the right hand side of the > operation
+     * @return true if l > r
+     */
+    bool operator>(const OF_FlowTableEntry& other) const;
+
+    /**
      * Creates an OF_FlowTableEntry for the currently used Openflow protocol version.
      * @return              A new Entry.
      */
@@ -60,30 +72,7 @@ public:
      */
     static OF_FlowTableEntry* createEntryForOFVersion(omnetpp::cXMLElement* xmlDoc);
 
-//interface methods.
-    /**
-     * Smaller (<) comparison operator needs to be overwritten to allow sorting FlowTableEntries.
-     * @param l the left hand side
-     * @param r the write hand side
-     * @return true if l<r
-     */
-    friend bool operator<(const OF_FlowTableEntry& l, const OF_FlowTableEntry& r){
-        if(l.lastMatched < r.lastMatched){
-            return true;
-        } else if (l.lastMatched > r.lastMatched){
-            return false;
-        } else {
-            if(l.creationTime < r.creationTime){
-                return true;
-            } else if (l.creationTime > r.creationTime){
-                return false;
-            } else{
-                return false;
-            }
-        }
-        return false;
-    }
-
+    //interface methods.
     /**
      * Export this flow entry as an XML formatted String.
      * @return XML formatted string value.
@@ -101,15 +90,16 @@ public:
      * @param other flow table entry.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(OF_FlowTableEntry* other) = 0;
+    virtual bool tryMatch(const OF_FlowTableEntry* other) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
      * Checks if the flow matches the rules in this entry.
      * @param other The incoming flow.
+     * @param intersectWildcards if true, uses the intersection of this wildcards and other wildcards, else use this wildcards
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other) = 0;
+    virtual bool tryMatch(const oxm_basic_match& other, bool intersectWildcards = false) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -118,7 +108,7 @@ public:
      * @param wildcards The wildcards for matching.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(oxm_basic_match& other, uint32_t wildcards) = 0;
+    virtual bool tryMatch(const oxm_basic_match& other, uint32_t wildcards) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -134,6 +124,12 @@ public:
     virtual simtime_t getTimeOut();
 
 //getter and setter
+    int getPriority() const {
+        return priority;
+    }
+    void setPriority(int priority) {
+        this->priority = priority;
+    }
     const simtime_t& getCreationTime() const {
         return creationTime;
     }
@@ -161,6 +157,21 @@ public:
 
 protected:
     /**
+     * Intersects two wild cards only keeping those wildcards that are set in both left and right.
+     * @param leftWildcards wildcards of the first openflow match
+     * @param rightWildcards wildcards of the seconds openflow match
+     * @return a new wildcard containing only the intersection
+     */
+    uint32_t intersectWildCards(uint32_t leftWildcards, uint32_t rightWildcards) {
+        return leftWildcards & rightWildcards;
+    }
+
+protected:
+    /**
+     * The priority of the flow entry.
+     */
+    int priority;
+    /**
      * Simulation timestamp on creation of this entry.
      */
     simtime_t creationTime;
@@ -177,6 +188,12 @@ protected:
      * in seconds
      */
     double idleTimeout;
+};
+
+struct Compare_OF_FlowTableEntry {
+    bool operator() (const OF_FlowTableEntry* a, const OF_FlowTableEntry* b) {
+        return *a > *b;
+    }
 };
 
 } /* namespace openflow */

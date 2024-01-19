@@ -1,10 +1,15 @@
 
+import inet.linklayer.ethernet.EtherFrame;
+
 cplusplus {{
-    #include "inet/linklayer/ethernet/EtherFrame_m.h"
     #include "openflow/utility/KandooStructs.h"
 }};
   
-struct openflow::KandooEntry;
+struct openflow::KandooEntry {
+	    @existingClass;
+	    @opaque;
+	    @descriptor(false);
+}
   
 namespace openflow;
 

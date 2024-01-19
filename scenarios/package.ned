@@ -1,3 +1,3 @@
-package openflow;
+package openflow.scenarios;
 
 @license(LGPL);

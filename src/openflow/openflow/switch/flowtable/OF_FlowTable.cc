@@ -113,7 +113,7 @@ void OF_FlowTable::updateDisplayString() {
 
 void OF_FlowTable::sortEntries() {
     Enter_Method("sortEntries()");
-    std::sort(_entries.rbegin(), _entries.rend());
+    std::sort(_entries.begin(), _entries.end(), Compare_OF_FlowTableEntry());
 }
 
 bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
@@ -136,26 +136,31 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
     const simtime_t now = simTime();
     entry->setCreationTime(now);
     entry->setLastMatched(now);
-    removeAgedEntries();
     sortEntries();
     updateDisplayString();
 
     return true;
 }
 
-void OF_FlowTable::deleteMatchingEntries(oxm_basic_match& match) {
+void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match, int priority) {
     Enter_Method("deleteMatchingEntries()");
     //check all entries
     for(auto iter =_entries.begin();iter != _entries.end(); ){
         OF_FlowTableEntry* entry = (*iter);
-        //flow table entrys matches are equal
-        if(entry->tryMatch(match, match.wildcards)) {
-            _entries.erase(iter);
-            delete entry;
-        }else{
+        bool deleted = false;
+        if(entry->getPriority() == priority) {
+            //flow table entrys matches are equal
+            if (entry->tryMatch(match, true)) {
+                _entries.erase(iter);
+                delete entry;
+                deleted = true;
+            }
+        }
+        if (!deleted) {
             ++iter;
         }
     }
+    sortEntries();
     updateDisplayString();
 }
 

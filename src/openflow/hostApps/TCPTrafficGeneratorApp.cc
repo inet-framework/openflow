@@ -18,7 +18,7 @@ void TCPTrafficGeneratorApp::initialize(){
     //determine the first connection setup
     cMessage *msg = new cMessage("newConnection");
     msg->setKind(1);
-    scheduleAt((double)par("startSending"), msg);
+    scheduleAt(par("startSending").doubleValue(), msg);
 
 
     //stats

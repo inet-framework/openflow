@@ -31,14 +31,14 @@ module Open_Flow_Switch
         bool multicastForwarding = default(false);
         string routingFile = default("");
 
-        routingTable.forwarding = forwarding;
-        routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
+        routingTable.forwarding = this.forwarding;
+        routingTable.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
         *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
-        etherMAC[*].encapType = "EtherEncapDummy";
-        etherMAC[*].csmacdSupport = csmacdSupport;
-        etherMAC[*].macType = macType;
-        networkLayer.proxyARP = false; 
+        etherMAC[*].encapType = default("EtherEncapDummy");
+        etherMAC[*].csmacdSupport = this.csmacdSupport;
+        etherMAC[*].macType = this.macType;
+        networkLayer.proxyARP = default(false); 
 
     gates:
         inout gateControlPlane[] @labels(ControlPlane);
@@ -62,29 +62,29 @@ module Open_Flow_Switch
             parameters:
                 @display("p=200,90;q=queue");
             gates:
-                ifIn[sizeof(gateControlPlane)];
-                ifOut[sizeof(gateControlPlane)];
+                ifIn[sizeof(parent.gateControlPlane)];
+                ifOut[sizeof(parent.gateControlPlane)];
         }
-        eth[sizeof(gateControlPlane)]: EthernetInterface {
+        eth[sizeof(this.gateControlPlane)]: EthernetInterface {
             parameters:
                 @display("p=75,90,row,90;q=txQueue");
         }
         etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IWiredNic {
             parameters:
-                mac.promiscuous = true;
+                mac.promiscuous = default(true);
                 @display("p=633,90,c,70");
         }
 
         OF_Switch: OF_Switch {
             @display("p=446,90");
-            sendCompletePacket = sendCompletePacket;
+            sendCompletePacket = parent.sendCompletePacket;
             gates:
-                dataPlaneOut[sizeof(gateDataPlane)];
-                dataPlaneIn[sizeof(gateDataPlane)];
+                dataPlaneOut[sizeof(parent.gateDataPlane)];
+                dataPlaneIn[sizeof(parent.gateDataPlane)];
         }
 
     connections allowunconnected:
-        for i=0..sizeof(gateControlPlane)-1 {
+        for i=0..sizeof(this.gateControlPlane)-1 {
             eth[i].phys <--> gateControlPlane[i];
             eth[i].upperLayerOut --> networkLayer.ifIn[i];
             eth[i].upperLayerIn <-- networkLayer.ifOut[i];

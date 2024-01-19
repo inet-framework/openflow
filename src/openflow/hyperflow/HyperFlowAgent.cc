@@ -126,10 +126,11 @@ void HyperFlowAgent::sendReportIn(){
 
     //copy switches list
     auto tempList = controller->getSwitchesList();
+    auto switches = reportIn->getSwitchInfoList();
     for(auto iterSw=tempList->begin();iterSw!=tempList->end();++iterSw){
-        reportIn->getSwitchInfoList().push_front(&(*iterSw));
+        switches.push_front(&(*iterSw));
     }
-
+    reportIn->setSwitchInfoList(switches);
     reportIn->setByteLength(1+sizeof(reportIn->getSwitchInfoList()));
     reportIn->setKind(TCP_C_SEND);
 

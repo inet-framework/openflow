@@ -33,8 +33,8 @@ module Open_Flow_Controller
         int numExtInterfaces = default(0);
         double serviceTime @unit("s") = default(0s);
 
-        routingTable.forwarding = forwarding;
-        routingTable.multicastForwarding = multicastForwarding;   // for IPv4, IPv6, Generic
+        routingTable.forwarding = this.forwarding;
+        routingTable.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
         *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
 
@@ -63,10 +63,10 @@ module Open_Flow_Controller
             parameters:
                 @display("p=355,278;q=queue");
             gates:
-                ifIn[sizeof(ethg)];
-                ifOut[sizeof(ethg)];
+                ifIn[sizeof(parent.ethg)];
+                ifOut[sizeof(parent.ethg)];
         }
-        eth[sizeof(ethg)]: EthernetInterface {
+        eth[sizeof(this.ethg)]: EthernetInterface {
             parameters:
                 @display("p=519,278,row,90;q=txQueue");
         }
@@ -76,13 +76,13 @@ module Open_Flow_Controller
         }
         OF_Controller: OF_Controller {
             @display("p=56,278");
-            serviceTime = serviceTime;
+            serviceTime = parent.serviceTime;
         }
     connections allowunconnected:
         tcp.ipOut --> networkLayer.transportIn++;
         tcp.ipIn <-- networkLayer.transportOut++;
 
-        for i=0..sizeof(ethg)-1 {
+        for i=0..sizeof(this.ethg)-1 {
             ethg[i] <--> eth[i].phys;
             eth[i].upperLayerOut --> networkLayer.ifIn[i];
             eth[i].upperLayerIn <-- networkLayer.ifOut[i];
