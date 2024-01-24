@@ -12,9 +12,11 @@ This fork contains modified sources to increase compatibility to the other frame
     * [https://doc.omnetpp.org/omnetpp/InstallGuide.pdf](https://doc.omnetpp.org/omnetpp/InstallGuide.pdf)
 3. Get INET framework 3.8.3
     * [https://inet.omnetpp.org/Download.html](https://inet.omnetpp.org/Download.html)
-6. Get OpenFlow framework
-    * GitHub: Clone framework and import it in OMNEST/OMNeT++
-6. Select at least the following INET Project Features TCP Common, TCP(INET), IPv4 protocol, IPv6 protocol, Multi network layer, UDP protocol, SCTP, Ethernet, PPP, MPLS support (incl. LDP and RSVP-TE), HTTPTools, IEEE802.1d
+    * Disable the feature 'visualization' and all dependent features (causes build issues)
+4. Get OpenFlow framework
+    * GitHub: Clone this repository and import it in OMNEST/OMNeT++
+5. Working with the framework
+    * Start the scenarios in the framework
 
 ## Continuous Integration
 The build state of the master branch is monitored:
@@ -29,8 +31,13 @@ The build state of the master branch is monitored:
   </tr>
   <tr>
     <td>Building</td>
-    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow/Nodes=Ubuntu_18.04"></td>
-    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow/Nodes=Windows_10"></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow/Nodes=Ubuntu_22.04"></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow/Nodes=Windows_11"></td>
+  </tr>
+  <tr>
+    <td>Tests</td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow_tests/Nodes=Ubuntu_22.04"></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=OpenFlow/OpenFlow_tests/Nodes=Windows_11"></td>
   </tr>
 </table>
 
