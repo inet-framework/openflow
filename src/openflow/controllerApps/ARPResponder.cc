@@ -29,7 +29,7 @@ void ARPResponder::handleMessage(cMessage *msg){
 }
 
 
-bool ARPResponder::addEntry(std::string srcIp, MACAddress srcMac){
+bool ARPResponder::addEntry(std::string srcIp, MacAddress srcMac){
     if(macToIp.count(srcMac) <= 0){
         //add him to our table
         macToIp[srcMac] = srcIp;
@@ -101,7 +101,7 @@ void ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
     }
 }
 
-EtherFrame * ARPResponder::createArpReply(IPv4Address srcIp, IPv4Address dstIp, MACAddress srcMac,MACAddress dstMac){
+EtherFrame * ARPResponder::createArpReply(Ipv4Address srcIp, Ipv4Address dstIp, MacAddress srcMac,MacAddress dstMac){
     ARPPacket *arpReply = new ARPPacket("controllerArpReply");
     arpReply->setOpcode(ARP_REPLY);
     arpReply->setName("arpReply");

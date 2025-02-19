@@ -4,7 +4,7 @@
 #define OF_SWITCH_H_
 
 #include <omnetpp.h>
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
 #include "openflow/openflow/switch/Buffer.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
@@ -45,7 +45,7 @@ protected:
 
     Buffer buffer;
     Flow_Table flowTable;
-    TCPSocket socket;
+    TcpSocket socket;
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);

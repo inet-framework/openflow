@@ -64,7 +64,7 @@ void AbstractControllerApp::floodPacket(OFP_Packet_In *packet_in_msg){
     EV << "floodPacket" << '\n';
     packetsFlooded++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     controller->sendPacketOut(createFloodPacketFromPacketIn(packet_in_msg), socket);
 }
 
@@ -72,7 +72,7 @@ void AbstractControllerApp::dropPacket(OFP_Packet_In *packet_in_msg){
     EV << "dropPacket" << '\n';
     packetsDropped++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     controller->sendPacketOut(createDropPacketFromPacketIn(packet_in_msg), socket);
 }
 
@@ -81,11 +81,11 @@ void AbstractControllerApp::sendPacket(OFP_Packet_In *packet_in_msg, uint32_t ou
     EV << "sendPacket" << '\n';
     numPacketOut++;
 
-    TCPSocket *socket = controller->findSocketFor(packet_in_msg);
+    TcpSocket *socket = controller->findSocketFor(packet_in_msg);
     socket->send(createPacketOutFromPacketIn(packet_in_msg,outport));
 }
 
-void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, uint32_t outport, TCPSocket * socket, int idleTimeOut =1 , int hardTimeOut=0){
+void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, uint32_t outport, TcpSocket * socket, int idleTimeOut =1 , int hardTimeOut=0){
     EV << "sendFlowModMessage" << '\n';
     numFlowMod++;
 

@@ -62,8 +62,8 @@ moduleinterface IOpenFlowRelayUnit
         
     gates:
         // control plane port connection
-        input controlPlaneIn @labels(TCPCommand/up);
-        output controlPlaneOut @labels(TCPCommand/down);
+        input controlPlaneIn @labels(TcpCommand/up);
+        output controlPlaneOut @labels(TcpCommand/down);
         
         // data plane port connections
         input  dataPlaneIn[];

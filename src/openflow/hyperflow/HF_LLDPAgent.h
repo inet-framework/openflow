@@ -6,7 +6,7 @@
 #include "openflow/controllerApps/LLDPAgent.h"
 #include "openflow/controllerApps/AbstractControllerApp.h"
 #include "openflow/messages/LLDP_m.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/controllerApps/LLDPMibGraph.h"
 #include "openflow/messages/OFP_Features_Reply_m.h"

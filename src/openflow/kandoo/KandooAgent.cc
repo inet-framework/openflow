@@ -97,9 +97,9 @@ void KandooAgent::processQueuedMsg(cMessage *msg){
             handleKandooPacket(castMsg);
             delete payload;
         } else {
-            TCPSocket *socket = findSocketFor(msg);
+            TcpSocket *socket = findSocketFor(msg);
             if(!socket){
-                socket = new TCPSocket(msg);
+                socket = new TcpSocket(msg);
                 socket->setOutputGate(gate("tcpOut"));
                 ASSERT(socketMap.find(socket->getConnectionId())==socketMap.end());
                 socketMap[socket->getConnectionId()] = socket;
@@ -154,7 +154,7 @@ void KandooAgent::sendReply(KN_Packet * knpck,KandooEntry entry){
     knrep->setByteLength(1);
     knrep->setKind(TCP_C_SEND);
 
-    TCPSocket * tempSocket = findSocketFor(knpck);
+    TcpSocket * tempSocket = findSocketFor(knpck);
     tempSocket->send(knrep);
 }
 
@@ -166,7 +166,7 @@ void KandooAgent::sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry
     knrep->setByteLength(1);
     knrep->setKind(TCP_C_SEND);
 
-    TCPSocket * tempSocket = NULL;
+    TcpSocket * tempSocket = NULL;
     std::list<SwitchControllerMapping>::iterator iter;
     for(iter = switchControllerMapping.begin(); iter != switchControllerMapping.end();iter++){
         if(strcmp(iter->switchId.c_str(),switchId.c_str())==0){

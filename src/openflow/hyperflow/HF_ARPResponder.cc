@@ -140,7 +140,7 @@ void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
             if(strcmp(hfRefire->getDataChannelEntry().trgSwitch.c_str(),"") == 0){
                 if (dynamic_cast<ARP_Wrapper *>(hfRefire->getDataChannelEntry().payload) != NULL) {
                     ARP_Wrapper *wrapper = (ARP_Wrapper *) hfRefire->getDataChannelEntry().payload;
-                    addEntry(wrapper->getSrcIp().c_str(),MACAddress(wrapper->getSrcMacAddress().str().c_str()));
+                    addEntry(wrapper->getSrcIp().c_str(),MacAddress(wrapper->getSrcMacAddress().str().c_str()));
                 }
             }
         }

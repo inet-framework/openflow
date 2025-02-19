@@ -30,11 +30,11 @@ OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* va
         match.wildcards &= ~OFPFW_IN_PORT;
         break;
     case OFPXMT_OFB_ETH_SRC:
-        match.OFB_ETH_SRC = *static_cast<inet::MACAddress*>(value);
+        match.OFB_ETH_SRC = *static_cast<inet::MacAddress*>(value);
         match.wildcards &= ~OFPFW_DL_SRC;
         break;
     case OFPXMT_OFB_ETH_DST:
-        match.OFB_ETH_DST = *static_cast<inet::MACAddress*>(value);
+        match.OFB_ETH_DST = *static_cast<inet::MacAddress*>(value);
         match.wildcards &= ~OFPFW_DL_DST;
         break;
     case OFPXMT_OFB_VLAN_VID:
@@ -58,11 +58,11 @@ OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* va
         match.wildcards &= ~OFPFW_NW_PROTO;
         break;
     case OFPXMT_OFB_IPV4_SRC:
-        match.OFB_IPV4_SRC = *static_cast<inet::IPv4Address*>(value);
+        match.OFB_IPV4_SRC = *static_cast<inet::Ipv4Address*>(value);
         match.wildcards &= ~OFPFW_NW_SRC_ALL;
         break;
     case OFPXMT_OFB_IPV4_DST:
-        match.OFB_IPV4_DST = *static_cast<inet::IPv4Address*>(value);
+        match.OFB_IPV4_DST = *static_cast<inet::Ipv4Address*>(value);
         match.wildcards &= ~OFPFW_NW_DST_ALL;
         break;
     case OFPXMT_OFB_TCP_SRC:
@@ -85,16 +85,16 @@ OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* va
         match.OFB_ARP_OP = *static_cast<int*>(value);
         break;
     case OFPXMT_OFB_ARP_SPA:
-        match.OFB_ARP_SPA = *static_cast<inet::IPv4Address*>(value);
+        match.OFB_ARP_SPA = *static_cast<inet::Ipv4Address*>(value);
         break;
     case OFPXMT_OFB_ARP_TPA:
-        match.OFB_ARP_TPA = *static_cast<inet::IPv4Address*>(value);
+        match.OFB_ARP_TPA = *static_cast<inet::Ipv4Address*>(value);
         break;
     case OFPXMT_OFB_ARP_SHA:
-        match.OFB_ARP_SHA = *static_cast<inet::MACAddress*>(value);
+        match.OFB_ARP_SHA = *static_cast<inet::MacAddress*>(value);
         break;
     case OFPXMT_OFB_ARP_THA:
-        match.OFB_ARP_THA = *static_cast<inet::MACAddress*>(value);
+        match.OFB_ARP_THA = *static_cast<inet::MacAddress*>(value);
         break;
     default:
         throw cRuntimeError("This field is not supported by the current match implementation!");

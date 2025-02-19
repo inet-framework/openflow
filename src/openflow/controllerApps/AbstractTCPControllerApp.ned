@@ -38,8 +38,8 @@ simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
         int priority = default(1);
 
     gates:
-        input tcpIn @labels(TCPCommand/up);
-        output tcpOut @labels(TCPCommand/down);
+        input tcpIn @labels(TcpCommand/up);
+        output tcpOut @labels(TcpCommand/down);
 }
 
 

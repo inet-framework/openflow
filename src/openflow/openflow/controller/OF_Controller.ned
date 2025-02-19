@@ -30,6 +30,6 @@ simple OF_Controller like IOpenFlowController
 		bool parallelProcessing = default(false);
         
     gates:
-        input tcpIn @labels(TCPCommand/up);
-        output tcpOut @labels(TCPCommand/down);
+        input tcpIn @labels(TcpCommand/up);
+        output tcpOut @labels(TcpCommand/down);
 }

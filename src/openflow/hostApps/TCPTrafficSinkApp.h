@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
 using namespace std;
 using namespace inet;
@@ -17,13 +17,13 @@ namespace openflow{
 /**
  * Single-connection TCP application.
  */
-class TCPTrafficSinkApp : public cSimpleModule, public virtual TCPSocket::CallbackInterface
+class TCPTrafficSinkApp : public cSimpleModule, public virtual TcpSocket::CallbackInterface
 {
 
   protected:
     int localPort;
     const char * localAddress;
-    TCPSocket socket;
+    TcpSocket socket;
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
     virtual void socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent) override;

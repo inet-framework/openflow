@@ -2,7 +2,7 @@
 #ifndef OF_CONTROLLER_H_
 #define OF_CONTROLLER_H_
 
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "openflow/messages/OFP_Hello_m.h"
@@ -20,13 +20,13 @@ public:
     ~OF_Controller();
     virtual void finish();
 
-    void sendPacketOut(Open_Flow_Message *of_msg, TCPSocket * socket);
+    void sendPacketOut(Open_Flow_Message *of_msg, TcpSocket * socket);
 
     void registerApp(AbstractControllerApp * app);
 
-    TCPSocket *findSocketFor(cMessage *msg) const;
+    TcpSocket *findSocketFor(cMessage *msg) const;
     Switch_Info *findSwitchInfoFor(cMessage *msg) ;
-    TCPSocket *findSocketForChassisId(std::string chassisId) const;
+    TcpSocket *findSocketForChassisId(std::string chassisId) const;
 
     std::vector<Switch_Info >* getSwitchesList() ;
     std::vector<AbstractControllerApp *>* getAppList() ;
@@ -75,7 +75,7 @@ protected:
     /**
      * Connection
      */
-    TCPSocket socket;
+    TcpSocket socket;
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);

@@ -86,7 +86,7 @@ void KN_LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
         builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
         oxm_basic_match match = builder->build();
 
-        TCPSocket * socket = controller->findSocketFor(packet_in_msg);
+        TcpSocket * socket = controller->findSocketFor(packet_in_msg);
         sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
 
         //concatenate route
@@ -104,7 +104,7 @@ void KN_LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
             computedRoute += seg.chassisId + " -> ";
 
-            TCPSocket * socket = controller->findSocketForChassisId(seg.chassisId);
+            TcpSocket * socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
             if(socket != NULL){
                 sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);

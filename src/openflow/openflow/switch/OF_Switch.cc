@@ -199,7 +199,7 @@ void OF_Switch::connect(const char *addressToConnect){
 void OF_Switch::processQueuedMsg(cMessage *data_msg){
     if(data_msg->arrivedOn("dataPlaneIn")){
         dataPlanePacket++;
-        if(socket.getState() != TCPSocket::CONNECTED){
+        if(socket.getState() != TcpSocket::CONNECTED){
             //no yet connected to controller
             //drop packet by returning
             return;
@@ -316,7 +316,7 @@ void OF_Switch::handleFeaturesRequestMessage(Open_Flow_Message *of_msg){
 
     IInterfaceTable *inet_ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 
-    MACAddress mac = inet_ift->getInterface(0)->getMacAddress();
+    MacAddress mac = inet_ift->getInterface(0)->getMacAddress();
 
 
     //output address

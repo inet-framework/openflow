@@ -1,5 +1,5 @@
 
-import inet.linklayer.common.MACAddress;
+import inet.linklayer.common.MacAddress;
 //import openflow.openflow.protocol.OpenFlow;
 import openflow.messages.Open_Flow_Message;
 
@@ -10,7 +10,7 @@ packet OFP_Features_Reply extends Open_Flow_Message
 {
   	string datapath_id;		// Datapath unique ID. The lower 48-bits are for a MAC address,
     					   	// while the upper 16-bits are implementer-defined.
-//	MACAddress address;
+//	MacAddress address;
     uint32_t n_buffers;		// Max packets buffered at once.
     
     uint8_t n_tables; 		// Number of tables supported by datapath.

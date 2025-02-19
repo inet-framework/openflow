@@ -2,7 +2,7 @@
 
 #include "openflow/hostApps/TCPTrafficSinkApp.h"
 #include "inet/networklayer/common/L3Address.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 
 using namespace std;
@@ -30,8 +30,8 @@ void TCPTrafficSinkApp::initialize(){
 
 void TCPTrafficSinkApp::handleMessage(cMessage *msg){
     if(!msg->isSelfMessage()){
-       if(TCPSocket::belongsToAnyTCPSocket(msg)){
-           TCPSocket * tempSocket = new TCPSocket(msg);
+       if(TcpSocket::belongsToAnyTCPSocket(msg)){
+           TcpSocket * tempSocket = new TcpSocket(msg);
            tempSocket->setOutputGate(gate("tcpOut"));
            tempSocket->setDataTransferMode(TCP_TRANSFER_OBJECT);
            tempSocket->setCallbackObject(this,tempSocket);
@@ -45,8 +45,8 @@ void TCPTrafficSinkApp::handleMessage(cMessage *msg){
 
 void TCPTrafficSinkApp::socketDataArrived(int connId, void *yourPtr, cPacket *msg, bool urgent){
     EV<< "TCPSinkApp all Data Arrived -> Close" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-            TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+            TcpSocket *tempSocket = (TcpSocket *)yourPtr;
             tempSocket->close();
     }
 

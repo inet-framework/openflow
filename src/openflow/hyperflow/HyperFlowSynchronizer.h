@@ -2,7 +2,7 @@
 #ifndef HYPERFLOWSYNCHRONIZER_H_
 #define HYPERFLOWSYNCHRONIZER_H_
 
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include <omnetpp.h>
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/messages/HF_ReportIn_m.h"
@@ -28,12 +28,12 @@ protected:
     simsignal_t queueSize;
     simsignal_t waitingTime;
 
-    TCPSocket socket;
+    TcpSocket socket;
 
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
 
-    std::map< int,TCPSocket * > socketMap;
+    std::map< int,TcpSocket * > socketMap;
 
     std::list<ControlChannelEntry> controlChannel;
     std::list<DataChannelEntry> dataChannel;
@@ -43,7 +43,7 @@ protected:
     std::list<cMessage *> msgList;
     bool busy;
 
-    TCPSocket *findSocketFor(cMessage *msg);
+    TcpSocket *findSocketFor(cMessage *msg);
     void handleSyncRequest(HF_SyncRequest *msg);
     void handleChangeNotification(HF_ChangeNotification *msg);
     void handleReportIn(HF_ReportIn *msg);

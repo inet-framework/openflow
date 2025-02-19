@@ -15,7 +15,7 @@ simple TCPTrafficSinkApp like ITCPApp
         int localPort = default(-1);  // local port
 
     gates:
-        input tcpIn @labels(TCPCommand/up);
-        output tcpOut @labels(TCPCommand/down);
+        input tcpIn @labels(TcpCommand/up);
+        output tcpOut @labels(TcpCommand/down);
 }
 

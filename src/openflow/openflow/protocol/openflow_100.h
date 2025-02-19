@@ -9,8 +9,8 @@
 #define OFP_ETH_ALEN 6
 
 
-#include "inet/linklayer/common/MACAddress.h"
-#include "inet/networklayer/contract/ipv4/IPv4Address.h"
+#include "inet/linklayer/common/MacAddress.h"
+#include "inet/networklayer/contract/ipv4/Ipv4Address.h"
 
 using namespace inet;
 
@@ -20,8 +20,8 @@ namespace openflow{
 struct oxm_basic_match {
     uint16_t OFB_IN_PORT;          /* Input switch port. */
     
-    inet::MACAddress OFB_ETH_SRC; /* Ethernet source address. */
-    inet::MACAddress OFB_ETH_DST; /* Ethernet destination address. */
+    inet::MacAddress OFB_ETH_SRC; /* Ethernet source address. */
+    inet::MacAddress OFB_ETH_DST; /* Ethernet destination address. */
     uint16_t OFB_VLAN_VID;          /* Input VLAN id. */
     uint8_t OFB_VLAN_PCP;       /* Input VLAN priority. */
     //uint8_t pad1[1];           /* Align to 64-bits */
@@ -30,18 +30,18 @@ struct oxm_basic_match {
     uint8_t OFB_IP_DSCP;            /* IP ToS (actually DSCP field, 6 bits). */
     uint8_t OFB_IP_PROTO;          /* IP protocol or lower 8 bits of*/
     //uint8_t pad2[2];           /* Align to 64-bits */
-    inet::IPv4Address OFB_IPV4_SRC;           /* IP source address. */
-    inet::IPv4Address OFB_IPV4_DST;           /* IP destination address. */
+    inet::Ipv4Address OFB_IPV4_SRC;           /* IP source address. */
+    inet::Ipv4Address OFB_IPV4_DST;           /* IP destination address. */
 
     uint16_t OFB_TP_SRC;           /* TCP/UDP source port. */
     uint16_t OFB_TP_DST;           /* TCP/UDP destination port. */
 
     //from old implementation
     int OFB_ARP_OP; /* ARP opcode. */
-    IPv4Address OFB_ARP_SPA; /* ARP source IPv4 address. */
-    IPv4Address OFB_ARP_TPA; /* ARP target IPv4 address. */
-    MACAddress OFB_ARP_SHA; /* ARP source hardware address. */
-    MACAddress OFB_ARP_THA; /* ARP target hardware address. */
+    Ipv4Address OFB_ARP_SPA; /* ARP source IPv4 address. */
+    Ipv4Address OFB_ARP_TPA; /* ARP target IPv4 address. */
+    MacAddress OFB_ARP_SHA; /* ARP source hardware address. */
+    MacAddress OFB_ARP_THA; /* ARP target hardware address. */
 
     uint32_t wildcards;        /* Wildcard fields. */
 };

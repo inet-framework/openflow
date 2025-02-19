@@ -96,7 +96,7 @@ void HyperFlowSynchronizer::handleChangeNotification(HF_ChangeNotification * msg
 
 void HyperFlowSynchronizer::handleSyncRequest(HF_SyncRequest * msg){
     //return syncreply
-    TCPSocket *socket = findSocketFor(msg);
+    TcpSocket *socket = findSocketFor(msg);
 
     HF_SyncReply * reply = new HF_SyncReply("SyncReply");
 
@@ -144,12 +144,12 @@ void HyperFlowSynchronizer::handleReportIn(HF_ReportIn * msg){
 }
 
 
-TCPSocket * HyperFlowSynchronizer::findSocketFor(cMessage *msg){
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+TcpSocket * HyperFlowSynchronizer::findSocketFor(cMessage *msg){
+    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
     if (!ind)
-        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TcpCommand control info in message (not from TCP?)");
     int connId = ind->getConnId();
-    std::map<int,TCPSocket*>::iterator i = socketMap.find(connId);
+    std::map<int,TcpSocket*>::iterator i = socketMap.find(connId);
     ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());
     return (i==socketMap.end()) ? NULL : i->second;
 }
@@ -168,9 +168,9 @@ void HyperFlowSynchronizer::processQueuedMsg(cMessage * msg){
         handleChangeNotification(castMsg);
 
     } else {
-        TCPSocket *socket = findSocketFor(msg);
+        TcpSocket *socket = findSocketFor(msg);
         if(!socket){
-            socket = new TCPSocket(msg);
+            socket = new TcpSocket(msg);
             socket->setOutputGate(gate("tcpOut"));
             ASSERT(socketMap.find(socket->getConnectionId())==socketMap.end());
             socketMap[socket->getConnectionId()] = socket;

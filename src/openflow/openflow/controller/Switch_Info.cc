@@ -43,11 +43,11 @@ void Switch_Info::setNumOfPorts(int numOfPorts) {
         this->numOfPorts = numOfPorts;
 }
 
-TCPSocket* Switch_Info::getSocket() const {
+TcpSocket* Switch_Info::getSocket() const {
         return socket;
 }
 
-void Switch_Info::setSocket(TCPSocket* socket) {
+void Switch_Info::setSocket(TcpSocket* socket) {
         this->socket = socket;
 }
 

@@ -44,8 +44,8 @@
 #endif
 
 
-#include "inet/linklayer/common/MACAddress.h"
-#include "inet/networklayer/contract/ipv4/IPv4Address.h"
+#include "inet/linklayer/common/MacAddress.h"
+#include "inet/networklayer/contract/ipv4/Ipv4Address.h"
 
 namespace openflow{
 
@@ -87,15 +87,15 @@ namespace openflow{
 
 struct oxm_basic_match {
     int OFB_IN_PORT;
-    inet::MACAddress OFB_ETH_DST;
-    inet::MACAddress OFB_ETH_SRC;
+    inet::MacAddress OFB_ETH_DST;
+    inet::MacAddress OFB_ETH_SRC;
     int OFB_ETH_TYPE;
-    inet::IPv4Address OFB_IPV4_DST;
+    inet::Ipv4Address OFB_IPV4_DST;
     int OFB_ARP_OP; /* ARP opcode. */
-    inet::IPv4Address OFB_ARP_SPA; /* ARP source IPv4 address. */
-    inet::IPv4Address OFB_ARP_TPA; /* ARP target IPv4 address. */
-    inet::MACAddress OFB_ARP_SHA; /* ARP source hardware address. */
-    inet::MACAddress OFB_ARP_THA; /* ARP target hardware address. */
+    inet::Ipv4Address OFB_ARP_SPA; /* ARP source IPv4 address. */
+    inet::Ipv4Address OFB_ARP_TPA; /* ARP target IPv4 address. */
+    inet::MacAddress OFB_ARP_SHA; /* ARP source hardware address. */
+    inet::MacAddress OFB_ARP_THA; /* ARP target hardware address. */
     uint16_t OFB_VLAN_VID;
     uint32_t wildcards;
     int getPriority();

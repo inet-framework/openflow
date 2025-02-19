@@ -18,8 +18,8 @@
 #include "openflow/openflow/switch/flowtable/OF100_FlowTableEntry.h"
 #include "openflow/openflow/protocol/OFMatchFactory.h"
 
-#include "inet/linklayer/common/MACAddress.h"
-#include "inet/networklayer/contract/ipv4/IPv4Address.h"
+#include "inet/linklayer/common/MacAddress.h"
+#include "inet/networklayer/contract/ipv4/Ipv4Address.h"
 #include <string>
 #include <sstream>
 
@@ -57,12 +57,12 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
         }
         if (const char* value = xmlMatch->getAttribute("dl_src"))
         {
-            MACAddress parsedValue = MACAddress(value);
+            MacAddress parsedValue = MacAddress(value);
             builder->setField(OFPXMT_OFB_ETH_SRC, &parsedValue);
         }
         if (const char* value = xmlMatch->getAttribute("dl_dst"))
         {
-            MACAddress parsedValue = MACAddress(value);
+            MacAddress parsedValue = MacAddress(value);
             builder->setField(OFPXMT_OFB_ETH_DST, &parsedValue);
         }
         if (const char* value = xmlMatch->getAttribute("dl_vlan"))
@@ -87,12 +87,12 @@ OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_Fl
         }
         if (const char* value = xmlMatch->getAttribute("nw_src"))
         {
-            IPv4Address parsedValue = IPv4Address(value);
+            Ipv4Address parsedValue = Ipv4Address(value);
             builder->setField(OFPXMT_OFB_IPV4_SRC, &parsedValue);
         }
         if (const char* value = xmlMatch->getAttribute("nw_dst"))
         {
-            IPv4Address parsedValue = IPv4Address(value);
+            Ipv4Address parsedValue = Ipv4Address(value);
             builder->setField(OFPXMT_OFB_IPV4_DST, &parsedValue);
         }
         if (const char* value = xmlMatch->getAttribute("tp_src"))
@@ -190,9 +190,9 @@ std::string OF100_FlowTableEntry::exportToXML() {
     if(!(w & OFPFW_IN_PORT))
         oss << " in_port=\"" << (int)match.OFB_IN_PORT << "\""; //uint16_t in_port;
     if(!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
-        oss << " dl_dst=\"" << match.OFB_ETH_DST.str() << "\""; //inet::MACAddress dl_src;
+        oss << " dl_dst=\"" << match.OFB_ETH_DST.str() << "\""; //inet::MacAddress dl_src;
     if(!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
-        oss << " dl_src=\"" << match.OFB_ETH_SRC.str() << "\""; //inet::MACAddress dl_dst;
+        oss << " dl_src=\"" << match.OFB_ETH_SRC.str() << "\""; //inet::MacAddress dl_dst;
     if(!(w & OFPFW_DL_VLAN))
         oss << " dl_vlan=\"" << (int)match.OFB_VLAN_VID << "\""; //uint16_t dl_vlan;
     if(!(w & OFPFW_DL_VLAN_PCP))
@@ -202,9 +202,9 @@ std::string OF100_FlowTableEntry::exportToXML() {
     if(!(w & OFPFW_NW_PROTO))
         oss << " nw_proto=\"" << (int)match.OFB_IP_PROTO << "\""; //uint8_t nw_proto;
     if(!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
-        oss << " nw_src=\"" << match.OFB_IPV4_SRC.str(false) << "\""; //inet::IPv4Address nw_src;
+        oss << " nw_src=\"" << match.OFB_IPV4_SRC.str(false) << "\""; //inet::Ipv4Address nw_src;
     if(!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
-        oss << " nw_dst=\"" << match.OFB_IPV4_DST.str(false) << "\""; //inet::IPv4Address nw_dst;
+        oss << " nw_dst=\"" << match.OFB_IPV4_DST.str(false) << "\""; //inet::Ipv4Address nw_dst;
     if(!(w & OFPFW_TP_SRC))
         oss << " tp_src=\"" << (int)match.OFB_TP_SRC << "\""; //uint16_t tp_src;
     if(!(w & OFPFW_TP_DST))
@@ -245,9 +245,9 @@ std::string OF100_FlowTableEntry::print() const{
     if(!(w & OFPFW_IN_PORT))
         oss << " in_port(" << (int)match.OFB_IN_PORT << ")"; //uint16_t in_port;
     if(!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
-        oss << " dl_dst(" << match.OFB_ETH_DST.str() << ")"; //inet::MACAddress dl_src;
+        oss << " dl_dst(" << match.OFB_ETH_DST.str() << ")"; //inet::MacAddress dl_src;
     if(!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
-        oss << " dl_src(" << match.OFB_ETH_SRC.str() << ")"; //inet::MACAddress dl_dst;
+        oss << " dl_src(" << match.OFB_ETH_SRC.str() << ")"; //inet::MacAddress dl_dst;
     if(!(w & OFPFW_DL_VLAN))
         oss << " dl_vlan(" << (int)match.OFB_VLAN_VID << ")"; //uint16_t dl_vlan;
     if(!(w & OFPFW_DL_VLAN_PCP))
@@ -257,9 +257,9 @@ std::string OF100_FlowTableEntry::print() const{
     if(!(w & OFPFW_NW_PROTO))
         oss << " nw_proto(" << (int)match.OFB_IP_PROTO << ")"; //uint8_t nw_proto;
     if(!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
-        oss << " nw_src(" << match.OFB_IPV4_SRC.str(false) << ")"; //inet::IPv4Address nw_src;
+        oss << " nw_src(" << match.OFB_IPV4_SRC.str(false) << ")"; //inet::Ipv4Address nw_src;
     if(!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
-        oss << " nw_dst(" << match.OFB_IPV4_DST.str(false) << ")"; //inet::IPv4Address nw_dst;
+        oss << " nw_dst(" << match.OFB_IPV4_DST.str(false) << ")"; //inet::Ipv4Address nw_dst;
     if(!(w & OFPFW_TP_SRC))
         oss << " tp_src(" << (int)match.OFB_TP_SRC << ")"; //uint16_t tp_src;
     if(!(w & OFPFW_TP_DST))

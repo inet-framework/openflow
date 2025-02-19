@@ -37,8 +37,8 @@ simple OF_Switch like IOpenFlowRelayUnit
 		bool highlightActivePorts = default(false);
 
         gates:
-        input controlPlaneIn @labels(TCPCommand/up);
-        output controlPlaneOut @labels(TCPCommand/down);
+        input controlPlaneIn @labels(TcpCommand/up);
+        output controlPlaneOut @labels(TcpCommand/down);
         
         input  dataPlaneIn[];
         output dataPlaneOut[];

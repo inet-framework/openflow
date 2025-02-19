@@ -4,7 +4,7 @@
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/messages/OFP_Features_Reply_m.h"
 #include "openflow/messages/OFP_Packet_In_m.h"

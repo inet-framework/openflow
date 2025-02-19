@@ -1,7 +1,7 @@
 
 
 #include "openflow/hostApps/TCPTrafficGeneratorApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 
 using namespace std;
@@ -58,7 +58,7 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
                 destAddr = L3AddressResolver().resolve(connectAddress.c_str());
             }
             //generate socket
-            TCPSocket *tempSocket = new TCPSocket();
+            TcpSocket *tempSocket = new TcpSocket();
             tempSocket->setOutputGate(gate("tcpOut"));
             tempSocket->setDataTransferMode(TCP_TRANSFER_OBJECT);
             tempSocket->setCallbackObject(this,tempSocket);
@@ -110,10 +110,10 @@ void TCPTrafficGeneratorApp::handleMessage(cMessage *msg){
         }
         delete msg;
     } else {
-        if(TCPSocket::belongsToAnyTCPSocket(msg)){
+        if(TcpSocket::belongsToAnyTCPSocket(msg)){
             //find the socket
-            std::map<TCPSocket *, Stats>::iterator iterConn;
-            TCPSocket * tempSocket = NULL;
+            std::map<TcpSocket *, Stats>::iterator iterConn;
+            TcpSocket * tempSocket = NULL;
             for(iterConn=statistics.begin();iterConn!=statistics.end();iterConn++){
                 if(iterConn->first->belongsToSocket(msg)){
                     tempSocket = iterConn->first;
@@ -142,16 +142,16 @@ void TCPTrafficGeneratorApp::socketDataArrived(int connId, void *yourPtr, cPacke
 
 void TCPTrafficGeneratorApp::socketEstablished(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Connection Established" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-        TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+        TcpSocket *tempSocket = (TcpSocket *)yourPtr;
         statistics[tempSocket].connectionEstablished = simTime();
     }
 }
 
 void TCPTrafficGeneratorApp::socketPeerClosed(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Peer Closed -> Closing Too" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-        TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+        TcpSocket *tempSocket = (TcpSocket *)yourPtr;
         statistics[tempSocket].connectionFinished=simTime();
 
         //emit vectors
@@ -166,8 +166,8 @@ void TCPTrafficGeneratorApp::socketPeerClosed(int connId, void *yourPtr) {
 
 void TCPTrafficGeneratorApp::socketClosed(int connId, void *yourPtr) {
     EV<< "TCPTrafficGenerator Socket Closed" << endl;
-    if (static_cast<TCPSocket *>(yourPtr) != NULL) {
-            TCPSocket *tempSocket = (TCPSocket *)yourPtr;
+    if (static_cast<TcpSocket *>(yourPtr) != NULL) {
+            TcpSocket *tempSocket = (TcpSocket *)yourPtr;
             //remove the socket
             statistics.erase(tempSocket);
 

@@ -55,7 +55,7 @@ void LLDPAgent::sendLLDP(){
             continue;
         }
 
-        TCPSocket *socket = (*i).getSocket();
+        TcpSocket *socket = (*i).getSocket();
         //iterate over all ports
         for(j=0;j<(*i).getNumOfPorts();++j){
             LLDP *lldpPacket = new LLDP("LLDP");
@@ -64,10 +64,10 @@ void LLDPAgent::sendLLDP(){
 
             EtherFrame *frame = NULL;
             EthernetIIFrame *eth2Frame = new EthernetIIFrame(lldpPacket->getName());
-            eth2Frame->setSrc(MACAddress((*i).getMacAddress().c_str()));  // if blank, will be filled in by MAC
-            //eth2Frame->setDest(MACAddress("01:80:c2:00:00:0e"));
+            eth2Frame->setSrc(MacAddress((*i).getMacAddress().c_str()));  // if blank, will be filled in by MAC
+            //eth2Frame->setDest(MacAddress("01:80:c2:00:00:0e"));
             //make up an address as inet will accept multicast frames and does not know what to do with a lldp frame and thus fails
-            eth2Frame->setDest(MACAddress("AA:80:c2:00:00:0e"));
+            eth2Frame->setDest(MacAddress("AA:80:c2:00:00:0e"));
             eth2Frame->setEtherType(0x88CC);
             eth2Frame->setByteLength(ETHER_MAC_FRAME_BYTES);
 

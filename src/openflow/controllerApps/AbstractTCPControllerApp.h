@@ -3,7 +3,7 @@
 #define ABSTRACTTCPCONTROLLERAPP_H_
 
 #include "openflow/controllerApps/AbstractControllerApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
 namespace openflow{
 
@@ -31,10 +31,10 @@ protected:
     std::list<cMessage *> msgList;
     double serviceTime;
 
-    TCPSocket socket;
+    TcpSocket socket;
 
-    TCPSocket *findSocketFor(cMessage *msg);
-    std::map< int,TCPSocket * > socketMap;
+    TcpSocket *findSocketFor(cMessage *msg);
+    std::map< int,TcpSocket * > socketMap;
 
 
 public:

@@ -5,7 +5,7 @@
 #include "openflow/openflow/protocol/OpenFlow.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/messages/OFP_Packet_Out_m.h"
-#include "inet/transportlayer/contract/tcp/TCPCommand_m.h"
+#include "inet/transportlayer/contract/tcp/TcpCommand_m.h"
 #include "openflow/messages/OFP_Flow_Mod_m.h"
 #include "openflow/messages/OFP_Features_Request_m.h"
 #include "openflow/messages/OFP_Features_Reply_m.h"
@@ -182,7 +182,7 @@ void OF_Controller::sendHello(Open_Flow_Message *msg){
     hello->setKind(TCP_C_SEND);
 
     emit(PacketHelloSignalId,hello);
-    TCPSocket *socket = findSocketFor(msg);
+    TcpSocket *socket = findSocketFor(msg);
     socket->send(hello);
 }
 
@@ -196,7 +196,7 @@ void OF_Controller::sendFeatureRequest(cMessage *msg){
     featuresRequest->setKind(TCP_C_SEND);
 
     emit(PacketFeatureRequestSignalId,featuresRequest);
-    TCPSocket *socket = findSocketFor(msg);
+    TcpSocket *socket = findSocketFor(msg);
     socket->send(featuresRequest);
 }
 
@@ -218,7 +218,7 @@ void OF_Controller::handlePacketIn(Open_Flow_Message *of_msg){
 }
 
 
-void OF_Controller::sendPacketOut(Open_Flow_Message *of_msg, TCPSocket *socket){
+void OF_Controller::sendPacketOut(Open_Flow_Message *of_msg, TcpSocket *socket){
     Enter_Method_Silent();
     take(of_msg);
     EV << "OFA_controller::sendPacketOut" << endl;
@@ -234,9 +234,9 @@ void OF_Controller::handleExperimenter(Open_Flow_Message* of_msg) {
 
 
 void OF_Controller::registerConnection(Open_Flow_Message *msg){
-    TCPSocket *socket = findSocketFor(msg);
+    TcpSocket *socket = findSocketFor(msg);
     if(!socket){
-        socket = new TCPSocket(msg);
+        socket = new TcpSocket(msg);
         socket->setOutputGate(gate("tcpOut"));
         Switch_Info swInfo = Switch_Info();
         swInfo.setSocket(socket);
@@ -249,10 +249,10 @@ void OF_Controller::registerConnection(Open_Flow_Message *msg){
 }
 
 
-TCPSocket *OF_Controller::findSocketFor(cMessage *msg) const{
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+TcpSocket *OF_Controller::findSocketFor(cMessage *msg) const{
+    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
     if (!ind)
-        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TcpCommand control info in message (not from TCP?)");
 
     int connId = ind->getConnId();
     for(auto i=switchesList.begin(); i != switchesList.end(); ++i) {
@@ -265,7 +265,7 @@ TCPSocket *OF_Controller::findSocketFor(cMessage *msg) const{
 
 
 Switch_Info *OF_Controller::findSwitchInfoFor(cMessage *msg) {
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
     if (!ind)
         return NULL;
 
@@ -278,7 +278,7 @@ Switch_Info *OF_Controller::findSwitchInfoFor(cMessage *msg) {
     return NULL;
 }
 
-TCPSocket *OF_Controller::findSocketForChassisId(std::string chassisId) const{
+TcpSocket *OF_Controller::findSocketForChassisId(std::string chassisId) const{
     for(auto i=switchesList.begin(); i != switchesList.end(); ++i) {
         if(strcmp((*i).getMacAddress().c_str(),chassisId.c_str())==0){
             return (*i).getSocket();

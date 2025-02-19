@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "inet/networklayer/common/L3Address.h"
 
 using namespace std;
@@ -27,7 +27,7 @@ struct Stats{
     long transmittedBytes;
 };
 
-class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TCPSocket::CallbackInterface
+class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TcpSocket::CallbackInterface
 {
 
   protected:
@@ -43,7 +43,7 @@ class TCPTrafficGeneratorApp : public cSimpleModule, public virtual TCPSocket::C
     virtual void socketClosed(int connId, void *yourPtr) override;
     virtual void socketFailure(int connId, void *yourPtr, int code) override;
     virtual void socketStatusArrived(int connId, void *yourPtr, TCPStatusInfo *status) override;
-    std::map<TCPSocket *,Stats> statistics;
+    std::map<TcpSocket *,Stats> statistics;
 
 
     //stats

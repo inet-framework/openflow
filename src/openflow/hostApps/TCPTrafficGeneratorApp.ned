@@ -25,7 +25,7 @@ simple TCPTrafficGeneratorApp like ITCPApp
         string pathToFlowSizes = default("");
 
     gates:
-        input tcpIn @labels(TCPCommand/up);
-        output tcpOut @labels(TCPCommand/down);
+        input tcpIn @labels(TcpCommand/up);
+        output tcpOut @labels(TcpCommand/down);
 }
 

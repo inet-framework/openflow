@@ -39,7 +39,7 @@ void LearningSwitch::doSwitching(OFP_Packet_In *packet_in_msg){
 
     //search map for source mac address and enter
     if(lookupTable.count(headerFields.swInfo)<=0){
-        lookupTable[headerFields.swInfo]= std::map<MACAddress,uint32_t>();
+        lookupTable[headerFields.swInfo]= std::map<MacAddress,uint32_t>();
         lookupTable[headerFields.swInfo][headerFields.src_mac] = headerFields.inport;
     } else {
         if(lookupTable[headerFields.swInfo].count(headerFields.src_mac)<=0){
@@ -63,7 +63,7 @@ void LearningSwitch::doSwitching(OFP_Packet_In *packet_in_msg){
             builder->setField(OFPXMT_OFB_IN_PORT, &headerFields.inport);
             oxm_basic_match match = builder->build();
 
-            TCPSocket * socket = controller->findSocketFor(packet_in_msg);
+            TcpSocket * socket = controller->findSocketFor(packet_in_msg);
             sendFlowModMessage(OFPFC_ADD, match, outport, socket,idleTimeout,hardTimeout);
             sendPacket(packet_in_msg, outport);
         }

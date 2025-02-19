@@ -4,7 +4,7 @@
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractTCPControllerApp.h"
-#include "inet/transportlayer/contract/tcp/TCPSocket.h"
+#include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/messages/KN_Packet_m.h"
 
 namespace openflow{
@@ -12,7 +12,7 @@ namespace openflow{
 struct SwitchControllerMapping {
     std::string switchId;
     std::string controllerId;
-    TCPSocket *socket;
+    TcpSocket *socket;
 };
 
 class KandooAgent:public AbstractTCPControllerApp {
