@@ -1,4 +1,5 @@
 #include "openflow/kandoo/KandooAgent.h"
+#include "inet/common/socket/SocketTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "algorithm"
@@ -15,7 +16,10 @@ KandooAgent::KandooAgent(){
 }
 
 KandooAgent::~KandooAgent(){
-
+    for(auto&& pair : socketMap){
+        delete pair.second;
+    }
+    socketMap.clear();
 }
 
 void KandooAgent::initialize(int stage){
@@ -33,110 +37,117 @@ void KandooAgent::initialize(int stage){
 
         if(isRootController){
             socket.setOutputGate(gate("socketOut"));
-            // socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
+            socket.setCallback(this);
             socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), par("connectPortRootController"));
             socket.listen();
         } else {
             socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
             socket.setOutputGate(gate("socketOut"));
-            //socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
-
-
         }
     }
 }
 
 void KandooAgent::handleStartOperation(LifecycleOperation *operation) {
-    cMessage *initiateConnection = new cMessage("initiateConnection");
-    initiateConnection->setKind(MSGKIND_KNCONNECT);
-    simtime_t connectAt = par("connectAt");
-    simtime_t start = std::max(simTime(), connectAt);
-    scheduleAt(start, initiateConnection);
+    if (!isRootController) {
+        cMessage *initiateConnection = new cMessage("initiateConnection");
+        initiateConnection->setKind(MSGKIND_KNCONNECT);
+        simtime_t connectAt = par("connectAt");
+        simtime_t start = std::max(simTime(), connectAt);
+        scheduleAt(start, initiateConnection);
+    }
 }
 
+void KandooAgent::processSelfMessage(cMessage *msg){
 
-void KandooAgent::handleMessageWhenUp(cMessage *msg){
-    AbstractTCPControllerApp::handleMessageWhenUp(msg);
+    if (msg->getKind()== MSGKIND_KNCONNECT) {
+        //init socket to synchronizer
+        const char *connectAddressRootController = par("connectAddressRootController");
+        int connectPort = par("connectPortRootController");
+        socket.connect(L3AddressResolver().resolve(connectAddressRootController), connectPort);
+        delete msg;
+    }
+    else {
+        AbstractTCPControllerApp::processSelfMessage(msg);
+    }
+}
 
-    if (msg->isSelfMessage()){
-        if (msg->getKind()== MSGKIND_KNCONNECT){
-            //init socket to synchronizer
-            const char *connectAddressRootController = par("connectAddressRootController");
-            int connectPort = par("connectPortRootController");
-            socket.renewSocket();
-            socket.connect(L3AddressResolver().resolve(connectAddressRootController), connectPort);
+void KandooAgent::processQueuedMsg(cMessage *msg)
+{
+    TcpSocket *activeSocket = findSocketFor(msg);
+    if (activeSocket) {
+        activeSocket->processMessage(msg);
+    }
+    else {
+        auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+        int socketId = tags.getTag<SocketInd>()->getSocketId();
+        throw cRuntimeError("model error: no socket found for msg '%s' with socketId %d", msg->getName(), socketId);
+    }
+}
+
+void KandooAgent::socketDataArrived(TcpSocket *socket)
+{
+#if (INET_VERSION > 0x405)
+    auto queue = socket->getReadBuffer();
+#else
+    auto queue = socket->getReceiveQueue();
+#endif
+
+    while (queue->has<KN_Packet>()) {
+        auto header = queue->pop<KN_Packet>();
+        auto packet = new Packet();
+        packet->insertAtFront(header);
+        packet->addTag<SocketInd>()->setSocketId(socket->getSocketId());
+        Action action(ACTION_DATA, packet);
+        if (!busy)
+            startProcessingMsg(action);
+        else
+            msgList.push_back(action);
+    }
+}
+
+void KandooAgent::socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo *availableInfo)
+{
+    ASSERT(listenerSocket == &socket);
+
+    auto newSocketId = availableInfo->getNewSocketId();
+    TcpSocket *newSocket = new TcpSocket(availableInfo);
+    newSocket->setOutputGate(gate("socketOut"));
+    newSocket->setCallback(this);
+    socketMap[newSocketId] = newSocket;
+    socket.accept(newSocketId);
+}
+
+void KandooAgent::processPacketFromTcp(Packet *msg)
+{
+    if(isRootController){
+        auto castMsg = msg->peekAtFront<KN_Packet>();
+        bool found = false;
+        std::list<SwitchControllerMapping>::iterator iter;
+        for(iter = switchControllerMapping.begin(); iter != switchControllerMapping.end();iter++){
+            if(strcmp(iter->switchId.c_str(),castMsg->getKnEntry().srcSwitch.c_str())==0){
+                found = true;
+                break;
+            }
+        }
+        if(!found){
+            SwitchControllerMapping mapping = SwitchControllerMapping();
+            mapping.controllerId = castMsg->getKnEntry().srcController;
+            mapping.switchId = castMsg->getKnEntry().srcSwitch;
+            mapping.socket = findSocketFor(msg);
+
+            switchControllerMapping.push_front(mapping);
         }
     }
+
+    auto castAux =  msg->removeAtFront<KN_Packet>();
+    cObject *payload = castAux->getKnEntryForUpdate().payload;
+    if (payload && payload->isOwnedObject())
+        take(static_cast<cOwnedObject *>(payload));
+    msg->insertAtFront(castAux);
+    handleKandooPacket(msg);
+    delete payload;
     delete msg;
 }
-
-
-
-void KandooAgent::processQueuedMsg(Packet *msg){
-
-    if(isRootController){
-        auto chunk = msg->peekAtFront<Chunk>();
-        if(dynamicPtrCast<const KN_Packet>(chunk) != nullptr){
-            auto castMsg = dynamicPtrCast<const KN_Packet>(chunk);
-            bool found = false;
-            std::list<SwitchControllerMapping>::iterator iter;
-            for(iter = switchControllerMapping.begin(); iter != switchControllerMapping.end();iter++){
-                if(strcmp(iter->switchId.c_str(),castMsg->getKnEntry().srcSwitch.c_str())==0){
-                    found = true;
-                    break;
-                }
-            }
-            if(!found){
-                SwitchControllerMapping mapping = SwitchControllerMapping();
-                mapping.controllerId = castMsg->getKnEntry().srcController;
-                mapping.switchId = castMsg->getKnEntry().srcSwitch;
-                mapping.socket = findSocketFor(msg);
-
-                switchControllerMapping.push_front(mapping);
-            }
-
-            auto castAux =  msg->removeAtFront<KN_Packet>();
-            cObject *payload = castAux->getKnEntryForUpdate().payload;
-            if (payload && payload->isOwnedObject())
-                take(static_cast<cOwnedObject *>(payload));
-            msg->insertAtFront(castAux);
-            handleKandooPacket(msg);
-            delete payload;
-        } else {
-            TcpSocket *socket = findSocketFor(msg);
-            if(!socket){
-                socket = new TcpSocket(msg);
-                socket->setOutputGate(gate("socketOut"));
-                ASSERT(socketMap.find(socket->getSocketId())==socketMap.end());
-                socketMap[socket->getSocketId()] = socket;
-            }
-        }
-        delete msg;
-    } else {
-         //check if message was received via our socket
-         if(socket.belongsToSocket(msg)){
-             if(msg->getKind() == TCP_I_ESTABLISHED){
-                 socket.processMessage(msg);
-             } else {
-                 auto chunk = msg->peekAtFront<Chunk>();
-                 if (dynamicPtrCast<const KN_Packet>(chunk) != nullptr) {
-                     auto castMsg = msg->removeAtFront<KN_Packet>();
-                     cObject *payload = castMsg->getKnEntryForUpdate().payload;
-                     if (payload && payload->isOwnedObject())
-                         take(static_cast<cOwnedObject *>(payload));
-                     msg->insertAtFront(castMsg);
-                     handleKandooPacket(msg);
-                     delete payload;
-                 }
-                 delete msg;
-             }
-         } else {
-             delete msg;
-         }
-    }
-
-}
-
 
 bool KandooAgent::getIsRootController(){
     return isRootController;
@@ -201,9 +212,17 @@ void KandooAgent::handleKandooPacket(Packet * pktIn){
     emit(kandooEventSignalId,pktIn);
 }
 
+TcpSocket * KandooAgent::findSocketFor(cMessage *msg) {
+    if (socket.belongsToSocket(msg))
+        return &socket;
+    auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+    auto tag = tags.findTag<SocketInd>();
+    if (tag == nullptr)
+        throw cRuntimeError("SocketMap: findSocketFor(): no SocketInd (not from TCP?)");
+
+    auto i = socketMap.find(tag->getSocketId());
+    ASSERT(i==socketMap.end() || i->first==i->second->getSocketId());
+    return (i==socketMap.end()) ? nullptr : i->second;
+}
+
 } /*end namespace openflow*/
-
-
-
-
-

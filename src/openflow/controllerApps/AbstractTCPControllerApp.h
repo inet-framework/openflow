@@ -7,15 +7,43 @@
 
 namespace openflow{
 
-class AbstractTCPControllerApp: public AbstractControllerApp {
-
+#if (INET_VERSION > 0x405)
+class AbstractTCPControllerApp: public AbstractControllerApp, public TcpSocket::BufferingCallback
+#else
+class AbstractTCPControllerApp: public AbstractControllerApp, public TcpSocket::ReceiveQueueBasedCallback
+#endif
+{
 protected:
+    enum ActionKind {ACTION_EVENT=3098, ACTION_DATA};
+    struct Action
+    {
+        int kind;
+        cMessage *msg;
+        Action() : kind(0), msg(nullptr) {}
+        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+    };
 
     virtual void initialize(int stage) override;
     virtual void handleMessageWhenUp(cMessage *msg) override;
-    virtual void processQueuedMsg(Packet *data_msg) {};
+    virtual void processQueuedMsg(cMessage *data_msg) = 0;
     virtual void calcAvgQueueSize(int size);
     virtual void finish() override;
+
+    /** @name TcpSocket::ICallback callback methods */
+    //@{
+    // virtual void socketDataArrived(TcpSocket *socket) override; // should be implement in derived class
+    virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override;
+    virtual void socketEstablished(TcpSocket *socket) override;
+    virtual void socketPeerClosed(TcpSocket *socket) override;
+    virtual void socketClosed(TcpSocket *socket) override;
+    virtual void socketFailure(TcpSocket *socket, int code) override;
+    virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
+    virtual void socketDeleted(TcpSocket *socket) override {} // TODO
+    //@}
+
+    virtual void processSelfMessage(cMessage *msg);
+    void startProcessingMsg(Action& action);
+    virtual void processPacketFromTcp(Packet *pkt) = 0;
 
     //stats
     simsignal_t queueSize;
@@ -28,14 +56,10 @@ protected:
     std::map<int,double> avgQueueSize;
 
     bool busy;
-    std::list<Packet *> msgList;
+    std::list<Action> msgList;
     double serviceTime;
 
     TcpSocket socket;
-
-    TcpSocket *findSocketFor(Packet *msg);
-    std::map< int,TcpSocket * > socketMap;
-
 
 public:
     AbstractTCPControllerApp();

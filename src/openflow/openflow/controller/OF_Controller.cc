@@ -19,12 +19,19 @@ using namespace std;
 
 #define MSGKIND_BOOTED 100
 #define MSGKIND_EVENT  101
+#define MSGKIND_DATA   102
 
 namespace openflow{
 
 Define_Module(OF_Controller);
 
-
+simsignal_t OF_Controller::PacketInSignalId =registerSignal("PacketIn");
+simsignal_t OF_Controller::PacketOutSignalId =registerSignal("PacketOut");
+simsignal_t OF_Controller::PacketHelloSignalId =registerSignal("PacketHello");
+simsignal_t OF_Controller::PacketFeatureRequestSignalId = registerSignal("PacketFeatureRequest");
+simsignal_t OF_Controller::PacketFeatureReplySignalId = registerSignal("PacketFeatureReply");
+simsignal_t OF_Controller::PacketExperimenterSignalId = registerSignal("PacketExperimenter");
+simsignal_t OF_Controller::BootedSignalId = registerSignal("Booted");
 
 OF_Controller::OF_Controller(){
 
@@ -32,7 +39,7 @@ OF_Controller::OF_Controller(){
 
 OF_Controller::~OF_Controller(){
     for(auto&& msg : this->msgList) {
-      delete msg;
+      delete msg.msg;
     }
     this->msgList.clear();
 }
@@ -41,13 +48,6 @@ void OF_Controller::initialize(int stage){
     //register signals
     OperationalBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        PacketInSignalId =registerSignal("PacketIn");
-        PacketOutSignalId =registerSignal("PacketOut");
-        PacketHelloSignalId =registerSignal("PacketHello");
-        PacketFeatureRequestSignalId = registerSignal("PacketFeatureRequest");
-        PacketFeatureReplySignalId = registerSignal("PacketFeatureReply");
-        PacketExperimenterSignalId = registerSignal("PacketExperimenter");
-        BootedSignalId = registerSignal("Booted");
 
     //stats
         queueSize = registerSignal("queueSize");
@@ -65,6 +65,7 @@ void OF_Controller::initialize(int stage){
         const char *address = par("address");
         int port = par("port");
         socket.setOutputGate(gate("socketOut"));
+        socket.setCallback(this);
         // socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
         socket.bind(address[0] ? L3Address(address) : L3Address(), port);
 
@@ -80,7 +81,7 @@ void OF_Controller::handleStartOperation(LifecycleOperation *operation)
     //schedule booted message
     cMessage *booted = new cMessage("Booted");
     booted->setKind(MSGKIND_BOOTED);
-    scheduleAt(simTime(), booted);
+    scheduleAt(simTime() + par("bootTime").doubleValue(), booted);
 }
 
 
@@ -95,52 +96,62 @@ void OF_Controller::sendPacket(TcpSocket *socket, Packet *msg) {
     }
 }
 
+void OF_Controller::startProcessingMsg(Action& action)
+{
+    busy = true;
+    cMessage *msg = action.msg;
+    cMessage *event = new cMessage("event");
+    event->setKind(action.kind);
+    event->setContextPointer(msg);
+    EV_DEBUG << "Start processing of message " << msg->getName() << endl;
+    scheduleAt(simTime()+serviceTime, event);
+}
 
 void OF_Controller::handleMessageWhenUp(cMessage *msg){
     if (msg->isSelfMessage()) {
         if (msg->getKind()==MSGKIND_BOOTED){
-            this->booted = true;
+            // TODO open the listener socket (move here from initialize() )
+            booted = true;
             emit(BootedSignalId, this);
         }
-        else if (msg->getKind() == MSGKIND_EVENT){
+        else if (msg->getKind() == MSGKIND_EVENT || msg->getKind() == MSGKIND_DATA){
             //This is message which has been scheduled due to service time
             //Get the Original message
             cMessage *data_msg = (cMessage *) msg->getContextPointer();
+            EV_DEBUG << "End of processing message " << data_msg->getName() << endl;
             emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
-            auto pktData = check_and_cast<Packet *>(data_msg);
-            processQueuedMsg(pktData);
 
-            //delete the processed msg
-            delete pktData;
+            if (msg->getKind() == MSGKIND_EVENT)
+                processQueuedMsg(data_msg);
+            else if (msg->getKind() == MSGKIND_DATA)
+                processPacketFromTcp(check_and_cast<Packet *>(data_msg));
+            else
+                throw cRuntimeError("model error");
 
             //Trigger next service time
             if (msgList.empty()){
                 busy = false;
             } else {
-                cMessage *msgfromlist = msgList.front();
+                Action msgfromlist = msgList.front();
                 msgList.pop_front();
-                cMessage *event = new cMessage("event");
-                event->setKind(MSGKIND_EVENT);
-                event->setContextPointer(msgfromlist);
-                scheduleAt(simTime()+serviceTime, event);
+                startProcessingMsg(msgfromlist);
             }
             calcAvgQueueSize(msgList.size());
+            emit(queueSize,static_cast<unsigned long>(msgList.size()));
         }
         //delete the msg for efficiency
         delete msg;
     }else if (this->booted){
-        //imlement service time
-        if (!parallelProcessing && busy) {
-            msgList.push_back(msg);
-        }else{
-            busy = true;
-            cMessage *event = new cMessage("event");
-            event->setContextPointer(msg);
-            scheduleAt(simTime()+serviceTime, event);
-        }
-        else if (msg->getKind() == TCP_I_AVAILABLE) {
-            registerConnection(check_and_cast<Indication *>(msg));
-            delete msg;
+        if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA || msg->getKind() == TCP_I_AVAILABLE)
+            processQueuedMsg(msg);
+        else {
+            //implement service time
+            Action action(MSGKIND_EVENT, msg);
+            if (!parallelProcessing && busy) {
+                msgList.push_back(action);
+            }else{
+                startProcessingMsg(action);
+            }
         }
 
         calcAvgQueueSize(msgList.size());
@@ -167,36 +178,123 @@ void OF_Controller::calcAvgQueueSize(int size){
 }
 
 
-void OF_Controller::processQueuedMsg(Packet *pkt){
 
-    const auto chunk = pkt->peekAtFront<Chunk>();
-    auto of_msg = dynamicPtrCast<const Open_Flow_Message>(chunk);
+void OF_Controller::socketEstablished(TcpSocket *socket)
+{
+}
 
-    if (of_msg != nullptr) {
-        ofp_type type = (ofp_type)of_msg->getHeader().type;
-        switch (type) {
-            case OFPT_FEATURES_REPLY:
-                handleFeaturesReply(pkt);
-                break;
-            case OFPT_HELLO:
-                checkConnection(pkt);
-                sendHello(pkt);
-                sendFeatureRequest(pkt);
-                break;
-            case OFPT_PACKET_IN:
-                EV << "packet-in message from switch\n";
-                handlePacketIn(pkt);
-                break;
-            case OFPT_VENDOR:
-                // the controller apps might want to implement vendor specific features so forward them.
-                handleExperimenter(of_msg);
-                break;
-            default:
-                break;
+void OF_Controller::socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo *availableInfo)
+{
+    ASSERT(listenerSocket == &socket);
+
+    //TODO is it good? AVAILABLE for existing socket?
+    int sockId = listenerSocket->getSocketId();
+    for(auto elem : switchesList) {
+        if(elem.getSocket()->getSocketId() == sockId){
+            elem.getSocket()->accept(availableInfo->getNewSocketId());
+            return;
         }
+    }
+
+    TcpSocket *newSocket = new TcpSocket(availableInfo);
+
+    newSocket->setOutputGate(gate("socketOut"));
+    newSocket->setCallback(this);
+    Switch_Info swInfo = Switch_Info();
+    swInfo.setSocket(newSocket);
+    swInfo.setConnId(newSocket->getSocketId());
+    swInfo.setMacAddress("");
+    swInfo.setNumOfPorts(-1);
+    swInfo.setVersion(-1);
+    switchesList.push_back(swInfo);
+    listenerSocket->accept(availableInfo->getNewSocketId());
+}
+
+void OF_Controller::socketDataArrived(TcpSocket *socket)
+{
+#if (INET_VERSION > 0x405)
+    auto queue = socket->getReadBuffer();
+#else
+    auto queue = socket->getReceiveQueue();
+#endif
+
+    while (queue->has<Open_Flow_Message>()) {
+        auto header = queue->peek<Open_Flow_Message>();
+        b length = B(header->getHeader().length);
+        ASSERT(length >= header->getChunkLength());
+        if (queue->getLength() >= length) {
+            auto data = queue->pop(length);
+            auto packet = new Packet();
+            packet->insertAtFront(data);
+            packet->addTag<SocketInd>()->setSocketId(socket->getSocketId());
+            Action action(MSGKIND_DATA, packet);
+            if (!busy || parallelProcessing)
+                startProcessingMsg(action);
+            else
+                msgList.push_back(action);
+        }
+        else
+            break;
     }
 }
 
+void OF_Controller::socketPeerClosed(TcpSocket *socket)
+{
+}
+
+void OF_Controller::socketClosed(TcpSocket *socket)
+{
+}
+
+void OF_Controller::socketFailure(TcpSocket *socket, int code)
+{
+}
+
+
+void OF_Controller::processPacketFromTcp(Packet *pkt)
+{
+    const auto of_msg = pkt->peekAtFront<Open_Flow_Message>();
+    ofp_type type = (ofp_type)of_msg->getHeader().type;
+    switch (type) {
+        case OFPT_FEATURES_REPLY:
+            handleFeaturesReply(pkt);
+            break;
+        case OFPT_HELLO: {
+            Switch_Info *switchInfo = CHK(findSwitchInfoFor(pkt));
+            switchInfo->setVersion(of_msg->getHeader().version);
+            sendHello(pkt);
+            sendFeatureRequest(pkt);
+            break;
+        }
+        case OFPT_PACKET_IN:
+            EV << "packet-in message from switch\n";
+            handlePacketIn(pkt);
+            break;
+        case OFPT_VENDOR:
+            // the controller apps might want to implement vendor specific features so forward them.
+            handleExperimenter(pkt);
+            break;
+        default:
+            break;
+    }
+    delete pkt;
+}
+
+void OF_Controller::processQueuedMsg(cMessage *msg)
+{
+    ISocket *sock = findSocketFor(msg);
+    if (sock) {
+        sock->processMessage(msg);
+    }
+    else if (socket.belongsToSocket(msg)) {
+        socket.processMessage(msg);
+    }
+    else {
+        auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+        int socketId = tags.getTag<SocketInd>()->getSocketId();
+        throw cRuntimeError("model error: no socket found for msg '%s' with socketId %d", msg->getName(), socketId);
+    }
+}
 
 void OF_Controller::sendHello(Packet *pkt){
     //Open_Flow_Message *msg
@@ -205,6 +303,7 @@ void OF_Controller::sendHello(Packet *pkt){
     hello->getHeaderForUpdate().version = OFP_VERSION;
     hello->getHeaderForUpdate().type = OFPT_HELLO;
     hello->setChunkLength(B(8));
+    hello->getHeaderForUpdate().length = B(hello->getChunkLength()).get() + pktHello->getByteLength();
     pktHello->setKind(TCP_C_SEND);
     pktHello->insertAtFront(hello);
 
@@ -219,6 +318,7 @@ void OF_Controller::sendFeatureRequest(Packet *pkt){
     featuresRequest->getHeaderForUpdate().version = OFP_VERSION;
     featuresRequest->getHeaderForUpdate().type = OFPT_FEATURES_REQUEST;
     featuresRequest->setChunkLength(B(8));
+    featuresRequest->getHeaderForUpdate().length = B(featuresRequest->getChunkLength()).get() + pktFeauresReq->getByteLength();
     pktFeauresReq->setKind(TCP_C_SEND);
     pktFeauresReq->insertAtFront(featuresRequest);
 
@@ -261,9 +361,12 @@ void OF_Controller::sendPacketOut(Packet *pkt, TcpSocket *socket){
 }
 
 
-void OF_Controller::handleExperimenter(Open_Flow_Message* of_msg) {
+void OF_Controller::handleExperimenter(Packet* pkt) {
+    Enter_Method_Silent();
+    take(pkt);
+    auto  of_msg = pkt->peekAtFront<Open_Flow_Message>();
     EV << "OFA_controller::handleExperimenter" << endl;
-    emit(PacketExperimenterSignalId, of_msg);
+    emit(PacketExperimenterSignalId, pkt);
 }
 
 
@@ -290,39 +393,12 @@ void OF_Controller::registerConnection(Indication *sockInfo) {
     swInfo.setVersion(-1);
     switchesList.push_back(swInfo);
     socket.accept(availableInfo->getNewSocketId());
-
 }
 
-
-void OF_Controller::checkConnection(Packet *pkt){
-
-    TcpSocket *socket = findSocketFor(pkt);
-    auto msg = pkt->peekAtFront<Open_Flow_Message>();
-    if(socket == nullptr){
-        throw cRuntimeError("Socket not found");
-
-//        socket = new TcpSocket(pkt);
-//        socket->setOutputGate(gate("socketOut"));
-//        Switch_Info swInfo = Switch_Info();
-//        swInfo.setSocket(socket);
-//        swInfo.setConnId(socket->getSocketId());
-//        swInfo.setMacAddress("");
-//        swInfo.setNumOfPorts(-1);
-//        swInfo.setVersion(msg->getHeader().version);
-//        switchesList.push_back(swInfo);
-    }
-}
-
-
-TcpSocket *OF_Controller::findSocketFor(Packet *pkt) const{
-    // TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
-    //if (!ind)
-    //    throw cRuntimeError("TcpSocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
-    // int connId = ind->getConnId();
-    auto tag = pkt->findTag<SocketInd>();
-    if (tag == nullptr)
-        throw cRuntimeError("TcpSocketMap: findSocketFor(): no SocketInd (not from TCP?)");
-    int connId = pkt->getTag<SocketInd>()->getSocketId();
+TcpSocket *OF_Controller::findSocketFor(cMessage *msg) const
+{
+    auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+    int connId = tags.getTag<SocketInd>()->getSocketId();
     for(auto i=switchesList.begin(); i != switchesList.end(); ++i) {
         if((*i).getConnId() == connId){
             return (*i).getSocket();
@@ -331,9 +407,10 @@ TcpSocket *OF_Controller::findSocketFor(Packet *pkt) const{
     return nullptr;
 }
 
-
-Switch_Info *OF_Controller::findSwitchInfoFor(Packet *pkt) {
-    auto tag = pkt->findTag<SocketInd>();
+Switch_Info *OF_Controller::findSwitchInfoFor(cMessage *msg)
+{
+    auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+    auto tag = tags.findTag<SocketInd>();
     if (tag == nullptr)
         return nullptr;
     int connId = tag->getSocketId();

@@ -66,7 +66,7 @@ moduleinterface IOpenFlowRelayUnit
         output controlPlaneOut @labels(TcpCommand/down);
         
         // data plane port connections
-        input  dataPlaneIn[];
-        output dataPlaneOut[];
+        input  dataPlaneIn;
+        output dataPlaneOut;
 }
 

@@ -3,8 +3,8 @@
 package openflow.openflow.controller;
 import inet.applications.contract.IApp;
 import inet.common.MessageDispatcher;
-import inet.linklayer.contract.IEthernetLayer;
-import inet.linklayer.ethernet.basic.EthernetInterface;
+import inet.linklayer.contract.IEthernetInterface;
+import inet.linklayer.ethernet.contract.IEthernetLayer;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
@@ -93,7 +93,7 @@ module Open_Flow_Controller
             parameters:
                 @display("p=368,247;q=queue");
         }
-        eth[sizeof(this.ethg)]: EthernetInterface {
+		eth[sizeof(this.ethg)]: <default("EthernetInterface")> like IEthernetInterface {
             parameters:
                 @display("p=351,596.7,row,90;q=txQueue");
         }
@@ -103,7 +103,7 @@ module Open_Flow_Controller
         }
         OF_Controller: OF_Controller {
             @display("p=424,48");
-            serviceTime = this.serviceTime;
+            serviceTime = parent.serviceTime;
         }
 
     connections allowunconnected:
@@ -149,8 +149,8 @@ module Open_Flow_Controller
 
         for i=0..sizeof(this.ethg)-1 {
             ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
-            eth[i].upperLayerOut --> networkLayer.ifIn[i];
-            eth[i].upperLayerIn <-- networkLayer.ifOut[i];
+            eth[i].upperLayerOut --> li.in++;
+            eth[i].upperLayerIn <-- li.out++;
         }
 
         for i=0..numTcpControllerApps-1 {
@@ -160,9 +160,4 @@ module Open_Flow_Controller
 
         OF_Controller.socketOut --> at.in++;
         OF_Controller.socketIn <-- at.out++;
-
-
-
 }
-
-

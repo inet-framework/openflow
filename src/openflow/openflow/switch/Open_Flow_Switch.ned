@@ -3,8 +3,8 @@
 package openflow.openflow.switch;
 
 import inet.common.MessageDispatcher;
-import inet.linklayer.contract.IEthernetLayer;
-import inet.linklayer.ethernet.basic.EthernetInterface;
+import inet.linklayer.contract.IEthernetInterface;
+import inet.linklayer.ethernet.contract.IEthernetLayer;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
@@ -36,12 +36,10 @@ module Open_Flow_Switch
 
         *.forwarding = this.forwarding;
         *.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
-        *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         etherMAC[*].encapType = default("EtherEncapDummy");
         etherMAC[*].csmacdSupport = this.csmacdSupport;
         etherMAC[*].macType = this.macType;
-        networkLayer.proxyARP = default(false); 
 
 
         etherMAC[*].duplexMode = this.duplexMode;
@@ -62,15 +60,15 @@ module Open_Flow_Switch
 
         }
 
-        eth[sizeof(gateControlPlane)]: EthernetInterface {
+        eth[sizeof(gateControlPlane)]: <default("EthernetInterface")> like IEthernetInterface {
             parameters:
                 @display("p=313,664,row,90;q=txQueue");
         }
 
-        etherMAC[sizeof(gateDataPlane)]: EthernetInterface {
+        etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IEthernetInterface {
             parameters:
                 mac.promiscuous = true;
-                @display("p=736,598,c,70");
+                @display("p=736,598,row,70");
         }
 
         at: MessageDispatcher {

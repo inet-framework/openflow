@@ -1,3 +1,6 @@
+
+
+#include "inet/common/socket/SocketTag_m.h"
 #include "inet/linklayer/ethernet/base/EthernetMacBase.h"
 #include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
@@ -7,6 +10,7 @@
 #include "inet/common/Protocol.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/common/IProtocolRegistrationListener.h"
+
 #include "openflow/openflow/switch/OF_Switch.h"
 #include "openflow/openflow/protocol/OpenFlow.h"
 
@@ -25,9 +29,6 @@
 //#include "inet/applications/pingapp/PingPayload_m.h"
 //#include "inet/networklayer/ipv4/ICMPMessage.h"
 
-#define MSGKIND_CONNECT                     1
-#define MSGKIND_SERVICETIME                 3
-
 namespace openflow{
 
 
@@ -39,7 +40,7 @@ OF_Switch::OF_Switch(){
 
 OF_Switch::~OF_Switch(){
     for(auto&& msg : msgList) {
-      delete msg;
+      delete msg.msg;
     }
     msgList.clear();
 
@@ -194,8 +195,8 @@ void OF_Switch::handleStartOperation(LifecycleOperation *operation)
     cMessage *initiateConnection = new cMessage("initiateConnection");
     initiateConnection->setKind(MSGKIND_CONNECT);
     simtime_t start = par("connectAt");
-    simtime_t starOperation = std::max(simTime(), start);
-    scheduleAt(starOperation, initiateConnection);
+    simtime_t startOperation = std::max(simTime(), start);
+    scheduleAt(startOperation, initiateConnection);
 }
 
 void OF_Switch::socketEstablished(TcpSocket *)
@@ -204,19 +205,34 @@ void OF_Switch::socketEstablished(TcpSocket *)
     EV_INFO << "connected\n";
 }
 
-void OF_Switch::socketDataArrived(TcpSocket *, Packet *msg, bool)
+void OF_Switch::socketDataArrived(TcpSocket *)
 {
-    // *redefine* to perform or schedule next sending
-    //imlement service time
-    if (busy) {
-        msgList.push_back(msg);
-    } else {
-        busy = true;
-        cMessage *event = new cMessage("event");
-        event->setKind(MSGKIND_SERVICETIME);
-        event->setContextPointer(msg);
-        scheduleAt(simTime()+serviceTime, event);
+#if (INET_VERSION > 0x405)
+    auto queue = socket.getReadBuffer();
+#else
+    auto queue = socket.getReceiveQueue();
+#endif
+
+    while (queue->has<Open_Flow_Message>()) {
+        auto header = queue->peek<Open_Flow_Message>();
+        b length = B(header->getHeader().length);
+        ASSERT(length >= header->getChunkLength());
+        if (queue->getLength() >= length) {
+            auto data = queue->pop(length);
+            auto msg = new Packet();
+            msg->insertAtFront(data);
+            msg->addTag<SocketInd>()->setSocketId(socket.getSocketId());
+            Action action(MSGKIND_TCP_DATA, msg);
+            if (busy) {
+                msgList.push_back(action);
+            } else {
+                startProcessingMsg(action);
+            }
+        }
+        else
+            break;
     }
+    ASSERT(queue->getLength() < B(1000));
     emit(queueSize,msgList.size());
     emit(bufferSize,buffer.size());
 }
@@ -244,19 +260,41 @@ void OF_Switch::socketFailure(TcpSocket *, int code)
 }
 
 
+void OF_Switch::startProcessingMsg(Action& action)
+{
+    busy = true;
+    cMessage *msg = action.msg;
+    cMessage *event = new cMessage("event");
+    event->setKind(action.kind);
+    event->setContextPointer(msg);
+    EV_DEBUG << "Start processing of message " << msg->getName() << endl;
+    scheduleAt(simTime()+serviceTime, event);
+}
+
 void OF_Switch::handleMessageWhenUp(cMessage *msg){
 
     if (msg->isSelfMessage()){
         if (msg->getKind()==MSGKIND_CONNECT) {
             EV << "starting session" << '\n';
             connect(""); // active OPEN
-        } else if(msg->getKind()==MSGKIND_SERVICETIME){
+        }
+        else if (msg->getKind()==MSGKIND_ETH_DATA
+                || msg->getKind() == MSGKIND_TCP_COMMAND
+                || msg->getKind() == MSGKIND_TCP_DATA) {
             //This is message which has been scheduled due to service time
 
             //Get the Original message
-            auto data_msg = check_and_cast<Packet *>((cObject *)msg->getContextPointer());
+            cMessage *data_msg = (cMessage *) msg->getContextPointer();
             emit(waitingTime,(simTime() - data_msg->getArrivalTime() - serviceTime));
-            processQueuedMsg(data_msg);
+
+            if (msg->getKind() == MSGKIND_TCP_COMMAND)
+                socket.processMessage(data_msg);
+            else if (msg->getKind() == MSGKIND_ETH_DATA)
+                processPacketFromEth(check_and_cast<Packet *>(data_msg));
+            else if (msg->getKind() == MSGKIND_TCP_DATA)
+                processPacketFromTcp(check_and_cast<Packet *>(data_msg));
+            else
+                throw cRuntimeError("model error");
 
             //delete the processed msg
             delete data_msg;
@@ -265,33 +303,36 @@ void OF_Switch::handleMessageWhenUp(cMessage *msg){
             if (msgList.empty()){
                 busy = false;
             } else {
-                cMessage *msgFromList = msgList.front();
+                Action msgFromList = msgList.front();
                 msgList.pop_front();
-                cMessage *event = new cMessage("event");
-                event->setKind(MSGKIND_SERVICETIME);
-                event->setContextPointer(msgFromList);
-                scheduleAt(simTime()+serviceTime, event);
+                startProcessingMsg(msgFromList);
             }
         }
         //delete the msg for efficiency
         delete msg;
     } else {
-        if(msg->arrivedOn("controlPlaneIn")){
-            socket.processMessage(msg);
-        } else {
-            //imlement service time
-            if (busy) {
-                msgList.push_back(msg);
-            } else {
-                busy = true;
-                cMessage *event = new cMessage("event");
-                event->setKind(MSGKIND_SERVICETIME);
-                event->setContextPointer(msg);
-                scheduleAt(simTime()+serviceTime, event);
-            }
-            emit(queueSize,static_cast<unsigned long>(msgList.size()));
-            emit(bufferSize,buffer.size());
+        Action action(0, msg);
+        if (msg->arrivedOn("dataPlaneIn")) {
+            // ethernet frame arrived
+            action.kind = MSGKIND_ETH_DATA;
         }
+        else {
+            if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA
+                    || msg->getKind() == TCP_I_AVAILABLE || msg->getKind() == TCP_I_ESTABLISHED) {
+                socket.processMessage(msg);
+                return;
+            }
+            action.kind = MSGKIND_TCP_COMMAND;
+        }
+        //implement service time
+        if (busy) {
+            EV_DEBUG << "pushed EVENT to queue\n";
+            msgList.push_back(action);
+        } else {
+            startProcessingMsg(action);
+        }
+        emit(queueSize,static_cast<unsigned long>(msgList.size()));
+        emit(bufferSize,buffer.size());
     }
 }
 
@@ -318,53 +359,51 @@ void OF_Switch::connect(const char *addressToConnect){
     hello->getHeaderForUpdate().version = OFP_VERSION;
     hello->getHeaderForUpdate().type = OFPT_HELLO;
     hello->setChunkLength(B(8));
+    hello->getHeaderForUpdate().length = B(hello->getChunkLength()).get() + pktHello->getByteLength();
     pktHello->setKind(TCP_C_SEND);
     pktHello->insertAtFront(hello);
     socket.send(pktHello);
 }
 
-void OF_Switch::processQueuedMsg(Packet *data_msg){
+void OF_Switch::processPacketFromEth(Packet *data_msg)
+{
+    dataPlanePacket++;
+    if(socket.getState() != TcpSocket::CONNECTED){
+        //no yet connected to controller
+        //drop packet by returning
+        return;
+    }
 
-    if(data_msg->arrivedOn("dataPlaneIn")){
-        dataPlanePacket++;
-        if(socket.getState() != TcpSocket::CONNECTED){
-            //no yet connected to controller
-            //drop packet by returning
-            return;
-        }
+    auto chunk = data_msg->peekAtFront<Chunk>();
+    if (dynamicPtrCast<const EthernetMacHeader>(chunk) != nullptr){ //msg from dataplane
+        //EthernetIIFrame *frame = (EthernetIIFrame *)data_msg;
+        //copy the frame as the original will be deleted
+        auto copy = data_msg->dup();
+        processFrame(copy);
+    }
+}
 
-        auto chunk = data_msg->peekAtFront<Chunk>();
-        if (dynamicPtrCast<const EthernetMacHeader>(chunk) != nullptr){ //msg from dataplane
-            //EthernetIIFrame *frame = (EthernetIIFrame *)data_msg;
-            //copy the frame as the original will be deleted
-            auto copy = data_msg->dup();
-            processFrame(copy);
+void OF_Switch::processPacketFromTcp(Packet *data_msg)
+{
+    controlPlanePacket++;
+    auto chunk = data_msg->peekAtFront<Chunk>();
+    if (dynamicPtrCast<const Open_Flow_Message>(chunk) != nullptr) { //msg from controller
+        auto of_msg = dynamicPtrCast<const Open_Flow_Message>(chunk);
+        ofp_type type = (ofp_type)of_msg->getHeader().type;
+        switch ((int)type){
+            case OFPT_FEATURES_REQUEST:
+                handleFeaturesRequestMessage(data_msg);
+                break;
+            case OFPT_FLOW_MOD:
+                handleFlowModMessage(data_msg);
+                break;
+            case OFPT_PACKET_OUT:
+                handlePacketOutMessage(data_msg);
+                break;
+            default:
+                // Should launch an exception?
+                break;
         }
-    } else {
-        controlPlanePacket++;
-        auto chunk = data_msg->peekAtFront<Chunk>();
-       if (dynamicPtrCast<const Open_Flow_Message>(chunk) != nullptr) { //msg from controller
-            auto of_msg = dynamicPtrCast<const Open_Flow_Message>(chunk);
-//            Open_Flow_Message *of_msg = (Open_Flow_Message *)data_msg;
-            ofp_type type = (ofp_type)of_msg->getHeader().type;
-            switch ((int)type){
-                case OFPT_FEATURES_REQUEST:
-                    handleFeaturesRequestMessage(data_msg);
-                    break;
-                case OFPT_FLOW_MOD:
-                    handleFlowModMessage(data_msg);
-                    break;
-                case OFPT_PACKET_OUT:
-                    handlePacketOutMessage(data_msg);
-                    break;
-                default:
-                    // Should launch an exception?
-                    break;
-                default:
-                    break;
-                }
-        }
-
     }
 }
 
@@ -465,7 +504,7 @@ void OF_Switch::processFrame(Packet *pkt){
     auto ifaceId = pkt->getTag<InterfaceInd>()->getInterfaceId();
     auto frame = pkt->removeAtFront<EthernetMacHeader>();
 
-    match.OFB_IN_PORT = ifaceId; //frame->getArrivalGate()->getIndex();
+    match.OFB_IN_PORT = ifaceId;
     match.OFB_ETH_SRC = frame->getSrc();
     match.OFB_ETH_DST = frame->getDest();
     match.OFB_ETH_TYPE = frame->getTypeOrLength();
@@ -527,9 +566,11 @@ void OF_Switch::processFrame(Packet *pkt){
            auto packetIn = makeShared<OFP_Packet_In>();
            packetIn->getHeaderForUpdate().version = OFP_VERSION;
            packetIn->getHeaderForUpdate().type = OFPT_PACKET_IN;
+           packetIn->setMatch(match);
            packetIn->setReason(OFPR_ACTION);
            packetIn->setChunkLength(B(32));
            packetIn->setBuffer_id(OFP_NO_BUFFER);
+           packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pkt->getByteLength();
            pkt->insertAtFront(packetIn);
            socket.send(pkt);
            if(hash !=0){
@@ -590,6 +631,7 @@ void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf){
     }
 
     featuresReply->setChunkLength(B(32));
+    featuresReply->getHeaderForUpdate().length = 32;
     auto pktReply = new Packet("FeaturesReply");
     pktReply->insertAtFront(featuresReply);
     //featuresReply->setByteLength(32);
@@ -624,6 +666,13 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         // send full packet with packet-in message
 //        packetIn->encapsulate(frame);
         packetIn->setBuffer_id(OFP_NO_BUFFER);
+        packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pktFrame->getByteLength();
+        oxm_basic_match match = oxm_basic_match();
+        match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
+//        match.OFB_ETH_SRC = etherHeader->getSrc();
+//        match.OFB_ETH_DST = etherHeader->getDest();
+//        match.OFB_ETH_TYPE = etherHeader->getTypeOrLength();
+        packetIn->setMatch(match);
         pktFrame->insertAtFront(packetIn);
         pktIn = pktFrame;
     } else{
@@ -631,7 +680,6 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         auto etherHeader =  pktFrame->removeAtFront<EthernetMacHeader>();
 
         oxm_basic_match match = oxm_basic_match();
-        //match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
         match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
 
         match.OFB_ETH_SRC = etherHeader->getSrc();
@@ -651,6 +699,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         packetIn->setMatch(match);
         packetIn->setBuffer_id(buffer.storeMessage(pktFrame));
         pktIn = new Packet("packetIn");
+        packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pktIn->getByteLength();
         pktIn->insertAtFront(packetIn);
     }
     socket.send(pktIn);
@@ -704,7 +753,7 @@ void OF_Switch::executePacketOutAction(const ofp_action_header *action, Packet *
         for (unsigned int i=0; i<n; ++i) {
             if(portVector[i].interfaceId != inport && !(portVector[i].state & OFPPS_BLOCKED)){
                 auto pkt = pktFrame->dup();
-                pkt->removeTagIfPresent<DispatchProtocolReq>();
+                pkt->clearTags();
                 pkt->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
                 pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(portVector[i].interfaceId );
                 send(pkt, "dataPlaneOut");
@@ -716,12 +765,11 @@ void OF_Switch::executePacketOutAction(const ofp_action_header *action, Packet *
             throw cRuntimeError("Unknown dataPlaneOut sending port/gate %s",action_output->creationModule.c_str());
         EV << "Send Packet\n" << '\n';
         auto pkt = pktFrame->dup();
-        pkt->removeTagIfPresent<DispatchProtocolReq>();
+        pkt->clearTags();
         pkt->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
         pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(outport);
 
         send(pkt, "dataPlaneOut");
-        //send(pktFrame->dup(), "dataPlaneOut", indexPort);
     }
     //delete pktFrame;
 }

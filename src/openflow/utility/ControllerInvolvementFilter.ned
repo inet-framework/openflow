@@ -8,5 +8,5 @@ simple ControllerInvolvementFilter
         @class(openflow::ControllerInvolvementFilter);
         @signal[pingPacketHash](type="long");
         @statistic[pingPacketHash](title="PingPacketHash"; record=vector?,stats?; interpolationmode=none);
-        @display("i=spanning-tree");
+        @display("i=openflow/spanning-tree");
 }

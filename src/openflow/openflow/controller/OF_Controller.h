@@ -15,7 +15,11 @@ namespace openflow{
 
 class AbstractControllerApp;
 
-class OF_Controller: public OperationalBase
+#if (INET_VERSION > 0x405)
+class OF_Controller: public OperationalBase, public TcpSocket::BufferingCallback
+#else
+class OF_Controller: public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
+#endif
 {
 public:
     OF_Controller();
@@ -26,8 +30,8 @@ public:
 
     void registerApp(AbstractControllerApp * app);
 
-    TcpSocket *findSocketFor(Packet *) const;
-    Switch_Info *findSwitchInfoFor(Packet *msg) ;
+    TcpSocket *findSocketFor(cMessage *) const;
+    Switch_Info *findSwitchInfoFor(cMessage *msg) ;
     TcpSocket *findSocketForChassisId(std::string chassisId) const;
 
     std::vector<Switch_Info >* getSwitchesList() ;
@@ -40,13 +44,13 @@ protected:
     /**
      * Observer Signals
      */
-    simsignal_t PacketInSignalId;
-    simsignal_t PacketOutSignalId;
-    simsignal_t PacketHelloSignalId;
-    simsignal_t PacketFeatureRequestSignalId;
-    simsignal_t PacketFeatureReplySignalId;
-    simsignal_t PacketExperimenterSignalId;
-    simsignal_t BootedSignalId;
+    static simsignal_t PacketInSignalId;
+    static simsignal_t PacketOutSignalId;
+    static simsignal_t PacketHelloSignalId;
+    static simsignal_t PacketFeatureRequestSignalId;
+    static simsignal_t PacketFeatureReplySignalId;
+    static simsignal_t PacketExperimenterSignalId;
+    static simsignal_t BootedSignalId;
 
     /**
      * Statistics
@@ -67,7 +71,14 @@ protected:
     bool busy;
     bool parallelProcessing;
     double serviceTime;
-    std::list<cMessage *> msgList;
+    struct Action
+    {
+        int kind;
+        cMessage *msg;
+        Action() : kind(0), msg(nullptr) {}
+        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+    };
+    std::list<Action> msgList;
 
     /**
      * Network and Controller State
@@ -82,16 +93,31 @@ protected:
 
     virtual void initialize(int stage) override;
     virtual void handleMessageWhenUp(cMessage *msg) override;
-    void processQueuedMsg(Packet *);
+    void processQueuedMsg(cMessage *);
+    void processPacketFromTcp(Packet *pkt);
+    void startProcessingMsg(Action& action);
     void calcAvgQueueSize(int size);
     void sendHello(Packet *msg);
     virtual void registerConnection(Indication *sockInfo);
-    virtual void checkConnection(Packet *msg);
     void sendFeatureRequest(Packet *msg);
     virtual void handleFeaturesReply(Packet *of_msg);
     virtual void handlePacketIn(Packet *of_msg);
+    virtual void handleExperimenter(Packet* of_msg);
 
-    // Lifecycle methods
+    /** @name TcpSocket::ICallback callback methods */
+    //@{
+    virtual void socketDataArrived(TcpSocket *socket) override;
+    virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override;
+    virtual void socketEstablished(TcpSocket *socket) override;
+    virtual void socketPeerClosed(TcpSocket *socket) override;
+    virtual void socketClosed(TcpSocket *socket) override;
+    virtual void socketFailure(TcpSocket *socket, int code) override;
+    virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
+    virtual void socketDeleted(TcpSocket *socket) override {} // TODO
+    //@}
+
+    /** @name Lifecycle methods */
+    //@{
     virtual void handleStartOperation(LifecycleOperation *operation) override;
     virtual void handleStopOperation(LifecycleOperation *operation) override {};
     virtual void handleCrashOperation(LifecycleOperation *operation) override {};
@@ -105,6 +131,7 @@ protected:
     virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
     virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
 #endif
+    //@}
 };
 
 } /*end namespace openflow*/

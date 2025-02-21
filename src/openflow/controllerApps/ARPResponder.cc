@@ -85,6 +85,7 @@ void ARPResponder::handlePacketIn(Packet *pktIn){
                     action_output->port = headerFields.inport;
                     packetOut->setActionsArraySize(1);
                     packetOut->setActions(0, *action_output);
+                    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktOut->getByteLength();
 
                     //send the packet
                     answeredArp++;

@@ -27,15 +27,18 @@ public:
     void sendRequest(KandooEntry entry);
     void sendReply(Packet * knpck,KandooEntry entry);
 
+    virtual void processPacketFromTcp(Packet *pkt) override;
     void handleKandooPacket(Packet * knpck);
 
     void sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry entry);
 
 protected:
+    virtual void socketDataArrived(TcpSocket *socket) override;
+    virtual void socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo *availableInfo) override;
 
     virtual void initialize(int stage) override;
-    virtual void handleMessageWhenUp(cMessage *msg) override;
-    virtual void processQueuedMsg(Packet *data_msg) override;
+    virtual void processSelfMessage(cMessage *msg) override;
+    virtual void processQueuedMsg(cMessage *data_msg) override;
 
     virtual void handleStartOperation(LifecycleOperation *operation) override;
 
@@ -45,7 +48,8 @@ protected:
 
     simsignal_t kandooEventSignalId;
 
-
+    TcpSocket *findSocketFor(cMessage *msg);
+    std::map< int,TcpSocket * > socketMap;
 };
 
 } /*end namespace openflow*/

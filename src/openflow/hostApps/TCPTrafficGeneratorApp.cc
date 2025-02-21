@@ -22,10 +22,6 @@ void TCPTrafficGeneratorApp::handleStartOperation(LifecycleOperation *operation)
     timerSet.insert(msg);
     scheduleAt(start, msg);
 }
-        cancelAndDelete(*timerSet.begin());
-        timerSet.erase(timerSet.begin());
-    }
-}
 
 void TCPTrafficGeneratorApp::handleStopOperation(LifecycleOperation *operation)
 {
@@ -223,10 +219,3 @@ unsigned int TCPTrafficGeneratorApp::CountLines( const vector <char> & buff, int
 }
 
 } /*end namespace openflow*/
-
-
-
-
-
-
-

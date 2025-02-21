@@ -2,8 +2,8 @@
 
 package openflow.hyperflow;
 import inet.common.MessageDispatcher;
-import inet.linklayer.contract.IEthernetLayer;
-import inet.linklayer.ethernet.basic.EthernetInterface;
+import inet.linklayer.ethernet.contract.IEthernetLayer;
+import inet.linklayer.contract.IEthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
@@ -24,8 +24,8 @@ module Hyper_Flow_Synchronizer
         int numExtInterfaces = default(0);
         double serviceTime @unit("s") = default(0s);
 
-        string networkLayerType = default("IPv4NetworkLayer");
-        string routingTableType = default("IPv4RoutingTable");
+        string networkLayerType = default("Ipv4NetworkLayer");
+        string routingTableType = default("Ipv4RoutingTable");
         ethernet.registerProtocol = default(true);
         bool forwarding = default(false);
         bool multicastForwarding = default(false);
@@ -88,7 +88,7 @@ module Hyper_Flow_Synchronizer
             parameters:
                 @display("p=352,249;q=queue");
         }
-        eth[sizeof(this.ethg)]: EthernetInterface {
+        eth[sizeof(this.ethg)]: <default("EthernetInterface")> like IEthernetInterface {
             parameters:
                 @display("p=374.4195,613.0605,row,90;q=txQueue");
         }

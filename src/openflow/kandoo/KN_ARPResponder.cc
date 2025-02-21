@@ -84,6 +84,7 @@ void KN_ARPResponder::handlePacketIn(Packet *pktIn){
                     action_output->port = headerFields.inport;
                     packetOut->setActionsArraySize(1);
                     packetOut->setActions(0, *action_output);
+                    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktOut->getByteLength();
                     pktOut->insertAtFront(packetOut);
 
                     //send the packet
@@ -117,10 +118,9 @@ void KN_ARPResponder::handlePacketIn(Packet *pktIn){
 
 
 void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    Enter_Method_Silent();
+    Enter_Method("KN_ARPResponder::receiveSignal %s", cComponent::getSignalName(id));
     //set knagent link
     ARPResponder::receiveSignal(src,id,obj,details);
-    Enter_Method("KN_ARPResponder::receiveSignal %s", cComponent::getSignalName(id));
     if(knAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
 
@@ -190,6 +190,7 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
                                     action_output->port = headerFields.inport;
                                     packetOut->setActionsArraySize(1);
                                     packetOut->setActions(0, *action_output);
+                                    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktOut->getByteLength();
                                     pktOut->insertAtFront(packetOut);
 
                                     //send the packet

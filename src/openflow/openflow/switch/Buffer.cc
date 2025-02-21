@@ -51,15 +51,14 @@ uint32_t Buffer::storeMessage(Packet *msg){
     }
 }
 bool Buffer::deleteMessage(Packet *msg){
-    bool result = false;
-    for (std::map<uint32_t, inet::EthernetIIFrame *>::const_iterator it = pending_msgs.begin(); it != pending_msgs.end(); ++it) {
+    for (auto it = pending_msgs.begin(); it != pending_msgs.end(); ++it) {
       if (it->second == msg) {
-          pending_msgs.erase(it);
-          result = true;
+          it = pending_msgs.erase(it);
+          return true;
       }
     }
 
-    return result;
+    return false;
 }
 
 

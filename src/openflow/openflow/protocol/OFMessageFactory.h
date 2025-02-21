@@ -21,6 +21,7 @@
 
 #include <openflow/openflow/protocol/OpenFlow.h>
 #include <string>
+#include <inet/common/packet/Packet.h>
 
 namespace openflow {
 class OFP_Features_Reply;
@@ -66,13 +67,13 @@ public:
      * @param n_ports       Number of Ports.
      * @return              The created message.
      */
-    virtual OFP_Features_Reply* createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0) = 0;
+    virtual Packet* createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0) = 0;
 
     /**
      * Create an OFP_Features_Request message.
      * @return              The created message.
      */
-    virtual OFP_Features_Request* createFeatureRequest() = 0;
+    virtual Packet* createFeatureRequest() = 0;
 
     /**
      * Create an OFP_Flow_Mod message.
@@ -85,23 +86,23 @@ public:
      * @param hardTimeOut   The hard Timeout for the flow entry.
      * @return              The created message.
      */
-    virtual OFP_Flow_Mod* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0) = 0;
+    virtual Packet* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0) = 0;
 
     /**
      * Create an OFP_Hello message.
      * @return              The created message.
      */
-    virtual OFP_Hello* createHello() = 0;
+    virtual Packet* createHello() = 0;
 
     /**
      * Create an OFP_Packet_In message.
      * @param reason        The reson why this packet is forwarded.
-     * @param frame         The frame to encapsulate.
+     * @param ethPk         The frame to encapsulate.
      * @param buffer_id     The buffer_id or OFP_NO_BUFFER if not buffered.
      * @param sendFullFrame True if the full frame should be transmitted.
      * @return              The created message.
      */
-    virtual OFP_Packet_In* createPacketIn(ofp_packet_in_reason reason, inet::EthernetIIFrame *frame, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
+    virtual Packet* createPacketIn(ofp_packet_in_reason reason, inet::Packet *ethPk, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
 
     /**
      * Create an OFP_Packet_Out message.
@@ -109,10 +110,10 @@ public:
      * @param n_outports    Number of output ports.
      * @param in_port       The input port of the packet.
      * @param buffer_id     The buffer_id or OFP_NO_BUFFER if not buffered.
-     * @param frame         The frame to encapsulate if not buffered.
+     * @param ethPk         The frame to encapsulate if not buffered.
      * @return              The created message.
      */
-    virtual OFP_Packet_Out* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::EthernetIIFrame *frame = nullptr) = 0;
+    virtual Packet* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::Packet *ethPk = nullptr) = 0;
 };
 
 } /* namespace openflow */
