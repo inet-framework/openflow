@@ -62,29 +62,19 @@ void LLDPAgent::sendLLDP(){
         TcpSocket *socket = (*i).getSocket();
         //iterate over all ports
         for(j=0;j<(*i).getNumOfPorts();++j){
+            auto outPort = (*i).getIndexPort(j);
+            auto frame = new Packet("LLDP");
 
             auto lldpPacket = makeShared<LLDP>();
-
-            lldpPacket->setPortID(j);
+            lldpPacket->setPortID(outPort);
             lldpPacket->setChassisID((*i).getMacAddress().c_str());
-
-            auto frame = new Packet("LLDP");
             frame->insertAtFront(lldpPacket);
 
             auto ethHeader = makeShared<EthernetMacHeader>();
             ethHeader->setSrc(MacAddress((*i).getMacAddress().c_str()));
             ethHeader->setDest(MacAddress("AA:80:c2:00:00:0e"));
             ethHeader->setTypeOrLength(0x88CC);
-
             frame->insertAtFront(ethHeader);
-            const auto& ethernetFcs = makeShared<EthernetFcs>();
-            frame->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
-
-            //frame = eth2Frame;
-            //frame->encapsulate(arpReply);
-            ethernetFcs->setFcsMode(FCS_DECLARED_CORRECT);
-            ethernetFcs->setFcs(0xC00DC00DL);
-
             B paddingLength = MIN_ETHERNET_FRAME_BYTES - ETHER_FCS_BYTES - B(frame->getByteLength());
             if (paddingLength > B(0)) {
                 const auto& ethPadding = makeShared<EthernetPadding>();
@@ -92,23 +82,12 @@ void LLDPAgent::sendLLDP(){
                 frame->insertAtBack(ethPadding);
             }
 
+            const auto& ethernetFcs = makeShared<EthernetFcs>();
+            ethernetFcs->setFcsMode(FCS_DECLARED_CORRECT);
+            ethernetFcs->setFcs(0xC00DC00DL);
             frame->insertAtBack(ethernetFcs);
 
-//            EtherFrame *frame = NULL;
-//            EthernetIIFrame *eth2Frame = new EthernetIIFrame(lldpPacket->getName());
-//            eth2Frame->setSrc(MACAddress((*i).getMacAddress().c_str()));  // if blank, will be filled in by MAC
-//            //eth2Frame->setDest(MACAddress("01:80:c2:00:00:0e"));
-//            //make up an address as inet will accept multicast frames and does not know what to do with a lldp frame and thus fails
-//            eth2Frame->setDest(MACAddress("AA:80:c2:00:00:0e"));
-//            eth2Frame->setEtherType(0x88CC);
-//            eth2Frame->setByteLength(ETHER_MAC_FRAME_BYTES);
-//
-//            frame = eth2Frame;
-//            frame->encapsulate(lldpPacket);
-//            if (frame->getByteLength() < MIN_ETHERNET_FRAME_BYTES)
-//                frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);  // "padding"
-//            frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
-
+            frame->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
 
             //create packet out*/
             auto packetOut = makeShared<OFP_Packet_Out>();
@@ -120,9 +99,11 @@ void LLDPAgent::sendLLDP(){
             packetOut->setIn_port(-1);
             ofp_action_output *action_output = new ofp_action_output();
             action_output->creationModule = dynamic_cast<cModule *>(this)->getClassAndFullName();
-            action_output->port = (*i).getIdPort(j);
+            action_output->port = outPort;
             packetOut->setActionsArraySize(1);
             packetOut->setActions(0, *action_output);
+            packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + frame->getByteLength();
+
             frame->insertAtFront(packetOut);
 
             //send the packet
@@ -139,10 +120,12 @@ void LLDPAgent::handlePacketIn(Packet * packetIn){
 
     //check if it is an lldp packet
     if(headerFields.eth_type == 0x88CC){
-        auto& fragmentTag = packetIn->getTag<FragmentTag>();
+        auto fragmentTag = packetIn->findTag<FragmentTag>();
+        if (fragmentTag != nullptr)
+            throw cRuntimeError("Fragment handling not implemented yet");
         //EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
         //check if we have received the entire frame, if not the flow mods have not been sent yet
-        if(fragmentTag->getLastFragment()){
+//        if(fragmentTag->getLastFragment()){
             auto packet_in_msg = packetIn->removeAtFront<OFP_Packet_In>();
             auto header = packetIn->removeAtFront<EthernetMacHeader>();
             auto lldp = packetIn->peekAtFront<LLDP>();
@@ -152,11 +135,11 @@ void LLDPAgent::handlePacketIn(Packet * packetIn){
             }
             packetIn->insertAtFront(header);
             packetIn->insertAtFront(packet_in_msg);
-        }
-        else {
-            //resend flow mod
-            triggerFlowMod(headerFields.swInfo);
-        }
+//        }
+//        else {
+//            //resend flow mod
+//            triggerFlowMod(headerFields.swInfo);
+//        }
 
     }
     else {
@@ -181,8 +164,8 @@ void LLDPAgent::triggerFlowMod(Switch_Info * swInfo) {
 
 void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     AbstractControllerApp::receiveSignal(src,id,obj,details);
-
     Enter_Method("LLDPAgent::receiveSignal %s", cComponent::getSignalName(id));
+
     if(id == PacketInSignalId){
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt == nullptr)

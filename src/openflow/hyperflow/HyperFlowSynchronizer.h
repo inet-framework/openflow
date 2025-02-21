@@ -15,7 +15,7 @@
 
 namespace openflow{
 
-class HyperFlowSynchronizer: public OperationalBase
+class HyperFlowSynchronizer: public OperationalBase, public TcpSocket::BufferingCallback
 {
 public:
     HyperFlowSynchronizer();
@@ -41,15 +41,39 @@ protected:
     long dataChannelSizeCache;
 
     double serviceTime;
-    std::list<cMessage *> msgList;
+    enum Kind {
+        MSGKIND_EVENT = 101,
+        MSGKIND_DATA = 102
+    };
+    struct Action
+    {
+        int kind;
+        cMessage *msg;
+        Action() : kind(0), msg(nullptr) {}
+        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+    };
+    std::list<Action> msgList;
     bool busy;
 
     TcpSocket *findSocketFor(cMessage *msg);
     void handleSyncRequest(Packet *msg);
     void handleChangeNotification(Packet *msg);
     void handleReportIn(Packet *msg);
-    void processQueuedMsg(Packet * msg);
+    void processQueuedMsg(cMessage *msg);
+    void startProcessingMsg(Action& action);
+    void processPacketFromTcp(Packet *pkt);
 
+    /** @name TcpSocket::ICallback callback methods */
+    //@{
+    virtual void socketDataArrived(TcpSocket *socket) override;
+    virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override;
+    virtual void socketEstablished(TcpSocket *socket) override;
+    virtual void socketPeerClosed(TcpSocket *socket) override;
+    virtual void socketClosed(TcpSocket *socket) override;
+    virtual void socketFailure(TcpSocket *socket, int code) override;
+    virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
+    virtual void socketDeleted(TcpSocket *socket) override {} // TODO
+    //@}
 
     // Lifecycle methods
     virtual void handleStartOperation(LifecycleOperation *operation) override {};

@@ -9,13 +9,14 @@
 #include "inet/common/ModuleAccess.h"
 
 
+namespace openflow{
+
 simsignal_t AbstractControllerApp::PacketInSignalId = registerSignal("PacketIn");
 simsignal_t AbstractControllerApp::PacketOutSignalId = registerSignal("PacketOut");
 simsignal_t AbstractControllerApp::PacketFeatureRequestSignalId = registerSignal("PacketFeatureRequest");
 simsignal_t AbstractControllerApp::PacketFeatureReplySignalId = registerSignal("PacketFeatureReply");
+simsignal_t AbstractControllerApp::PacketExperimenterSignalId = registerSignal("PacketExperimenter");
 simsignal_t AbstractControllerApp::BootedSignalId = registerSignal("Booted");
-
-namespace openflow{
 
 Define_Module(AbstractControllerApp);
 
@@ -55,11 +56,13 @@ void AbstractControllerApp::initialize(int stage){
     //register signals
     OperationalBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        getParentModule()->subscribe("PacketIn",this);
-        getParentModule()->subscribe("PacketOut",this);
-        getParentModule()->subscribe("PacketFeatureRequest",this);
-        getParentModule()->subscribe("PacketFeatureReply",this);
-        getParentModule()->subscribe("Booted",this);
+        handleParameterChange(nullptr);
+        getParentModule()->subscribe(PacketInSignalId, this);
+        getParentModule()->subscribe(PacketOutSignalId, this);
+        getParentModule()->subscribe(PacketFeatureRequestSignalId, this);
+        getParentModule()->subscribe(PacketFeatureReplySignalId, this);
+        getParentModule()->subscribe(PacketExperimenterSignalId, this);
+        getParentModule()->subscribe(BootedSignalId, this);
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         auto myNode = getContainingNode(this);
@@ -117,7 +120,7 @@ void AbstractControllerApp::dropPacket(Packet *packet_in_msg){
 
     auto socket = controller->findSocketFor(packet_in_msg);
     auto msgAux = createDropPacketFromPacketIn(packet_in_msg);
-    controller->sendPacket(socket, msgAux);
+    controller->sendPacketOut(msgAux, socket);
 }
 
 
@@ -155,12 +158,11 @@ void AbstractControllerApp::finish(){
 
 }
 
-OFP_Flow_Mod * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int idleTimeOut =1 , int hardTimeOut=0){
-
+Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int idleTimeOut, int hardTimeOut){
     return createFlowMod(mod_com, match, outport, this->priority, idleTimeOut, hardTimeOut);
 }
 
-Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int priority, int idleTimeOut=1 , int hardTimeOut=0){
+Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int priority, int idleTimeOut, int hardTimeOut){
     auto flow_mod_msg = makeShared<OFP_Flow_Mod>();
     auto pkt = new Packet("flow_mod");
 
@@ -169,6 +171,7 @@ Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const
     flow_mod_msg->setCommand(mod_com);
     flow_mod_msg->setMatch(match);
     flow_mod_msg->setChunkLength(B(56));
+    flow_mod_msg->getHeaderForUpdate().length = 56;
     flow_mod_msg->setHard_timeout(hardTimeOut);
     flow_mod_msg->setIdle_timeout(idleTimeOut);
     ofp_action_output *action_output = new ofp_action_output();
@@ -185,7 +188,7 @@ Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const
 
 Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint32_t outport){
     auto packetOut = makeShared<OFP_Packet_Out>();
-    Packet *pktOut = nullptr;
+    Packet *pktOut = new Packet("packetOut");
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
 
     packetOut->getHeaderForUpdate().version = OFP_VERSION;
@@ -194,16 +197,10 @@ Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint3
     packetOut->setChunkLength(B(24));
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
-        auto frame = pktIn->peekAtFront<EthernetMacHeader>();
-        //EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
-        pktOut = pktIn->dup();
-        //packetOut->encapsulate(frame->dup());
-        auto ifaceId = pktIn->getTag<InterfaceInd>()->getInterfaceId();
-        packetOut->setIn_port(ifaceId);
-    } else {
-        packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
-        pktOut = new Packet("packetOut");
+        pktIn->peekAtFront<EthernetMacHeader>();
+        pktOut->insertAtFront(pktIn->peekData());
     }
+    packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
     pktIn->insertAtFront(packet_in_msg);
 
     ofp_action_output *action_output = new ofp_action_output();
@@ -211,6 +208,7 @@ Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint3
     action_output->port = outport;
     packetOut->setActionsArraySize(1);
     packetOut->setActions(0, *action_output);
+    packetOut->getHeaderForUpdate().length = 24 + pktOut->getByteLength();
     pktOut->insertAtFront(packetOut);
 
     pktOut->setKind(TCP_C_SEND);
@@ -223,24 +221,17 @@ Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
 
     auto packetOut = makeShared<OFP_Packet_Out>();
-    Packet *pktOut = nullptr;
+    Packet *pktOut = new Packet("packetOut");
     packetOut->getHeaderForUpdate().version = OFP_VERSION;
     packetOut->getHeaderForUpdate().type = OFPT_PACKET_OUT;
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setChunkLength(B(24));
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
-        auto frame = pktIn->peekAtFront<EthernetMacHeader>();
-        pktOut = pktIn->dup();
-        auto ifaceId = pktIn->getTag<InterfaceInd>()->getInterfaceId();
-        packetOut->setIn_port(ifaceId);
-        //EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
-        // packetOut->encapsulate(frame->dup());
-        // packetOut->setIn_port(frame->getArrivalGate()->getIndex());
-    }else{
-        packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
-        pktOut = new Packet("packetOut");
+        pktIn->peekAtFront<EthernetMacHeader>();
+        pktOut->insertAtFront(pktIn->peekData());
     }
+    packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
 
     pktIn->insertAtFront(packet_in_msg);
 
@@ -250,6 +241,7 @@ Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
     packetOut->setActionsArraySize(1);
     packetOut->setActions(0, *action_output);
 
+    packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + pktOut->getByteLength();
     pktOut->insertAtFront(packetOut);
     pktOut->setKind(TCP_C_SEND);
 
@@ -260,8 +252,7 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
 
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
     auto packetOut = makeShared<OFP_Packet_Out>();
-    Packet *pktOut = nullptr;
-    //OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");
+    Packet *pktOut = new Packet("packetOut");
     packetOut->getHeaderForUpdate().version = OFP_VERSION;
     packetOut->getHeaderForUpdate().type = OFPT_PACKET_OUT;
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
@@ -269,16 +260,9 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
 
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
         auto frame = pktIn->peekAtFront<EthernetMacHeader>();
-        pktOut = pktIn->dup();
-        auto ifaceId = pktIn->getTag<InterfaceInd>()->getInterfaceId();
-        packetOut->setIn_port(ifaceId);
-        //EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
-        //packetOut->encapsulate(frame->dup());
-        //packetOut->setIn_port(frame->getArrivalGate()->getIndex());
-    }else{
-        packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
-        pktOut = new Packet("packetOut");
+        pktOut->insertAtFront(pktIn->peekData());
     }
+    packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
     pktIn->insertAtFront(packet_in_msg);
 
     ofp_action_output *action_output = new ofp_action_output();
@@ -286,6 +270,7 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
     action_output->port = OFPP_ANY;
     packetOut->setActionsArraySize(1);
     packetOut->setActions(0, *action_output);
+    packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + pktOut->getByteLength();
 
     pktOut->insertAtFront(packetOut);
     pktOut->setKind(TCP_C_SEND);
@@ -345,9 +330,8 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktI
 
     // packet is encapsulated in packet-in message
     if (headerFields.buffer_id == OFP_NO_BUFFER){
-        auto ifaceId = pktIn->getTag<InterfaceInd>()->getInterfaceId();
         auto frame = pktIn->peekAtFront<EthernetMacHeader>();
-        headerFields.inport = ifaceId;
+        headerFields.inport = packet_in_msg->getMatch().OFB_IN_PORT;
         headerFields.src_mac = frame->getSrc();
         headerFields.dst_mac = frame->getDest();
         headerFields.eth_type = frame->getTypeOrLength();

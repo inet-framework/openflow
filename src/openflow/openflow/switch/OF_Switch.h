@@ -15,8 +15,23 @@
 
 namespace openflow{
 
-class OF_Switch: public OperationalBase, public TcpSocket::ICallback
+class OF_Switch: public OperationalBase, public TcpSocket::BufferingCallback
 {
+    enum ActionKind {
+        MSGKIND_CONNECT = 2001,
+        MSGKIND_TCP_COMMAND,
+        MSGKIND_TCP_DATA,
+        MSGKIND_ETH_DATA
+    };
+
+    struct Action
+    {
+        int kind;
+        cMessage *msg;
+        Action() : kind(0), msg(nullptr) {}
+        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+    };
+
     std::map<int, int> ifaceIndex;
     std::map<int, int> controlPlaneIndex;
 
@@ -47,7 +62,7 @@ protected:
     simsignal_t bufferSize;
     simsignal_t waitingTime;
 
-    std::list<cMessage *> msgList;
+    std::list<Action> msgList;
     std::vector<ofp_port> portVector;
 
 
@@ -62,12 +77,15 @@ protected:
     void connect(const char *connectToAddress);
 
     void processQueuedMsg(Packet *data_msg);
+    void processPacketFromEth(Packet *data_msg);
+    void processPacketFromTcp(Packet *data_msg);
     void handleFeaturesRequestMessage(Packet *of_msg);
     void handleFlowModMessage(Packet *of_msg);
     void handlePacketOutMessage(Packet *of_msg);
     void executePacketOutAction(const ofp_action_header *action, Packet *frame, uint32_t inport);
     void processFrame(Packet *frame);
     void handleMissMatchedPacket(Packet *frame);
+    void startProcessingMsg(Action& action);
 
     // Lifecycle methods
     virtual void handleStartOperation(LifecycleOperation *operation) override;
@@ -85,7 +103,7 @@ protected:
 #endif
 
     /* TcpSocket::ICallback callback methods */
-     virtual void socketDataArrived(TcpSocket *socket, Packet *msg, bool urgent) override;
+     virtual void socketDataArrived(TcpSocket *socket) override;
      virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override { socket->accept(availableInfo->getNewSocketId()); }
      virtual void socketEstablished(TcpSocket *socket) override;
      virtual void socketPeerClosed(TcpSocket *socket) override;

@@ -24,12 +24,20 @@ public:
 protected:
 
     virtual void initialize(int stage) override;
-    virtual void handleMessageWhenUp(cMessage *msg) override;
-    virtual void processQueuedMsg(Packet *data_msg) override;
+    virtual void processSelfMessage(cMessage *msg) override;
+    virtual void processQueuedMsg(cMessage *data_msg) override;
+
+    /** @name TcpSocket::ICallback callback methods */
+    //@{
+    virtual void socketDataArrived(TcpSocket *socket) override; // should be implement in derived class
+    virtual void socketEstablished(TcpSocket *socket) override;
+    //@}
+
+    virtual void processPacketFromTcp(Packet *pkt) override;
 
     void sendReportIn();
     void sendSyncRequest();
-    void handleSyncReply(HF_SyncReply * msg);
+    void handleSyncReply(const HF_SyncReply * msg);
     void handleCheckAlive();
     void handleRecover(std::string controllerId);
     void handleFailure(std::string controllerId);

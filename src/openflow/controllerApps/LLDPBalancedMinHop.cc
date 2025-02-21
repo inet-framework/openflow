@@ -114,9 +114,9 @@ void LLDPBalancedMinHop::handlePacketIn(Packet *pkt){
 
 void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     AbstractControllerApp::receiveSignal(src,id,obj,details);
+    Enter_Method("LLDPBalancedMinHop::receiveSignal %s", cComponent::getSignalName(id));
 
     //set lldp link
-    Enter_Method("LLDPBalancedMinHop::receiveSignal %s", cComponent::getSignalName(id));
     if(lldpAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
 

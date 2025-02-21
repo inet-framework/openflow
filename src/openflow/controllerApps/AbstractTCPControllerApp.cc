@@ -4,9 +4,7 @@
 
 namespace openflow{
 
-#define MSGKIND_TCPSERVICETIME                 3098
-
-Define_Module(AbstractTCPControllerApp);
+// Define_Module(AbstractTCPControllerApp);
 
 using namespace std;
 
@@ -18,14 +16,9 @@ AbstractTCPControllerApp::AbstractTCPControllerApp()
 AbstractTCPControllerApp::~AbstractTCPControllerApp()
 {
     for(auto&& msg : msgList) {
-      delete msg;
+      delete msg.msg;
     }
     msgList.clear();
-
-    for(auto&& pair : socketMap){
-        delete pair.second;
-    }
-    socketMap.clear();
 }
 
 
@@ -41,73 +34,71 @@ void AbstractTCPControllerApp::initialize(int stage){
     }
 }
 
-void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg){
-    if (msg->isSelfMessage()){
-        if(msg->getKind()==MSGKIND_TCPSERVICETIME){
-            //This is message which has been scheduled due to service time
-            //Get the Original message
-            auto data_msg = dynamic_cast<Packet *>((cObject *)msg->getContextPointer());
-            if (data_msg == nullptr)
-                throw cRuntimeError("AbstractTCPControllerApp::handleMessage not of type Packet");
-            emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
+void AbstractTCPControllerApp::startProcessingMsg(Action& action)
+{
+    busy = true;
+    cMessage *msg = action.msg;
+    cMessage *event = new cMessage("event");
+    event->setKind(action.kind);
+    event->setContextPointer(msg);
+    EV_DEBUG << "Start processing of message " << msg->getName() << endl;
+    scheduleAt(simTime()+serviceTime, event);
+}
+
+void AbstractTCPControllerApp::processSelfMessage(cMessage *msg) {
+    if(msg->getKind() == ACTION_EVENT || msg->getKind() == ACTION_DATA) {
+        //This is message which has been scheduled due to service time
+        //Get the Original message
+        cMessage *data_msg = (cMessage *) msg->getContextPointer();
+        EV_DEBUG << "End of processing message " << data_msg->getName() << endl;
+        emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
+
+        if (msg->getKind() == ACTION_EVENT)
             processQueuedMsg(data_msg);
-            //Trigger next service time
-            if (msgList.empty()){
-                busy = false;
-            } else {
-                auto msgFromList = msgList.front();
-                msgList.pop_front();
-                cMessage *event = new cMessage("event");
-                event->setKind(MSGKIND_TCPSERVICETIME);
-                event->setContextPointer(msgFromList);
-                scheduleAt(simTime()+serviceTime, event);
-            }
-            calcAvgQueueSize(msgList.size());
-            //delete the msg for efficiency
-            //delete msg;
-        }
+        else if (msg->getKind() == ACTION_DATA)
+            processPacketFromTcp(check_and_cast<Packet *>(data_msg));
+        else
+            throw cRuntimeError("model error");
 
-
-    } else {
-        //imlement service time
-
-        if (msg->getKind() != TCP_I_DATA &&  msg->getKind() != TCP_I_URGENT_DATA)
-            return;
-
-        auto data_msg = dynamic_cast<Packet *>(msg);
-        if (data_msg == nullptr)
-            throw cRuntimeError("AbstractTCPControllerApp::handleMessage not of type Packet");
-        if (busy) {
-            msgList.push_back(data_msg);
+        //Trigger next service time
+        if (msgList.empty()){
+            busy = false;
         } else {
-            busy = true;
-            cMessage *event = new cMessage("event");
-            event->setKind(MSGKIND_TCPSERVICETIME);
-            event->setContextPointer(msg);
-            scheduleAt(simTime()+serviceTime, event);
-        }
-        emit(queueSize,msgList.size());
-        if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
-            packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
-        } else {
-            packetsPerSecond[floor(simTime().dbl())]++;
+            auto msgFromList = msgList.front();
+            msgList.pop_front();
+            startProcessingMsg(msgFromList);
         }
         calcAvgQueueSize(msgList.size());
+        //delete the msg for efficiency
+        delete msg;
     }
 }
 
-TcpSocket * AbstractTCPControllerApp::findSocketFor(Packet *pkt) {
-
-    auto tag = pkt->findTag<SocketInd>();
-    if (tag == nullptr)
-        throw cRuntimeError("SocketMap: findSocketFor(): no SocketInd (not from TCP?)");
-
-    //TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
-    //if (!ind)
-    //    throw cRuntimeError("SocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
-    auto i = socketMap.find(tag->getSocketId());
-    ASSERT(i==socketMap.end() || i->first==i->second->getSocketId());
-    return (i==socketMap.end()) ? nullptr : i->second;
+void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg){
+    if (msg->isSelfMessage()){
+        processSelfMessage(msg);
+    } else {
+        if (msg->isPacket()) {
+            if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
+                packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
+            } else {
+                packetsPerSecond[floor(simTime().dbl())]++;
+            }
+        }
+        //imlement service time
+        if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA || msg->getKind() == TCP_I_AVAILABLE)
+            processQueuedMsg(msg);
+        else {
+            Action action(ACTION_EVENT, msg);
+            if (busy) {
+                msgList.push_back(action);
+            } else {
+                startProcessingMsg(action);
+            }
+        }
+        calcAvgQueueSize(msgList.size());
+        emit(queueSize,msgList.size());
+    }
 }
 
 void AbstractTCPControllerApp::calcAvgQueueSize(int size){
@@ -152,6 +143,27 @@ void AbstractTCPControllerApp::finish(){
         name << "avgQueueSizeAt-" << elem.first;
         recordScalar(name.str().c_str(),(elem.second/1.0));
     }
+}
+
+void AbstractTCPControllerApp::socketEstablished(TcpSocket *socket)
+{
+}
+
+void AbstractTCPControllerApp::socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo *availableInfo)
+{
+    throw cRuntimeError("TCP AVAILABLE is unsupported in this module");
+}
+
+void AbstractTCPControllerApp::socketPeerClosed(TcpSocket *socket)
+{
+}
+
+void AbstractTCPControllerApp::socketClosed(TcpSocket *socket)
+{
+}
+
+void AbstractTCPControllerApp::socketFailure(TcpSocket *socket, int code)
+{
 }
 
 } /*end namespace openflow*/

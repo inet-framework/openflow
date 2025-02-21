@@ -1,4 +1,5 @@
 #include "openflow/hyperflow/HyperFlowAgent.h"
+#include "inet/common/socket/SocketTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "algorithm"
@@ -37,6 +38,7 @@ void HyperFlowAgent::initialize(int stage){
         //init socket to synchronizer
         const char *localAddress = par("localAddress");
         int localPort = par("localPort");
+        socket.setCallback(this);
         socket.bind(localAddress[0] ? L3Address(localAddress) : L3Address(), localPort);
         socket.setOutputGate(gate("socketOut"));
         //socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
@@ -54,71 +56,94 @@ void HyperFlowAgent::handleStartOperation(LifecycleOperation *operation)
     scheduleAt(start, initiateConnection);
 }
 
-void HyperFlowAgent::handleMessageWhenUp(cMessage *msg){
-    AbstractTCPControllerApp::handleMessageWhenUp(msg);
-
-    if (msg->isSelfMessage()){
-        if (msg->getKind()==MSGKIND_REPORTINEVERY){
-            cMessage *reportIn = new cMessage("reportIn");
-            reportIn->setKind(MSGKIND_REPORTINEVERY);
-            scheduleAt(simTime()+checkReportInEvery, reportIn);
-            sendReportIn();
-        } else if (msg->getKind()== MSGKIND_SYNCEVERY){
-            cMessage *sync = new cMessage("sync");
-            sync->setKind(MSGKIND_SYNCEVERY);
-            scheduleAt(simTime()+checkSyncEvery, sync);
-            sendSyncRequest();
-        } else if (msg->getKind()== MSGKIND_CHECKALIVEEVERY){
-            //start checking alive
-            cMessage *checkAlive = new cMessage("checkAlive");
-            checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
-            scheduleAt(simTime()+checkAliveEvery, checkAlive);
-            handleCheckAlive();
-        } else if (msg->getKind()== MSGKIND_HFCONNECT){
-            //init socket to synchronizer
-            const char *connectAddressHyperFlowSynchronizer = par("connectAddressHyperFlowSynchronizer");
-            int connectPort = par("connectPortHyperFlowSynchronizer");
-            socket.connect(L3AddressResolver().resolve(connectAddressHyperFlowSynchronizer), connectPort);
-        }
+void HyperFlowAgent::processSelfMessage(cMessage *msg) {
+    if (msg->getKind()==MSGKIND_REPORTINEVERY){
+        cMessage *reportIn = new cMessage("reportIn");
+        reportIn->setKind(MSGKIND_REPORTINEVERY);
+        scheduleAt(simTime()+checkReportInEvery, reportIn);
+        sendReportIn();
+        delete msg;
+    } else if (msg->getKind()== MSGKIND_SYNCEVERY){
+        cMessage *sync = new cMessage("sync");
+        sync->setKind(MSGKIND_SYNCEVERY);
+        scheduleAt(simTime()+checkSyncEvery, sync);
+        sendSyncRequest();
+        delete msg;
+    } else if (msg->getKind()== MSGKIND_CHECKALIVEEVERY){
+        //start checking alive
+        cMessage *checkAlive = new cMessage("checkAlive");
+        checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
+        scheduleAt(simTime()+checkAliveEvery, checkAlive);
+        handleCheckAlive();
+        delete msg;
+    } else if (msg->getKind()== MSGKIND_HFCONNECT){
+        //init socket to synchronizer
+        const char *connectAddressHyperFlowSynchronizer = par("connectAddressHyperFlowSynchronizer");
+        int connectPort = par("connectPortHyperFlowSynchronizer");
+        socket.connect(L3AddressResolver().resolve(connectAddressHyperFlowSynchronizer), connectPort);
+        delete msg;
     }
+    else{
+        AbstractTCPControllerApp::processSelfMessage(msg);
+    }
+}
 
+void HyperFlowAgent::socketEstablished(TcpSocket *socket)
+{
+    //start sending ReportIn Messages
+    cMessage *reportInEvery = new cMessage("reportIn");
+    reportInEvery->setKind(MSGKIND_REPORTINEVERY);
+    scheduleAt(simTime()+par("reportInEvery"), reportInEvery);
+
+    //start sending sync requests
+    cMessage *sync = new cMessage("sync");
+    sync->setKind(MSGKIND_SYNCEVERY);
+    scheduleAt(simTime()+par("checkSyncEvery"), sync);
+
+    //start checking alive
+    cMessage *checkAlive = new cMessage("checkAlive");
+    checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
+    scheduleAt(simTime()+par("checkAliveEvery"), checkAlive);
+}
+
+void HyperFlowAgent::socketDataArrived(TcpSocket *socket)
+{
+    auto queue = socket->getReadBuffer();
+    while (queue->has<HF_Packet>()) {
+        auto header = queue->pop<HF_Packet>();
+        auto packet = new Packet();
+        packet->insertAtFront(header);
+        packet->addTag<SocketInd>()->setSocketId(socket->getSocketId());
+        Action action(ACTION_DATA, packet);
+        if (!busy)
+            startProcessingMsg(action);
+        else
+            msgList.push_back(action);
+    }
+}
+
+void HyperFlowAgent::processPacketFromTcp(Packet *msg){
+    auto hfPacket = msg->peekAtFront<HF_Packet>();
+    auto castMsg = dynamicPtrCast<const HF_SyncReply>(hfPacket);
+    if (castMsg != nullptr) {
+        handleSyncReply(castMsg.get());
+    }
+    else {
+        EV << "Packet dropped: " << EV_FIELD(msg) << endl;
+    }
     delete msg;
 }
 
-
-void HyperFlowAgent::processQueuedMsg(Packet *msg){
-    //check if message was received via our socket
-    if(socket.belongsToSocket(msg)){
-        if(msg->getKind() == TCP_I_ESTABLISHED){
-            socket.processMessage(msg);
-
-            //start sending ReportIn Messages
-            cMessage *reportInEvery = new cMessage("reportIn");
-            reportInEvery->setKind(MSGKIND_REPORTINEVERY);
-            scheduleAt(simTime()+par("reportInEvery"), reportInEvery);
-
-            //start sending sync requests
-            cMessage *sync = new cMessage("sync");
-            sync->setKind(MSGKIND_SYNCEVERY);
-            scheduleAt(simTime()+par("checkSyncEvery"), sync);
-
-            //start checking alive
-            cMessage *checkAlive = new cMessage("checkAlive");
-            checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
-            scheduleAt(simTime()+par("checkAliveEvery"), checkAlive);
-        } else {
-            if (dynamic_cast<HF_SyncReply *>(msg) != NULL) {
-                HF_SyncReply *castMsg = (HF_SyncReply *)msg;
-                handleSyncReply(castMsg);
-            }
-            delete msg;
-        }
-    } else {
-        delete msg;
+void HyperFlowAgent::processQueuedMsg(cMessage *msg){
+    if (socket.belongsToSocket(msg)) {
+        socket.processMessage(msg);
     }
-
+    else {
+        auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
+        int socketId = tags.getTag<SocketInd>()->getSocketId();
+        throw cRuntimeError("model error: no socket found for msg '%s' with socketId %d", msg->getName(), socketId);
+    }
 }
-
 
 void HyperFlowAgent::sendReportIn(){
 
@@ -156,7 +181,7 @@ void HyperFlowAgent::sendSyncRequest(){
     }
 }
 
-void HyperFlowAgent::handleSyncReply(HF_SyncReply * msg){
+void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
     waitingForSyncResponse = false;
 
     //update control channel

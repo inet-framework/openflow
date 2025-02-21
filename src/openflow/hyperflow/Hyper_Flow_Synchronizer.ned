@@ -24,8 +24,8 @@ module Hyper_Flow_Synchronizer
         int numExtInterfaces = default(0);
         double serviceTime @unit("s") = default(0s);
 
-        string networkLayerType = default("IPv4NetworkLayer");
-        string routingTableType = default("IPv4RoutingTable");
+        string networkLayerType = default("Ipv4NetworkLayer");
+        string routingTableType = default("Ipv4RoutingTable");
         ethernet.registerProtocol = default(true);
         bool forwarding = default(false);
         bool multicastForwarding = default(false);

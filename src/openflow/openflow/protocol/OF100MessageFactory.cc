@@ -24,8 +24,9 @@
 #include <openflow/messages/OFP_Packet_In_m.h>
 #include <openflow/messages/OFP_Packet_Out_m.h>
 
-#include "inet/networklayer/arp/ipv4/ARPPacket_m.h"
-#include "inet/linklayer/ethernet/EtherFrame_m.h"
+#include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
+#include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
 using namespace inet;
 
@@ -38,13 +39,14 @@ OF100MessageFactory::OF100MessageFactory() {
 OF100MessageFactory::~OF100MessageFactory() {
 }
 
-OFP_Features_Reply* OF100MessageFactory::createFeaturesReply(std::string dpid,
+Packet* OF100MessageFactory::createFeaturesReply(std::string dpid,
         uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports) {
-    OFP_Features_Reply* msg = new OFP_Features_Reply("FeaturesReply");
+    auto msg = makeShared<OFP_Features_Reply>();
+    auto pk = new Packet("FeaturesReply");
 
     //set openflow header 8 Byte
-    msg->getHeader().version = OFP_VERSION;
-    msg->getHeader().type = OFPT_FEATURES_REPLY;
+    msg->getHeaderForUpdate().version = OFP_VERSION;
+    msg->getHeaderForUpdate().type = OFPT_FEATURES_REPLY;
 
     //set data fields
     msg->setDatapath_id(dpid.c_str()); // 8 Byte
@@ -53,32 +55,38 @@ OFP_Features_Reply* OF100MessageFactory::createFeaturesReply(std::string dpid,
     msg->setCapabilities(capabilities); // 4 Byte + actions 4 Byte = 8 Byte
     msg->setPortsArraySize(n_ports); // 10 Byte per port --> n_ports * 10
     //set message size
-    msg->setByteLength(24 + n_ports*10);
+    msg->setChunkLength(B(24 + n_ports*10));
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
 
-    return msg;
+    pk->insertAtFront(msg);
+    return pk;
 }
 
-OFP_Features_Request* OF100MessageFactory::createFeatureRequest() {
+Packet* OF100MessageFactory::createFeatureRequest() {
 
-    OFP_Features_Request *featuresRequest = new OFP_Features_Request("FeaturesRequest");
+    auto featuresRequest = makeShared<OFP_Features_Request>();
+    auto pk = new Packet("FeaturesRequest");
 
     //set header info 8 Byte
-    featuresRequest->getHeader().version = OFP_VERSION;
-    featuresRequest->getHeader().type = OFPT_FEATURES_REQUEST;
+    featuresRequest->getHeaderForUpdate().version = OFP_VERSION;
+    featuresRequest->getHeaderForUpdate().type = OFPT_FEATURES_REQUEST;
 
 
     //set message params
-    featuresRequest->setByteLength(8);
+    featuresRequest->setChunkLength(B(8));
+    featuresRequest->getHeaderForUpdate().length = 8;
 
-    return featuresRequest;
+    pk->insertAtFront(featuresRequest);
+    return pk;
 }
 
-OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut, uint32_t hardTimeOut) {
-    OFP_Flow_Mod *msg = new OFP_Flow_Mod("flow_mod");
+Packet* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut, uint32_t hardTimeOut) {
+    auto msg = makeShared<OFP_Flow_Mod>();
+    auto pk = new Packet("flow_mod");
 
     //set header info 8 Byte
-    msg->getHeader().version = OFP_VERSION;
-    msg->getHeader().type = OFPT_FLOW_MOD;
+    msg->getHeaderForUpdate().version = OFP_VERSION;
+    msg->getHeaderForUpdate().type = OFPT_FLOW_MOD;
 
     //set data fields
     msg->setMatch(match); //40 Byte
@@ -100,25 +108,31 @@ OFP_Flow_Mod* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod
     }
 
     //set message params
-    msg->setByteLength(69+4*n_outports);
+    msg->setChunkLength(B(69+4*n_outports));
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
 
-    return msg;
+    pk->insertAtFront(msg);
+    return pk;
 }
 
-OFP_Hello* OF100MessageFactory::createHello() {
-    OFP_Hello *msg = new OFP_Hello("Hello");
-    msg->getHeader().version = OFP_VERSION;
-    msg->getHeader().type = OFPT_HELLO;
-    msg->setByteLength(8);
-    return msg;
+Packet* OF100MessageFactory::createHello() {
+    auto msg = makeShared<OFP_Hello>();
+    auto pk = new Packet("Hello");
+    msg->getHeaderForUpdate().version = OFP_VERSION;
+    msg->getHeaderForUpdate().type = OFPT_HELLO;
+    msg->setChunkLength(B(8));
+    msg->getHeaderForUpdate().length = 8;
+    pk->insertAtFront(msg);
+    return pk;
 }
 
-OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, EthernetIIFrame *frame, uint32_t buffer_id, bool sendFullFrame) {
-   OFP_Packet_In *msg = new OFP_Packet_In("packetIn");
+Packet* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, Packet *ethPk, uint32_t buffer_id, bool sendFullFrame) {
+   auto msg = makeShared<OFP_Packet_In>();
+   auto pk = new Packet("packetIn");
 
    //create header 8 Byte
-   msg->getHeader().version = OFP_VERSION;
-   msg->getHeader().type = OFPT_PACKET_IN;
+   msg->getHeaderForUpdate().version = OFP_VERSION;
+   msg->getHeaderForUpdate().type = OFPT_PACKET_IN;
 
    //set data fields
    msg->setBuffer_id(buffer_id); // 4 Byte
@@ -128,36 +142,49 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
    // pad 1 Byte
 
    if(sendFullFrame){
-       msg->setByteLength(18);
-       msg->encapsulate(frame->dup());
+       msg->setChunkLength(B(18));
+       // msg->encapsulate(frame->dup());
+       pk->insertAtFront(ethPk->peekData());
+       msg->getHeaderForUpdate().length = 18 + pk->getByteLength();
+       oxm_basic_match match = oxm_basic_match();
+       match.OFB_IN_PORT = ethPk->getTag<InterfaceInd>()->getInterfaceId();
+//       match.OFB_ETH_SRC = frame->getSrc();
+//       match.OFB_ETH_DST = frame->getDest();
+//       match.OFB_ETH_TYPE = frame->getTypeOrLength();
+       msg->setMatch(match);
+       pk->insertAtFront(msg);
    } else {
+       auto frame = ethPk->popAtFront<EthernetMacHeader>();
        // packet in buffer so only send header fields
        oxm_basic_match match = oxm_basic_match();
-       match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
+       match.OFB_IN_PORT = ethPk->getTag<InterfaceInd>()->getInterfaceId();
 
        match.OFB_ETH_SRC = frame->getSrc();
        match.OFB_ETH_DST = frame->getDest();
-       match.OFB_ETH_TYPE = frame->getEtherType();
+       match.OFB_ETH_TYPE = frame->getTypeOrLength();
        //extract ARP specific match fields if present
-       if(frame->getEtherType()==ETHERTYPE_ARP){
-           ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
+       if (frame->getTypeOrLength() == ETHERTYPE_ARP) {
+           auto arpPacket = ethPk->peekAtFront<ArpPacket>();
            match.OFB_IP_PROTO = arpPacket->getOpcode();
-           match.OFB_IPV4_SRC = arpPacket->getSrcIPAddress();
-           match.OFB_IPV4_DST = arpPacket->getDestIPAddress();
+           match.OFB_IPV4_SRC = arpPacket->getSrcIpAddress();
+           match.OFB_IPV4_DST = arpPacket->getDestIpAddress();
        }
        msg->setMatch(match);// 6 Byte
-       msg->setByteLength(24);
+       msg->setChunkLength(B(24));
+       msg->getHeaderForUpdate().length = 24;
+       pk->insertAtFront(msg);
    }
 
-    return msg;
+   return pk;
 }
 
-OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, EthernetIIFrame *frame) {
-    OFP_Packet_Out *msg = new OFP_Packet_Out("packetOut");
+Packet* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id, Packet *ethPk) {
+    auto msg = makeShared<OFP_Packet_Out>();
+    auto pk = new Packet("packetOut");
 
     //create header 8 Byte
-    msg->getHeader().version = OFP_VERSION;
-    msg->getHeader().type = OFPT_PACKET_OUT;
+    msg->getHeaderForUpdate().version = OFP_VERSION;
+    msg->getHeaderForUpdate().type = OFPT_PACKET_OUT;
 
     msg->setBuffer_id(buffer_id); // 4 Byte
     msg->setIn_port(in_port); // 2 Byte
@@ -170,18 +197,20 @@ OFP_Packet_Out* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_o
         msg->setActions(i, *action_output);
     }
 
-    msg->setByteLength(16 + 4*n_outports);
+    msg->setChunkLength(B(16 + 4*n_outports));
 
     if (buffer_id == OFP_NO_BUFFER)
     {   //No Buffer so send full frame.
-        if(frame){
-            msg->encapsulate(frame->dup());
+        if(ethPk){
+            // msg->encapsulate(frame->dup());
+            pk->insertAtFront(ethPk->peekData());
         } else {
             throw cRuntimeError("OF100MessageFactory::createPacketOut: OFP_NO_BUFFER was set but no frame was provided.");
         }
     }
-
-    return msg;
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
+    pk->insertAtFront(msg);
+    return pk;
 }
 
 } /* namespace openflow */

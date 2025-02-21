@@ -14,7 +14,9 @@
 //
 
 cplusplus {{
-    #include "openflow/openflow/protocol/openflow.h"
+    #include "openflow/openflow/protocol/OpenFlow.h"
+
+	namespace openflow {
     inline std::ostream& operator<<(std::ostream& os, oxm_basic_match match)
     {
     	os << "OFB_ETH_TYPE: " << std::hex << match.OFB_ETH_TYPE << ", OFB_ETH_SRC: " << match.OFB_ETH_SRC;
@@ -29,7 +31,11 @@ cplusplus {{
 		os << "Port (hex): " << std::hex << action.port << endl;
 		return os;
 	}
+
+	} // namespace openflow;
 }};
+
+namespace openflow;
 
 class ofp_action_output
 {

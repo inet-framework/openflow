@@ -42,6 +42,7 @@ protected:
     static simsignal_t PacketOutSignalId;
     static simsignal_t PacketFeatureRequestSignalId;
     static simsignal_t PacketFeatureReplySignalId;
+    static simsignal_t PacketExperimenterSignalId;
     static simsignal_t BootedSignalId;
 
     long packetsFlooded = 0;
@@ -52,11 +53,11 @@ protected:
 
     OF_Controller * controller = nullptr;
 
-    virtual int numInitStages() const override { return NUM_INIT_STAGES; }
     virtual void initialize(int stage) override;
     virtual void finish() override;
     virtual void finish(cComponent *component, simsignal_t signalID) override {}
     //using cIListener::finish;
+    virtual void handleParameterChange(const char *parname) override;
 
     virtual void handleMessageWhenUp(cMessage *msg) override {
         throw cRuntimeError("Received message, this module should not receive a message");
@@ -64,13 +65,12 @@ protected:
 
 
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    virtual void finish() override;
-
 
     virtual Packet * createFloodPacketFromPacketIn(Packet *packet_in_msg);
     virtual Packet * createDropPacketFromPacketIn(Packet *packet_in_msg);
     virtual Packet * createPacketOutFromPacketIn(Packet *packet_in_msg, uint32_t outport);
-    virtual Packet * createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport,int idleTimeOut, int hardTimeOut);
+    virtual Packet * createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport, int idleTimeOut, int hardTimeOut);
+    virtual Packet * createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match &match, uint32_t outport, int priority, int idleTimeOut, int hardTimeOut);
 
     bool chekIcmpEchoRequest(Packet *pkt, int &seqNumber, int &identifier);
     virtual CommonHeaderFields extractCommonHeaderFields(Packet *packet_in_msg);

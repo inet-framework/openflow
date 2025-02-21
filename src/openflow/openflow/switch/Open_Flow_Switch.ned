@@ -36,12 +36,10 @@ module Open_Flow_Switch
 
         *.forwarding = this.forwarding;
         *.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
-        *.routingTableModule = default(absPath(".routingTable"));
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         etherMAC[*].encapType = default("EtherEncapDummy");
         etherMAC[*].csmacdSupport = this.csmacdSupport;
         etherMAC[*].macType = this.macType;
-        networkLayer.proxyARP = default(false); 
 
 
         etherMAC[*].duplexMode = this.duplexMode;
@@ -70,7 +68,7 @@ module Open_Flow_Switch
         etherMAC[sizeof(gateDataPlane)]: EthernetInterface {
             parameters:
                 mac.promiscuous = true;
-                @display("p=736,598,c,70");
+                @display("p=736,598,row,70");
         }
 
         at: MessageDispatcher {

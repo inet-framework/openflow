@@ -17,6 +17,6 @@ moduleinterface IOpenFlowController
         double bootTime @unit("s");// = default(0s);
         
     gates:
-        input tcpIn @labels(TcpCommand/up);
-        output tcpOut @labels(TcpCommand/down);
+        input socketIn @labels(TcpCommand/up);
+        output socketOut @labels(TcpCommand/down);
 }

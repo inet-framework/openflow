@@ -1,4 +1,5 @@
 #include "openflow/kandoo/KN_LLDPForwarding.h"
+#include "openflow/openflow/protocol/OFMatchFactory.h"
 #include <algorithm>
 #include <string>
 #include "inet/linklayer/ethernet/common/Ethernet.h"
@@ -40,7 +41,7 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
     CommonHeaderFields headerFields = extractCommonHeaderFields(pktIn);
 
     //ignore lldp packets
-    if(headerFields.eth_type == 0x88CC){
+    if(headerFields.eth_type == ETHERTYPE_LLDP){
         return;
     }
 
@@ -108,7 +109,7 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
         builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
         oxm_basic_match match = builder->build();
 
-        TcpSocket * socket = controller->findSocketFor(packet_in_msg);
+        TcpSocket * socket = controller->findSocketFor(pktIn);
         sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
 
         //concatenate route

@@ -1,6 +1,5 @@
 
 import openflow.messages.Open_Flow_Message;
-import inet.linklayer.ethernet.EtherFrame;
 
 namespace openflow;
 

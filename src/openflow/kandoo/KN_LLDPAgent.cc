@@ -35,10 +35,12 @@ void KN_LLDPAgent::handlePacketIn(Packet *pktIn){
     CommonHeaderFields headerFields = extractCommonHeaderFields(pktIn);
     //check if it is an lldp packet
     if(headerFields.eth_type == 0x88CC){
-        auto& fragmentTag = pktIn->getTag<FragmentTag>();
+        auto fragmentTag = pktIn->findTag<FragmentTag>();
+        if (fragmentTag != nullptr)
+            throw cRuntimeError("Fragment handling not implemented yet");
 
         //check if we have received the entire frame, if not the flow mods have not been sent yet
-        if(fragmentTag->getLastFragment()){
+//        if(fragmentTag->getLastFragment()){
             auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
             auto header =  pktIn->removeAtFront<EthernetMacHeader>();
             auto lldp = pktIn->peekAtFront<LLDP>();
@@ -70,10 +72,10 @@ void KN_LLDPAgent::handlePacketIn(Packet *pktIn){
             pktIn->insertAtFront(header);
             pktIn->insertAtFront(packet_in_msg);
 
-        } else {
-            //resend flow mod
-            triggerFlowMod(headerFields.swInfo);
-        }
+//        } else {
+//            //resend flow mod
+//            triggerFlowMod(headerFields.swInfo);
+//        }
      } else {
          //this could be a packet originating from an end device, check if the port is associated with an lldp entry
 

@@ -103,7 +103,7 @@ module Open_Flow_Controller
         }
         OF_Controller: OF_Controller {
             @display("p=424,48");
-            serviceTime = this.serviceTime;
+            serviceTime = parent.serviceTime;
         }
 
     connections allowunconnected:
@@ -149,8 +149,8 @@ module Open_Flow_Controller
 
         for i=0..sizeof(this.ethg)-1 {
             ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
-            eth[i].upperLayerOut --> networkLayer.ifIn[i];
-            eth[i].upperLayerIn <-- networkLayer.ifOut[i];
+            eth[i].upperLayerOut --> li.in++;
+            eth[i].upperLayerIn <-- li.out++;
         }
 
         for i=0..numTcpControllerApps-1 {
@@ -160,9 +160,4 @@ module Open_Flow_Controller
 
         OF_Controller.socketOut --> at.in++;
         OF_Controller.socketIn <-- at.out++;
-
-
-
 }
-
-
