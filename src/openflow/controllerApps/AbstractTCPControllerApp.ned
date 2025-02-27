@@ -15,15 +15,14 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-
 package openflow.controllerApps;
 
 import inet.applications.contract.IApp;
 
-
 //
-// Template for TCP applications. It shows what gates a TCP app
-// needs, to be able to be used in ~StandardHost etc.
+// [GENERATED DOCUMENTATION -- ACCURACY UNVERIFIED]
+// AbstractTCPControllerApp is a base class for OpenFlow controller applications that need
+// to communicate over TCP in addition to interacting with the OpenFlow controller.
 //
 simple AbstractTCPControllerApp like IControllerApp, IApp
 {
@@ -34,7 +33,12 @@ simple AbstractTCPControllerApp like IControllerApp, IApp
         @statistic[queueSize](title="QueueSize"; record=vector?,stats; interpolationmode=none);
         @signal[waitingTime](type="simtime_t");
         @statistic[waitingTime](title="WaitingTime"; record=vector?,stats?; interpolationmode=none);
+
+        // Processing time for each message (used to simulate processing delay).
+        // Messages are processed sequentially with this delay between them.
         double serviceTime @unit("s") = default(0s);
+
+        // Priority of flow entries installed by this application (higher values are matched first)
         int priority = default(1);
 
     gates:
