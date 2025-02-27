@@ -1,166 +1,166 @@
 # workingdir,                        args,                                          simtimelimit,    fingerprint
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop.ini -c General -r 0, 101s,            f2c3-a1d0
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Clients.ini -c General -r 0, 101s,            de03-b4cf
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Load.ini -c General -r 0, 101s,            1ec0-588d
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Load_Refined.ini -c General -r 0, 101s,            8c4a-be8c
-# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Traffic_Drop.ini -c General -r 0, 101s,            9374-c4d8
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Clients.ini -c General -r 0, 101s,            bb70-cd3a
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Drop.ini -c General -r 0, 101s,            8254-694b
-/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Flood.ini -c General -r 0, 101s,            8254-694b
-# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_Traffic_Drop.ini -c General -r 0, 101s,            c345-f53c
-# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_Traffic_Flood.ini -c General -r 0, 101s,            c345-f53c
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_2C.ini -c General -r 0, 101s,            e19c-127f
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_3C.ini -c General -r 0, 101s,            b780-44b8
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_4C.ini -c General -r 0, 101s,            27ca-8834
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_5C.ini -c General -r 0, 101s,            1138-b924
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_2C.ini -c General -r 0, 101s,            a86f-9b5c
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_3C.ini -c General -r 0, 101s,            3751-260f
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_4C.ini -c General -r 0, 101s,            be63-ec26
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_5C.ini -c General -r 0, 101s,            e4fd-fe4f
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_2C.ini -c General -r 0, 101s,            a86f-9b5c
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_3C.ini -c General -r 0, 101s,            3751-260f
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_4C.ini -c General -r 0, 101s,            be63-ec26
-/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_5C.ini -c General -r 0, 101s,            e4fd-fe4f
-/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_2C.ini -c General -r 0, 101s,            16e8-ee16
-/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_3C.ini -c General -r 0, 101s,            e0d2-d61c
-/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_4C.ini -c General -r 0, 101s,            35a0-68bd
-/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_5C.ini -c General -r 0, 101s,            f7ed-44c6
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_2C.ini -c General -r 0, 101s,            b544-7099
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_3C.ini -c General -r 0, 101s,            5e27-538f
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_4C.ini -c General -r 0, 101s,            cfcc-e7b4
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_5C.ini -c General -r 0, 101s,            92ba-4afc
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_2C.ini -c General -r 0, 101s,            b544-7099
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_3C.ini -c General -r 0, 101s,            5e27-538f
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_4C.ini -c General -r 0, 101s,            cfcc-e7b4
-/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_5C.ini -c General -r 0, 101s,            92ba-4afc
-#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_2CK4.ini -c General -r 0, 101s,            cfc5-acaa
-#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_3C.ini -c General -r 0, 101s,            dbe2-8038
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_2C.ini -c General -r 0, 101s,            4bb6-15c1
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_3C.ini -c General -r 0, 101s,            9768-3cf9
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            0a46-3be8
-/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_5C.ini -c General -r 0, 101s,            06ce-81c6
-/scenarios/kandoo/fattree/,          -f TestScenario_DynamicFatTree_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            13f2-9516
-/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_2C.ini -c General -r 0, 101s,            b91c-07da
-/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_3C.ini -c General -r 0, 101s,            8a7e-a05b
-/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            d976-36a2
-/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_5C.ini -c General -r 0, 101s,            d169-e6fa
-/scenarios/testcases/,               -f Scenario_TestCase_ARPResponder.ini -c General -r 0, 101s,            2127-a9ac
-/scenarios/testcases/,               -f Scenario_TestCase_BalancedMinHop.ini -c General -r 0, 101s,            2127-a9ac
-/scenarios/testcases/,               -f Scenario_TestCase_Diamond.ini -c General -r 0, 101s,            dfe1-a6e4
-/scenarios/testcases/,               -f Scenario_TestCase_Forwarding.ini -c General -r 0, 101s,            2127-a9ac
-/scenarios/testcases/,               -f Scenario_TestCase_Hub.ini -c General -r 0,  101s,            02a0-dfa5
-/scenarios/testcases/,               -f Scenario_TestCase_HyperFlow_ARPResponder.ini -c General -r 0, 101s,            6030-2e59
-/scenarios/testcases/,               -f Scenario_TestCase_HyperFlow_Forwarding.ini -c General -r 0, 101s,            6030-2e59
-/scenarios/testcases/,               -f Scenario_TestCase_KandooDiamond.ini -c General -r 0, 101s,            17b2-4af6
-/scenarios/testcases/,               -f Scenario_TestCase_KandooSplit.ini -c General -r 0, 101s,            e092-59ec
-/scenarios/testcases/,               -f Scenario_TestCase_LLDP.ini -c General -r 0, 101s,            dd9b-c570
-/scenarios/testcases/,               -f Scenario_TestCase_LearningSwitch.ini -c General -r 0, 101s,            02a0-dfa5
-# FAILS because of flow sizes file not found. /scenarios/testcases/,               -f Scenario_TestCase_TrafficGenerator.ini -c General -r 0, 101s,            e077-d15b
-/scenarios/topologyzoo/,             -f Agis.ini -c cfg1 -r 0,                      101s,            267a-fe1c
-/scenarios/topologyzoo/,             -f Agis_KN.ini -c cfg1 -r 0,                   101s,            52cd-421f
-/scenarios/topologyzoo/,             -f Arn.ini -c cfg1 -r 0,                       101s,            6cd3-c03d
-/scenarios/topologyzoo/,             -f Arn_KN.ini -c cfg1 -r 0,                    101s,            c65b-66db
-/scenarios/topologyzoo/,             -f Arnes.ini -c cfg1 -r 0,                     101s,            25a4-5c43
-/scenarios/topologyzoo/,             -f Arnes_KN.ini -c cfg1 -r 0,                  101s,            e504-eb7e
-/scenarios/topologyzoo/,             -f Arpanet19723.ini -c cfg1 -r 0,              101s,            2c91-3c0f
-/scenarios/topologyzoo/,             -f Arpanet19723_KN.ini -c cfg1 -r 0,           101s,            dfec-6ebf
-/scenarios/topologyzoo/,             -f Arpanet19728.ini -c cfg1 -r 0,              101s,            e6df-9a49
-/scenarios/topologyzoo/,             -f Arpanet19728_KN.ini -c cfg1 -r 0,           101s,            1585-127d
-/scenarios/topologyzoo/,             -f AttMpls.ini -c cfg1 -r 0,                   101s,            62f4-2711
-/scenarios/topologyzoo/,             -f AttMpls_KN.ini -c cfg1 -r 0,                101s,            0451-1636
-/scenarios/topologyzoo/,             -f Bbnplanet.ini -c cfg1 -r 0,                 101s,            285e-f550
-/scenarios/topologyzoo/,             -f Bbnplanet_KN.ini -c cfg1 -r 0,              101s,            3ee5-0d15
-/scenarios/topologyzoo/,             -f BeyondTheNetwork.ini -c cfg1 -r 0,          101s,            aeca-ca27
-/scenarios/topologyzoo/,             -f BeyondTheNetwork_KN.ini -c cfg1 -r 0,       101s,            1fcf-3077
-/scenarios/topologyzoo/,             -f Bics.ini -c cfg1 -r 0,                      101s,            2f7a-090b
-/scenarios/topologyzoo/,             -f Bics_KN.ini -c cfg1 -r 0,                   101s,            01c8-7994
-/scenarios/topologyzoo/,             -f Biznet.ini -c cfg1 -r 0,                    101s,            5f1a-97b3
-/scenarios/topologyzoo/,             -f Biznet_KN.ini -c cfg1 -r 0,                 101s,            54da-6665
-/scenarios/topologyzoo/,             -f Bren.ini -c cfg1 -r 0,                      101s,            59e3-9f25
-/scenarios/topologyzoo/,             -f Bren_KN.ini -c cfg1 -r 0,                   101s,            2808-306d
-/scenarios/topologyzoo/,             -f BtNorthAmerica.ini -c cfg1 -r 0,            101s,            5da7-919f
-/scenarios/topologyzoo/,             -f BtNorthAmerica_KN.ini -c cfg1 -r 0,         101s,            fbb5-9a4b
-/scenarios/topologyzoo/,             -f Cernet.ini -c cfg1 -r 0,                    101s,            f12d-9c8c
-/scenarios/topologyzoo/,             -f Cernet_KN.ini -c cfg1 -r 0,                 101s,            d2b0-f31f
-/scenarios/topologyzoo/,             -f Cesnet200304.ini -c cfg1 -r 0,              101s,            0fe5-ab5f
-/scenarios/topologyzoo/,             -f Cesnet200304_KN.ini -c cfg1 -r 0,           101s,            4819-5267
-/scenarios/topologyzoo/,             -f Cesnet200511.ini -c cfg1 -r 0,              101s,            1a44-7b61
-/scenarios/topologyzoo/,             -f Cesnet200511_KN.ini -c cfg1 -r 0,           101s,            b183-a20a
-/scenarios/topologyzoo/,             -f Cesnet200603.ini -c cfg1 -r 0,              101s,            d30d-b7b1
-/scenarios/topologyzoo/,             -f Cesnet200603_KN.ini -c cfg1 -r 0,           101s,            d901-606a
-/scenarios/topologyzoo/,             -f Cesnet200706.ini -c cfg1 -r 0,              101s,            1de5-0a1e
-/scenarios/topologyzoo/,             -f Cesnet200706_KN.ini -c cfg1 -r 0,           101s,            4bc5-e2d6
-/scenarios/topologyzoo/,             -f Chinanet.ini -c cfg1 -r 0,                  101s,            beff-a611
-/scenarios/topologyzoo/,             -f Chinanet_KN.ini -c cfg1 -r 0,               101s,            a3e6-487a
-/scenarios/topologyzoo/,             -f CrlNetworkServices.ini -c cfg1 -r 0,        101s,            e4e5-18f6
-/scenarios/topologyzoo/,             -f CrlNetworkServices_KN.ini -c cfg1 -r 0,     101s,            6c7d-bfa7
-/scenarios/topologyzoo/,             -f Darkstrand.ini -c cfg1 -r 0,                101s,            334f-f9aa
-/scenarios/topologyzoo/,             -f Darkstrand_KN.ini -c cfg1 -r 0,             101s,            c892-b0e3
-/scenarios/topologyzoo/,             -f Digex.ini -c cfg1 -r 0,                     101s,            abbf-8f27
-/scenarios/topologyzoo/,             -f Digex_KN.ini -c cfg1 -r 0,                  101s,            2862-ee14
-/scenarios/topologyzoo/,             -f Evolink.ini -c cfg1 -r 0,                   101s,            66d2-a294
-/scenarios/topologyzoo/,             -f Evolink_KN.ini -c cfg1 -r 0,                101s,            d90f-f022
-/scenarios/topologyzoo/,             -f Geant2001.ini -c cfg1 -r 0,                 101s,            5ad8-5590
-/scenarios/topologyzoo/,             -f Geant2001_KN.ini -c cfg1 -r 0,              101s,            0dcc-d5de
-/scenarios/topologyzoo/,             -f Geant2009.ini -c cfg1 -r 0,                 101s,            0f38-9c36
-/scenarios/topologyzoo/,             -f Geant2009_KN.ini -c cfg1 -r 0,              101s,            6f63-b3c3
-/scenarios/topologyzoo/,             -f Geant2010.ini -c cfg1 -r 0,                 101s,            fa03-b233
-/scenarios/topologyzoo/,             -f Geant2010_KN.ini -c cfg1 -r 0,              101s,            b280-b7a8
-/scenarios/topologyzoo/,             -f Geant2012.ini -c cfg1 -r 0,                 101s,            eb48-1880
-/scenarios/topologyzoo/,             -f Geant2012_KN.ini -c cfg1 -r 0,              101s,            35da-e897
-/scenarios/topologyzoo/,             -f Grnet.ini -c cfg1 -r 0,                     101s,            e514-19d4
-/scenarios/topologyzoo/,             -f Grnet_KN.ini -c cfg1 -r 0,                  101s,            e26d-c77a
-/scenarios/topologyzoo/,             -f GtsCzechRepublic.ini -c cfg1 -r 0,          101s,            1d25-b567
-/scenarios/topologyzoo/,             -f GtsCzechRepublic_KN.ini -c cfg1 -r 0,       101s,            6731-5aff
-/scenarios/topologyzoo/,             -f GtsPoland.ini -c cfg1 -r 0,                 101s,            56ca-db1f
-/scenarios/topologyzoo/,             -f GtsPoland_KN.ini -c cfg1 -r 0,              101s,            9461-c453
-/scenarios/topologyzoo/,             -f GtsSlovakia.ini -c cfg1 -r 0,               101s,            f7e3-ecdc
-/scenarios/topologyzoo/,             -f GtsSlovakia_KN.ini -c cfg1 -r 0,            101s,            af6a-4922
-/scenarios/topologyzoo/,             -f Iij.ini -c cfg1 -r 0,                       101s,            1fba-ccb7
-/scenarios/topologyzoo/,             -f Iij_KN.ini -c cfg1 -r 0,                    101s,            52dc-e1d4
-/scenarios/topologyzoo/,             -f Integra.ini -c cfg1 -r 0,                   101s,            8ad1-3ae9
-/scenarios/topologyzoo/,             -f Integra_KN.ini -c cfg1 -r 0,                101s,            8059-4141
-/scenarios/topologyzoo/,             -f Janetbackbone.ini -c cfg1 -r 0,             101s,            a055-1ada
-/scenarios/topologyzoo/,             -f Janetbackbone_KN.ini -c cfg1 -r 0,          101s,            9114-ff1d
-/scenarios/topologyzoo/,             -f KentmanFeb2008.ini -c cfg1 -r 0,            101s,            97d9-a947
-/scenarios/topologyzoo/,             -f KentmanFeb2008_KN.ini -c cfg1 -r 0,         101s,            5aed-d775
-/scenarios/topologyzoo/,             -f KentmanJan2011.ini -c cfg1 -r 0,            101s,            8c81-b52c
-/scenarios/topologyzoo/,             -f KentmanJan2011_KN.ini -c cfg1 -r 0,         101s,            3248-eb96
-/scenarios/topologyzoo/,             -f LambdaNet.ini -c cfg1 -r 0,                 101s,            8bd4-58f6
-/scenarios/topologyzoo/,             -f LambdaNet_KN.ini -c cfg1 -r 0,              101s,            1496-d904
-/scenarios/topologyzoo/,             -f Litnet.ini -c cfg1 -r 0,                    101s,            3112-0545
-/scenarios/topologyzoo/,             -f Litnet_KN.ini -c cfg1 -r 0,                 101s,            475c-f11e
-/scenarios/topologyzoo/,             -f NetworkUsa.ini -c cfg1 -r 0,                101s,            5b76-8fec
-/scenarios/topologyzoo/,             -f NetworkUsa_KN.ini -c cfg1 -r 0,             101s,            5d15-8f4c
-/scenarios/topologyzoo/,             -f Niif.ini -c cfg1 -r 0,                      101s,            caaf-98b4
-/scenarios/topologyzoo/,             -f Niif_KN.ini -c cfg1 -r 0,                   101s,            032b-50e0
-/scenarios/topologyzoo/,             -f PionierL3.ini -c cfg1 -r 0,                 101s,            424c-7e54
-/scenarios/topologyzoo/,             -f PionierL3_KN.ini -c cfg1 -r 0,              101s,            5552-9e37
-/scenarios/topologyzoo/,             -f Renater2006.ini -c cfg1 -r 0,               101s,            4694-3794
-/scenarios/topologyzoo/,             -f Renater2006_KN.ini -c cfg1 -r 0,            101s,            d0b1-7598
-/scenarios/topologyzoo/,             -f Renater2008.ini -c cfg1 -r 0,               101s,            1ce9-7097
-/scenarios/topologyzoo/,             -f Renater2008_KN.ini -c cfg1 -r 0,            101s,            5cbc-1cbe
-/scenarios/topologyzoo/,             -f Renater2010.ini -c cfg1 -r 0,               101s,            1b95-c526
-/scenarios/topologyzoo/,             -f Renater2010_KN.ini -c cfg1 -r 0,            101s,            27d4-fa0a
-/scenarios/topologyzoo/,             -f Rnp.ini -c cfg1 -r 0,                       101s,            bbc1-be52
-/scenarios/topologyzoo/,             -f Rnp_KN.ini -c cfg1 -r 0,                    101s,            89be-1d95
-/scenarios/topologyzoo/,             -f Roedunet.ini -c cfg1 -r 0,                  101s,            6210-379c
-/scenarios/topologyzoo/,             -f Roedunet_KN.ini -c cfg1 -r 0,               101s,            61ef-ca64
-/scenarios/topologyzoo/,             -f Sanet.ini -c cfg1 -r 0,                     101s,            6f7f-5964
-/scenarios/topologyzoo/,             -f Sanet_KN.ini -c cfg1 -r 0,                  101s,            f07c-b18b
-/scenarios/topologyzoo/,             -f Sunet.ini -c cfg1 -r 0,                     101s,            9e88-497e
-/scenarios/topologyzoo/,             -f Sunet_KN.ini -c cfg1 -r 0,                  101s,            e8fa-24e6
-/scenarios/topologyzoo/,             -f SwitchL3.ini -c cfg1 -r 0,                  101s,            3086-259f
-/scenarios/topologyzoo/,             -f SwitchL3_KN.ini -c cfg1 -r 0,               101s,            fb10-f39c
-/scenarios/topologyzoo/,             -f Xspedius.ini -c cfg1 -r 0,                  101s,            b617-a22e
-/scenarios/topologyzoo/,             -f Xspedius_KN.ini -c cfg1 -r 0,               101s,            5979-ae97
-/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop.ini -c General -r 0, 101s,            8bf9-8dfa
-/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Clients_Packets.ini -c General -r 0, 101s,            3469-e361
-/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Load.ini -c General -r 0, 101s,            02db-0a5e
-/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Load_Refined.ini -c General -r 0, 101s,            3a94-87a4
-# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_ARP_Traffic_Drop.ini -c General -r 0, 101s,            760c-6356
-/scenarios/usa/,                     -f Scenario_USA_Ping_Drop.ini -c General -r 0, 101s,            07d4-ba15
-/scenarios/usa/,                     -f Scenario_USA_Ping_Drop_Clients_Packets.ini -c General -r 0, 101s,            3469-e361
-/scenarios/usa/,                     -f Scenario_USA_Ping_Flood.ini -c General -r 0, 101s,            07d4-ba15
-# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_Traffic_Drop.ini -c General -r 0, 101s,            760c-6356
-# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_Traffic_Flood.ini -c General -r 0, 101s,            760c-6356
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop.ini -c General -r 0, 101s,            f2c3-a1d0/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Clients.ini -c General -r 0, 101s,            de03-b4cf/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Load.ini -c General -r 0, 101s,            1ec0-588d/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Ping_Drop_Load_Refined.ini -c General -r 0, 101s,            8c4a-be8c/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_ARP_Traffic_Drop.ini -c General -r 0, 101s,            9374-c4d8/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Clients.ini -c General -r 0, 101s,            bb70-cd3a/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Drop.ini -c General -r 0, 101s,            8254-694b/tplx, PASS,
+/scenarios/fattree/,                 -f Scenario_DynamicFatTree_Ping_Flood.ini -c General -r 0, 101s,            8254-694b/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_Traffic_Drop.ini -c General -r 0, 101s,            c345-f53c/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/fattree/,                 -f Scenario_DynamicFatTree_Traffic_Flood.ini -c General -r 0, 101s,            c345-f53c/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_2C.ini -c General -r 0, 101s,            e19c-127f/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_3C.ini -c General -r 0, 101s,            b780-44b8/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_4C.ini -c General -r 0, 101s,            27ca-8834/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_ARP_HF_Ping_5C.ini -c General -r 0, 101s,            1138-b924/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_2C.ini -c General -r 0, 101s,            a86f-9b5c/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_3C.ini -c General -r 0, 101s,            3751-260f/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_4C.ini -c General -r 0, 101s,            be63-ec26/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_5C.ini -c General -r 0, 101s,            e4fd-fe4f/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_2C.ini -c General -r 0, 101s,            a86f-9b5c/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_3C.ini -c General -r 0, 101s,            3751-260f/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_4C.ini -c General -r 0, 101s,            be63-ec26/tplx, PASS,
+/scenarios/hyperflow/fattree/,       -f Scenario_DynamicFatTree_HF_Ping_Flood_5C.ini -c General -r 0, 101s,            e4fd-fe4f/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_2C.ini -c General -r 0, 101s,            16e8-ee16/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_3C.ini -c General -r 0, 101s,            e0d2-d61c/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_4C.ini -c General -r 0, 101s,            35a0-68bd/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_ARP_HF_Ping_5C.ini -c General -r 0, 101s,            f7ed-44c6/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_2C.ini -c General -r 0, 101s,            b544-7099/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_3C.ini -c General -r 0, 101s,            5e27-538f/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_4C.ini -c General -r 0, 101s,            cfcc-e7b4/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_5C.ini -c General -r 0, 101s,            92ba-4afc/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_2C.ini -c General -r 0, 101s,            b544-7099/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_3C.ini -c General -r 0, 101s,            5e27-538f/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_4C.ini -c General -r 0, 101s,            cfcc-e7b4/tplx, PASS,
+/scenarios/hyperflow/usa/,           -f Scenario_USA_HF_Ping_Flood_5C.ini -c General -r 0, 101s,            92ba-4afc/tplx, PASS,
+#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_2CK4.ini -c General -r 0, 101s,            cfc5-acaa/tplx, PASS,
+#/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_PingLocal_3C.ini -c General -r 0, 101s,            dbe2-8038/tplx, PASS,
+/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_2C.ini -c General -r 0, 101s,            4bb6-15c1/tplx, PASS,
+/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_3C.ini -c General -r 0, 101s,            9768-3cf9/tplx, PASS,
+/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            0a46-3be8/tplx, PASS,
+/scenarios/kandoo/fattree/,          -f Scenario_DynamicFatTree_ARP_KN_Ping_5C.ini -c General -r 0, 101s,            06ce-81c6/tplx, PASS,
+/scenarios/kandoo/fattree/,          -f TestScenario_DynamicFatTree_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            13f2-9516/tplx, PASS,
+/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_2C.ini -c General -r 0, 101s,            b91c-07da/tplx, PASS,
+/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_3C.ini -c General -r 0, 101s,            8a7e-a05b/tplx, PASS,
+/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_4C.ini -c General -r 0, 101s,            d976-36a2/tplx, PASS,
+/scenarios/kandoo/usa/,              -f Scenario_USA_ARP_KN_Ping_5C.ini -c General -r 0, 101s,            d169-e6fa/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_ARPResponder.ini -c General -r 0, 101s,            2127-a9ac/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_BalancedMinHop.ini -c General -r 0, 101s,            2127-a9ac/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_Diamond.ini -c General -r 0, 101s,            dfe1-a6e4/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_Forwarding.ini -c General -r 0, 101s,            2127-a9ac/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_Hub.ini -c General -r 0,  101s,            02a0-dfa5/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_HyperFlow_ARPResponder.ini -c General -r 0, 101s,            6030-2e59/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_HyperFlow_Forwarding.ini -c General -r 0, 101s,            6030-2e59/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_KandooDiamond.ini -c General -r 0, 101s,            17b2-4af6/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_KandooSplit.ini -c General -r 0, 101s,            e092-59ec/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_LLDP.ini -c General -r 0, 101s,            dd9b-c570/tplx, PASS,
+/scenarios/testcases/,               -f Scenario_TestCase_LearningSwitch.ini -c General -r 0, 101s,            02a0-dfa5/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/testcases/,               -f Scenario_TestCase_TrafficGenerator.ini -c General -r 0, 101s,            e077-d15b/tplx, PASS,
+/scenarios/topologyzoo/,             -f Agis.ini -c cfg1 -r 0,                      101s,            267a-fe1c/tplx, PASS,
+/scenarios/topologyzoo/,             -f Agis_KN.ini -c cfg1 -r 0,                   101s,            52cd-421f/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arn.ini -c cfg1 -r 0,                       101s,            6cd3-c03d/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arn_KN.ini -c cfg1 -r 0,                    101s,            c65b-66db/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arnes.ini -c cfg1 -r 0,                     101s,            25a4-5c43/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arnes_KN.ini -c cfg1 -r 0,                  101s,            e504-eb7e/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arpanet19723.ini -c cfg1 -r 0,              101s,            2c91-3c0f/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arpanet19723_KN.ini -c cfg1 -r 0,           101s,            dfec-6ebf/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arpanet19728.ini -c cfg1 -r 0,              101s,            e6df-9a49/tplx, PASS,
+/scenarios/topologyzoo/,             -f Arpanet19728_KN.ini -c cfg1 -r 0,           101s,            1585-127d/tplx, PASS,
+/scenarios/topologyzoo/,             -f AttMpls.ini -c cfg1 -r 0,                   101s,            62f4-2711/tplx, PASS,
+/scenarios/topologyzoo/,             -f AttMpls_KN.ini -c cfg1 -r 0,                101s,            0451-1636/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bbnplanet.ini -c cfg1 -r 0,                 101s,            285e-f550/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bbnplanet_KN.ini -c cfg1 -r 0,              101s,            3ee5-0d15/tplx, PASS,
+/scenarios/topologyzoo/,             -f BeyondTheNetwork.ini -c cfg1 -r 0,          101s,            aeca-ca27/tplx, PASS,
+/scenarios/topologyzoo/,             -f BeyondTheNetwork_KN.ini -c cfg1 -r 0,       101s,            1fcf-3077/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bics.ini -c cfg1 -r 0,                      101s,            2f7a-090b/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bics_KN.ini -c cfg1 -r 0,                   101s,            01c8-7994/tplx, PASS,
+/scenarios/topologyzoo/,             -f Biznet.ini -c cfg1 -r 0,                    101s,            5f1a-97b3/tplx, PASS,
+/scenarios/topologyzoo/,             -f Biznet_KN.ini -c cfg1 -r 0,                 101s,            54da-6665/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bren.ini -c cfg1 -r 0,                      101s,            59e3-9f25/tplx, PASS,
+/scenarios/topologyzoo/,             -f Bren_KN.ini -c cfg1 -r 0,                   101s,            2808-306d/tplx, PASS,
+/scenarios/topologyzoo/,             -f BtNorthAmerica.ini -c cfg1 -r 0,            101s,            5da7-919f/tplx, PASS,
+/scenarios/topologyzoo/,             -f BtNorthAmerica_KN.ini -c cfg1 -r 0,         101s,            fbb5-9a4b/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cernet.ini -c cfg1 -r 0,                    101s,            f12d-9c8c/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cernet_KN.ini -c cfg1 -r 0,                 101s,            d2b0-f31f/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200304.ini -c cfg1 -r 0,              101s,            0fe5-ab5f/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200304_KN.ini -c cfg1 -r 0,           101s,            4819-5267/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200511.ini -c cfg1 -r 0,              101s,            1a44-7b61/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200511_KN.ini -c cfg1 -r 0,           101s,            b183-a20a/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200603.ini -c cfg1 -r 0,              101s,            d30d-b7b1/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200603_KN.ini -c cfg1 -r 0,           101s,            d901-606a/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200706.ini -c cfg1 -r 0,              101s,            1de5-0a1e/tplx, PASS,
+/scenarios/topologyzoo/,             -f Cesnet200706_KN.ini -c cfg1 -r 0,           101s,            4bc5-e2d6/tplx, PASS,
+/scenarios/topologyzoo/,             -f Chinanet.ini -c cfg1 -r 0,                  101s,            beff-a611/tplx, PASS,
+/scenarios/topologyzoo/,             -f Chinanet_KN.ini -c cfg1 -r 0,               101s,            a3e6-487a/tplx, PASS,
+/scenarios/topologyzoo/,             -f CrlNetworkServices.ini -c cfg1 -r 0,        101s,            e4e5-18f6/tplx, PASS,
+/scenarios/topologyzoo/,             -f CrlNetworkServices_KN.ini -c cfg1 -r 0,     101s,            6c7d-bfa7/tplx, PASS,
+/scenarios/topologyzoo/,             -f Darkstrand.ini -c cfg1 -r 0,                101s,            334f-f9aa/tplx, PASS,
+/scenarios/topologyzoo/,             -f Darkstrand_KN.ini -c cfg1 -r 0,             101s,            c892-b0e3/tplx, PASS,
+/scenarios/topologyzoo/,             -f Digex.ini -c cfg1 -r 0,                     101s,            abbf-8f27/tplx, PASS,
+/scenarios/topologyzoo/,             -f Digex_KN.ini -c cfg1 -r 0,                  101s,            2862-ee14/tplx, PASS,
+/scenarios/topologyzoo/,             -f Evolink.ini -c cfg1 -r 0,                   101s,            66d2-a294/tplx, PASS,
+/scenarios/topologyzoo/,             -f Evolink_KN.ini -c cfg1 -r 0,                101s,            d90f-f022/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2001.ini -c cfg1 -r 0,                 101s,            5ad8-5590/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2001_KN.ini -c cfg1 -r 0,              101s,            0dcc-d5de/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2009.ini -c cfg1 -r 0,                 101s,            0f38-9c36/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2009_KN.ini -c cfg1 -r 0,              101s,            6f63-b3c3/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2010.ini -c cfg1 -r 0,                 101s,            fa03-b233/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2010_KN.ini -c cfg1 -r 0,              101s,            b280-b7a8/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2012.ini -c cfg1 -r 0,                 101s,            eb48-1880/tplx, PASS,
+/scenarios/topologyzoo/,             -f Geant2012_KN.ini -c cfg1 -r 0,              101s,            35da-e897/tplx, PASS,
+/scenarios/topologyzoo/,             -f Grnet.ini -c cfg1 -r 0,                     101s,            e514-19d4/tplx, PASS,
+/scenarios/topologyzoo/,             -f Grnet_KN.ini -c cfg1 -r 0,                  101s,            e26d-c77a/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsCzechRepublic.ini -c cfg1 -r 0,          101s,            1d25-b567/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsCzechRepublic_KN.ini -c cfg1 -r 0,       101s,            6731-5aff/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsPoland.ini -c cfg1 -r 0,                 101s,            56ca-db1f/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsPoland_KN.ini -c cfg1 -r 0,              101s,            9461-c453/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsSlovakia.ini -c cfg1 -r 0,               101s,            f7e3-ecdc/tplx, PASS,
+/scenarios/topologyzoo/,             -f GtsSlovakia_KN.ini -c cfg1 -r 0,            101s,            af6a-4922/tplx, PASS,
+/scenarios/topologyzoo/,             -f Iij.ini -c cfg1 -r 0,                       101s,            1fba-ccb7/tplx, PASS,
+/scenarios/topologyzoo/,             -f Iij_KN.ini -c cfg1 -r 0,                    101s,            52dc-e1d4/tplx, PASS,
+/scenarios/topologyzoo/,             -f Integra.ini -c cfg1 -r 0,                   101s,            8ad1-3ae9/tplx, PASS,
+/scenarios/topologyzoo/,             -f Integra_KN.ini -c cfg1 -r 0,                101s,            8059-4141/tplx, PASS,
+/scenarios/topologyzoo/,             -f Janetbackbone.ini -c cfg1 -r 0,             101s,            a055-1ada/tplx, PASS,
+/scenarios/topologyzoo/,             -f Janetbackbone_KN.ini -c cfg1 -r 0,          101s,            9114-ff1d/tplx, PASS,
+/scenarios/topologyzoo/,             -f KentmanFeb2008.ini -c cfg1 -r 0,            101s,            97d9-a947/tplx, PASS,
+/scenarios/topologyzoo/,             -f KentmanFeb2008_KN.ini -c cfg1 -r 0,         101s,            5aed-d775/tplx, PASS,
+/scenarios/topologyzoo/,             -f KentmanJan2011.ini -c cfg1 -r 0,            101s,            8c81-b52c/tplx, PASS,
+/scenarios/topologyzoo/,             -f KentmanJan2011_KN.ini -c cfg1 -r 0,         101s,            3248-eb96/tplx, PASS,
+/scenarios/topologyzoo/,             -f LambdaNet.ini -c cfg1 -r 0,                 101s,            8bd4-58f6/tplx, PASS,
+/scenarios/topologyzoo/,             -f LambdaNet_KN.ini -c cfg1 -r 0,              101s,            1496-d904/tplx, PASS,
+/scenarios/topologyzoo/,             -f Litnet.ini -c cfg1 -r 0,                    101s,            3112-0545/tplx, PASS,
+/scenarios/topologyzoo/,             -f Litnet_KN.ini -c cfg1 -r 0,                 101s,            475c-f11e/tplx, PASS,
+/scenarios/topologyzoo/,             -f NetworkUsa.ini -c cfg1 -r 0,                101s,            5b76-8fec/tplx, PASS,
+/scenarios/topologyzoo/,             -f NetworkUsa_KN.ini -c cfg1 -r 0,             101s,            5d15-8f4c/tplx, PASS,
+/scenarios/topologyzoo/,             -f Niif.ini -c cfg1 -r 0,                      101s,            caaf-98b4/tplx, PASS,
+/scenarios/topologyzoo/,             -f Niif_KN.ini -c cfg1 -r 0,                   101s,            032b-50e0/tplx, PASS,
+/scenarios/topologyzoo/,             -f PionierL3.ini -c cfg1 -r 0,                 101s,            424c-7e54/tplx, PASS,
+/scenarios/topologyzoo/,             -f PionierL3_KN.ini -c cfg1 -r 0,              101s,            5552-9e37/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2006.ini -c cfg1 -r 0,               101s,            4694-3794/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2006_KN.ini -c cfg1 -r 0,            101s,            d0b1-7598/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2008.ini -c cfg1 -r 0,               101s,            1ce9-7097/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2008_KN.ini -c cfg1 -r 0,            101s,            5cbc-1cbe/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2010.ini -c cfg1 -r 0,               101s,            1b95-c526/tplx, PASS,
+/scenarios/topologyzoo/,             -f Renater2010_KN.ini -c cfg1 -r 0,            101s,            27d4-fa0a/tplx, PASS,
+/scenarios/topologyzoo/,             -f Rnp.ini -c cfg1 -r 0,                       101s,            bbc1-be52/tplx, PASS,
+/scenarios/topologyzoo/,             -f Rnp_KN.ini -c cfg1 -r 0,                    101s,            89be-1d95/tplx, PASS,
+/scenarios/topologyzoo/,             -f Roedunet.ini -c cfg1 -r 0,                  101s,            6210-379c/tplx, PASS,
+/scenarios/topologyzoo/,             -f Roedunet_KN.ini -c cfg1 -r 0,               101s,            61ef-ca64/tplx, PASS,
+/scenarios/topologyzoo/,             -f Sanet.ini -c cfg1 -r 0,                     101s,            6f7f-5964/tplx, PASS,
+/scenarios/topologyzoo/,             -f Sanet_KN.ini -c cfg1 -r 0,                  101s,            f07c-b18b/tplx, PASS,
+/scenarios/topologyzoo/,             -f Sunet.ini -c cfg1 -r 0,                     101s,            9e88-497e/tplx, PASS,
+/scenarios/topologyzoo/,             -f Sunet_KN.ini -c cfg1 -r 0,                  101s,            e8fa-24e6/tplx, PASS,
+/scenarios/topologyzoo/,             -f SwitchL3.ini -c cfg1 -r 0,                  101s,            3086-259f/tplx, PASS,
+/scenarios/topologyzoo/,             -f SwitchL3_KN.ini -c cfg1 -r 0,               101s,            fb10-f39c/tplx, PASS,
+/scenarios/topologyzoo/,             -f Xspedius.ini -c cfg1 -r 0,                  101s,            b617-a22e/tplx, PASS,
+/scenarios/topologyzoo/,             -f Xspedius_KN.ini -c cfg1 -r 0,               101s,            5979-ae97/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop.ini -c General -r 0, 101s,            8bf9-8dfa/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Clients_Packets.ini -c General -r 0, 101s,            3469-e361/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Load.ini -c General -r 0, 101s,            02db-0a5e/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_ARP_Ping_Drop_Load_Refined.ini -c General -r 0, 101s,            3a94-87a4/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_ARP_Traffic_Drop.ini -c General -r 0, 101s,            760c-6356/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_Ping_Drop.ini -c General -r 0, 101s,            07d4-ba15/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_Ping_Drop_Clients_Packets.ini -c General -r 0, 101s,            3469-e361/tplx, PASS,
+/scenarios/usa/,                     -f Scenario_USA_Ping_Flood.ini -c General -r 0, 101s,            07d4-ba15/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_Traffic_Drop.ini -c General -r 0, 101s,            760c-6356/tplx, PASS,
+# FAILS because of flow sizes file not found. /scenarios/usa/,                     -f Scenario_USA_Traffic_Flood.ini -c General -r 0, 101s,            760c-6356/tplx, PASS,
