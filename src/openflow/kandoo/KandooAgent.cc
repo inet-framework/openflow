@@ -73,6 +73,10 @@ void KandooAgent::processQueuedMsg(cMessage *msg){
         if(dynamic_cast<KN_Packet *>(msg) != NULL){
             KN_Packet *castMsg = (KN_Packet *)msg;
 
+            cObject *payload = castMsg->getKnEntry().payload;
+            if (payload && payload->isOwnedObject())
+                take(static_cast<cOwnedObject *>(payload));
+
             bool found = false;
             std::list<SwitchControllerMapping>::iterator iter;
             for(iter = switchControllerMapping.begin(); iter != switchControllerMapping.end();iter++){
@@ -91,7 +95,7 @@ void KandooAgent::processQueuedMsg(cMessage *msg){
             }
 
             handleKandooPacket(castMsg);
-            delete castMsg->getKnEntry().payload;
+            delete payload;
         } else {
             TCPSocket *socket = findSocketFor(msg);
             if(!socket){
@@ -110,8 +114,11 @@ void KandooAgent::processQueuedMsg(cMessage *msg){
              } else {
                  if (dynamic_cast<KN_Packet *>(msg) != NULL) {
                      KN_Packet *castMsg = (KN_Packet *)msg;
+                     cObject *payload = castMsg->getKnEntry().payload;
+                     if (payload && payload->isOwnedObject())
+                         take(static_cast<cOwnedObject *>(payload));
                      handleKandooPacket(castMsg);
-                     delete castMsg->getKnEntry().payload;
+                     delete payload;
                  }
 
                  delete msg;

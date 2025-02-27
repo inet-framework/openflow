@@ -210,7 +210,9 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
                                    entry.srcSwitch = "";
                                    entry.type=2;
                                    entry.srcController = knpck->getKnEntry().trgController;
-                                   entry.payload = createFloodPacketFromPacketIn(pckin);
+                                   auto payload = createFloodPacketFromPacketIn(pckin);
+                                   drop(payload);
+                                   entry.payload = payload;
 
                                    knAgent->sendReply(knpck,entry);
                                }
