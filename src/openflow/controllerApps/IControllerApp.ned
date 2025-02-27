@@ -22,10 +22,10 @@ package openflow.controllerApps;
 // Template for TCP applications. It shows what gates a TCP app
 // needs, to be able to be used in ~StandardHost etc.
 //
-moduleinterface AbstractControllerApp
+moduleinterface IControllerApp
 {
     parameters:
-        @class(openflow::AbstractControllerApp);
+        @class(openflow::IControllerApp);
         @signal[PacketIn];
         @signal[PacketOut];
         @signal[PacketFeatureRequest];

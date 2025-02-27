@@ -9,7 +9,7 @@ import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
 import inet.transportlayer.contract.ITcp;
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
 
 //
@@ -74,7 +74,7 @@ module Open_Flow_Controller
             @display("p=352,478");
         }
 
-        controllerApps[numControllerApps]: <> like AbstractControllerApp {
+        controllerApps[numControllerApps]: <> like IControllerApp {
             parameters:
                 @display("p=654,36,row,60");
         }

@@ -1,9 +1,9 @@
 
 package openflow.hyperflow;
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
 
-simple HF_ARPResponder like AbstractControllerApp
+simple HF_ARPResponder like IControllerApp
 {
     parameters:
         @class(openflow::HF_ARPResponder);

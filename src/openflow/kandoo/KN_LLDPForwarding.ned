@@ -1,10 +1,10 @@
 
 
 package openflow.kandoo;
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
 
-simple KN_LLDPForwarding like AbstractControllerApp
+simple KN_LLDPForwarding like IControllerApp
 {
     parameters:
         @class(openflow::KN_LLDPForwarding);
