@@ -1,8 +1,8 @@
 package openflow.kandoo;
 
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
-simple KN_LLDPAgent like AbstractControllerApp
+simple KN_LLDPAgent like IControllerApp
 {
     parameters:
         @class(openflow::KN_LLDPAgent);

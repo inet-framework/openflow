@@ -25,7 +25,7 @@ import inet.applications.contract.IApp;
 // Template for TCP applications. It shows what gates a TCP app
 // needs, to be able to be used in ~StandardHost etc.
 //
-simple AbstractTCPControllerApp like AbstractControllerApp, IApp
+simple AbstractTCPControllerApp like IControllerApp, IApp
 {
     parameters:
         @class(openflow::AbstractTCPControllerApp);

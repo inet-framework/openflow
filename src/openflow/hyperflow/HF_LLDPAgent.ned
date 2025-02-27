@@ -1,10 +1,10 @@
 
 
 package openflow.hyperflow;
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
 
-simple HF_LLDPAgent like AbstractControllerApp
+simple HF_LLDPAgent like IControllerApp
 {
     parameters:
         @class(openflow::HF_LLDPAgent);

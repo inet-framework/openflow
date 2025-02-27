@@ -1,8 +1,8 @@
 package openflow.kandoo;
 
-import openflow.controllerApps.AbstractControllerApp;
+import openflow.controllerApps.IControllerApp;
 
-simple KN_ARPResponder like AbstractControllerApp
+simple KN_ARPResponder like IControllerApp
 {
     parameters:
         @class(openflow::KN_ARPResponder);
