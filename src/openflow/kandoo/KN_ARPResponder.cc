@@ -112,6 +112,7 @@ void KN_ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
 
 
 void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
+    Enter_Method_Silent();
     //set knagent link
     if(knAgent == NULL && controller != NULL){
         auto appList = controller->getAppList();
