@@ -3,7 +3,7 @@
 package openflow.nodes;
 
 import inet.common.misc.ThruputMeteringChannel;
-import inet.node.ethernet.EtherSwitch;
+import inet.node.ethernet.EthernetSwitch;
 import inet.node.inet.StandardHost;
 import openflow.openflow.switch.Open_Flow_Switch;
 
@@ -31,30 +31,26 @@ module Open_Flow_Domain
     submodules:
         open_flow_switch: Open_Flow_Switch {
             @display("p=120,186");
-            gates:
-                gateDataPlane[sizeof(parent.gateDPlane)+parent.numClients];
         }
 
-        etherSwitch: EtherSwitch {
+        etherSwitch: EthernetSwitch {
             @display("p=240,186");
-            gates:
-                ethg[sizeof(parent.gateCPlane)];
         }
 
         client[this.numClients]: StandardHost {
             @display("p=120,50,row,90");
         }
     connections allowunconnected:
-        for i=0..sizeof(this.gateDPlane)-1 {
-            gateDPlane[i] <--> open_flow_switch.gateDataPlane[i];
+        for i=0..sizeof(gateDPlane)-1 {
+            gateDPlane[i] <--> open_flow_switch.gateDataPlane++;
         }
 
-        for i=0..this.numClients-1 {
-            client[i].ethg++ <--> ethernetline <--> open_flow_switch.gateDataPlane[sizeof(gateDPlane)+i];
+        for i=0..numClients-1 {
+            client[i].ethg++ <--> ethernetline <--> open_flow_switch.gateDataPlane++;
         }
 
-        for i=0..sizeof(this.gateCPlane)-1 {
-            etherSwitch.ethg[i] <--> gateCPlane[i];
+        for i=0..sizeof(gateCPlane)-1 {
+            etherSwitch.ethg++ <--> gateCPlane[i];
         }
 
         etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch.gateControlPlane++;

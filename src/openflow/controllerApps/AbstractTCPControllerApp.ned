@@ -18,14 +18,14 @@
 
 package openflow.controllerApps;
 
-import inet.applications.contract.ITCPApp;
+import inet.applications.contract.IApp;
 
 
 //
 // Template for TCP applications. It shows what gates a TCP app
 // needs, to be able to be used in ~StandardHost etc.
 //
-simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
+simple AbstractTCPControllerApp like AbstractControllerApp, IApp
 {
     parameters:
         @class(openflow::AbstractTCPControllerApp);
@@ -38,8 +38,8 @@ simple AbstractTCPControllerApp like AbstractControllerApp, ITCPApp
         int priority = default(1);
 
     gates:
-        input tcpIn @labels(TcpCommand/up);
-        output tcpOut @labels(TcpCommand/down);
+        input socketIn @labels(TcpCommand/up);
+        output socketOut @labels(TcpCommand/down);
 }
 
 

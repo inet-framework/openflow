@@ -1,12 +1,14 @@
 
 
 package openflow.openflow.controller;
-import inet.applications.contract.ITCPApp;
-import inet.linklayer.ethernet.EthernetInterface;
+import inet.applications.contract.IApp;
+import inet.common.MessageDispatcher;
+import inet.linklayer.contract.IEthernetLayer;
+import inet.linklayer.ethernet.basic.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
-import inet.networklayer.contract.IRoutingTable;
-import inet.transportlayer.contract.ITCP;
+import inet.protocolelement.contract.IProtocolLayer;
+import inet.transportlayer.contract.ITcp;
 import openflow.controllerApps.AbstractControllerApp;
 
 
@@ -18,83 +20,149 @@ module Open_Flow_Controller
     parameters:
         @networkNode();
         @labels(node,ethernet-node);
-        @display("i=device/server;bgb=795,445;i2=openflow/OpenFlow-Logo-small");
+        @display("i=device/server;bgb=794.3,655.2;i2=openflow/OpenFlow-Logo-small");
         int numControllerApps = default(0);
         int numTcpControllerApps = default(0);
 
-        string networkLayerType = default("IPv4NetworkLayer");
-        string routingTableType = default("IPv4RoutingTable");
-
-		//submodules
-        string tcpType = default("TCP");  // tcp implementation (e.g. TCP, TCP_old, TCP_NSC)
+        //submodules
+        bool hasTcp = default(firstAvailableOrEmpty("Tcp", "TcpLwip", "TcpNsc") != "");
+        //string tcpType = default("TCP");  // tcp implementation (e.g. TCP, TCP_old, TCP_NSC)
         bool forwarding = default(false);
         bool multicastForwarding = default(false);
         string routingFile = default("");
         int numExtInterfaces = default(0);
         double serviceTime @unit("s") = default(0s);
 
-        routingTable.forwarding = this.forwarding;
-        routingTable.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
-        *.routingTableModule = default(absPath(".routingTable"));
+        *.forwarding = this.forwarding;
+        *.multicastForwarding = this.multicastForwarding;   // for IPv4, IPv6, Generic
         *.interfaceTableModule = default(absPath(".interfaceTable"));
-
+        ethernet.registerProtocol = default(true);
     gates:
         inout ethg[] @labels(EtherFrame-conn);
     submodules:
 
-        controllerApps[numControllerApps]: <> like AbstractControllerApp {
+        at: MessageDispatcher {
             parameters:
-                @display("p=519,141,row,60");
+                @display("p=400,101;b=580,5,,,,1");
+        }
+        tn: MessageDispatcher {
+            parameters:
+                @display("p=400,200;b=580,5,,,,1");
+        }
+        nl: MessageDispatcher {
+            parameters:
+                @display("p=400,300;b=500,5,,,,1");
         }
 
-        tcpControllerApps[numTcpControllerApps]: <> like ITCPApp {
-            parameters:
-                @display("p=200,141,row,60");
+        cb: MessageDispatcher {
+            @display("p=400,357;b=500,5");
         }
-        tcp: <tcpType> like ITCP {
-            parameters:
-                @display("p=200,278");
+        bl: MessageDispatcher {
+            @display("p=400,436;b=500,5");
         }
-        routingTable: <routingTableType> like IRoutingTable if routingTableType != "" {
+
+        li: MessageDispatcher {
             parameters:
-                @display("p=733,333");
+                @display("p=400,532;b=500,5,,,,1");
         }
-        networkLayer: <networkLayerType> like INetworkLayer {
+
+        bridging: <default("")> like IProtocolLayer if typename != "" {
+            @display("p=297,405");
+        }
+
+        ethernet: <default(sizeof(ethg) > 0 ? "EthernetEncapsulation" : "")> like IEthernetLayer if typename != "" {
+            @display("p=352,478");
+        }
+
+        controllerApps[numControllerApps]: <> like AbstractControllerApp {
             parameters:
-                @display("p=355,278;q=queue");
-            gates:
-                ifIn[sizeof(parent.ethg)];
-                ifOut[sizeof(parent.ethg)];
+                @display("p=654,36,row,60");
+        }
+
+        tcpControllerApps[numTcpControllerApps]: <> like IApp {
+            parameters:
+                @display("p=201,36,row,60");
+        }
+
+        tcp: <default(firstAvailableOrEmpty("Tcp", "TcpLwip", "TcpNsc"))> like ITcp if hasTcp {
+            parameters:
+                @display("p=368,145");
+        }
+
+        ipv4: <default("Ipv4NetworkLayer")> like INetworkLayer {
+            parameters:
+                @display("p=368,247;q=queue");
         }
         eth[sizeof(this.ethg)]: EthernetInterface {
             parameters:
-                @display("p=519,278,row,90;q=txQueue");
+                @display("p=351,596.7,row,90;q=txQueue");
         }
         interfaceTable: InterfaceTable {
             parameters:
-                @display("p=733,226");
+                @display("p=44,145");
         }
         OF_Controller: OF_Controller {
-            @display("p=56,278");
-            serviceTime = parent.serviceTime;
+            @display("p=424,48");
+            serviceTime = this.serviceTime;
         }
+
     connections allowunconnected:
-        tcp.ipOut --> networkLayer.transportIn++;
-        tcp.ipIn <-- networkLayer.transportOut++;
+        at.out++ --> tn.in++;
+        at.in++ <-- tn.out++;
+
+        tn.out++ --> nl.in++;
+        tn.in++ <-- nl.out++;
+
+        bl.out++ --> li.in++;
+        li.out++ --> bl.in++;
+
+        at.out++ --> tcp.appIn;
+        at.in++ <-- tcp.appOut;
+
+        tcp.ipOut --> tn.in++;
+        tcp.ipIn <-- tn.out++;
+
+        ipv4.ifIn <-- nl.out++;
+        ipv4.ifOut --> nl.in++;
+
+        cb.out++ --> bridging.upperLayerIn if exists(bridging);
+        bridging.upperLayerOut --> cb.in++ if exists(bridging);
+
+        cb.out++ --> bl.in++ if !exists(bridging);
+        bl.out++ --> cb.in++ if !exists(bridging);
+
+
+        tn.out++ --> ipv4.transportIn;
+        tn.in++ <-- ipv4.transportOut;
+
+        bridging.lowerLayerOut --> bl.in++ if exists(bridging);
+        bl.out++ --> bridging.lowerLayerIn if exists(bridging);
+
+        cb.out++ --> nl.in++;
+        cb.in++ <-- nl.out++;
+
+        bl.out++ --> ethernet.upperLayerIn if exists(ethernet);
+        ethernet.upperLayerOut --> bl.in++ if exists(ethernet);
+
+        ethernet.lowerLayerOut --> li.in++ if exists(ethernet);
+        li.out++ --> ethernet.lowerLayerIn if exists(ethernet);
 
         for i=0..sizeof(this.ethg)-1 {
-            ethg[i] <--> eth[i].phys;
+            ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
             eth[i].upperLayerOut --> networkLayer.ifIn[i];
             eth[i].upperLayerIn <-- networkLayer.ifOut[i];
         }
 
         for i=0..numTcpControllerApps-1 {
-            tcpControllerApps[i].tcpOut --> tcp.appIn++;
-            tcpControllerApps[i].tcpIn <-- tcp.appOut++;
+            tcpControllerApps[i].socketOut --> at.in++;
+            tcpControllerApps[i].socketIn <-- at.out++;
         }
 
-        tcp.appOut++ --> OF_Controller.tcpIn;
-        OF_Controller.tcpOut --> tcp.appIn++;
+        OF_Controller.socketOut --> at.in++;
+        OF_Controller.socketIn <-- at.out++;
+
+
+
 }
 
 

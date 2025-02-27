@@ -3,7 +3,8 @@
 #define HYPERFLOWSYNCHRONIZER_H_
 
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
-#include <omnetpp.h>
+#include "inet/common/lifecycle/OperationalBase.h"
+#include "inet/common/lifecycle/ModuleOperations.h"
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/messages/HF_ReportIn_m.h"
 #include "openflow/messages/HF_SyncRequest_m.h"
@@ -14,7 +15,7 @@
 
 namespace openflow{
 
-class HyperFlowSynchronizer: public cSimpleModule
+class HyperFlowSynchronizer: public OperationalBase
 {
 public:
     HyperFlowSynchronizer();
@@ -30,8 +31,8 @@ protected:
 
     TcpSocket socket;
 
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
 
     std::map< int,TcpSocket * > socketMap;
 
@@ -44,11 +45,26 @@ protected:
     bool busy;
 
     TcpSocket *findSocketFor(cMessage *msg);
-    void handleSyncRequest(HF_SyncRequest *msg);
-    void handleChangeNotification(HF_ChangeNotification *msg);
-    void handleReportIn(HF_ReportIn *msg);
-    void processQueuedMsg(cMessage * msg);
+    void handleSyncRequest(Packet *msg);
+    void handleChangeNotification(Packet *msg);
+    void handleReportIn(Packet *msg);
+    void processQueuedMsg(Packet * msg);
 
+
+    // Lifecycle methods
+    virtual void handleStartOperation(LifecycleOperation *operation) override {};
+    virtual void handleStopOperation(LifecycleOperation *operation) override {};
+    virtual void handleCrashOperation(LifecycleOperation *operation) override {};
+
+#if INET_VERSION >= 0x0404
+    virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) const override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) const override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#else
+    virtual bool isInitializeStage(int stage) override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#endif
 };
 
 } /*end namespace openflow*/

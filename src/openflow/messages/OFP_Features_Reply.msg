@@ -6,7 +6,7 @@ import openflow.messages.Open_Flow_Message;
 namespace openflow;
 
 // response  to an OFP_Features_Request message
-packet OFP_Features_Reply extends Open_Flow_Message
+class OFP_Features_Reply extends Open_Flow_Message
 {
   	string datapath_id;		// Datapath unique ID. The lower 48-bits are for a MAC address,
     					   	// while the upper 16-bits are implementer-defined.

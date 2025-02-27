@@ -2,14 +2,15 @@
 package openflow.nodes;
 
 import inet.common.misc.ThruputMeteringChannel;
-import inet.node.ethernet.EtherSwitch;
+import inet.node.ethernet.EthernetSwitch;
 import inet.node.inet.StandardHost;
 import openflow.openflow.switch.Open_Flow_Switch;
-
+import inet.node.ethernet.Eth100M;
 
 //
 // OpenFlow domain consisting of an OpenFlow switch and several hosts, but NO controller.
 //
+
 module DynamicFatTree
 {
     parameters:
@@ -18,20 +19,21 @@ module DynamicFatTree
 
         int podNum = K;                      // Pod number in FatTree
         int coreSwitchNum = int(pow((K/2),2));    // Core switches 
-        int aggrSwitchNum = int(((K/2)*K));       // Aggregation switches
-        int edgeSwitchNum = int(((K/2)*K));       // Edge switches
-        int hostNum = int((K*pow((K/2),2)));      // Hosts in K-ary FatTree
+        int aggrSwitchNum = int((K/2)*K);       // Aggregation switches
+        int edgeSwitchNum = int((K/2)*K);       // Edge switches
+        int hostNum = int(K*pow((K/2),2));      // Hosts in K-ary FatTree
 
     gates:
         inout gateCPlane[] @labels(ControlPlane-conn);
 
     types:
-        channel ethernetline extends ThruputMeteringChannel
+        channel ethernetline extends Eth100M
         {
-            delay = 1us;
-            datarate = 100Mbps;
-            thruputDisplayFormat = "u";
+            length = 200m; //delay = 1us;
+            //datarate = 100Mbps;
+            //thruputDisplayFormat = "u";
         }
+
     submodules:
 
         coreLayerSwitches[coreSwitchNum]: Open_Flow_Switch {
@@ -39,19 +41,19 @@ module DynamicFatTree
         }
 
         aggLayerSwitches[aggrSwitchNum]: Open_Flow_Switch {
-            @display("p=306,200,row,90");
+            @display("p=522,200,row,90");
         }
 
         edgeLayerSwitches[edgeSwitchNum]: Open_Flow_Switch {
-            @display("p=306,306,row,90");
+            @display("p=345,393,row,90");
         }
 
-        etherSwitch: EtherSwitch {
+        etherSwitch: EthernetSwitch {
             @display("p=79,250");
         }
 
         client[hostNum]: StandardHost {
-            @display("p=306,434,row,90");
+            @display("p=182,470,row,90");
         }
 
     connections allowunconnected:

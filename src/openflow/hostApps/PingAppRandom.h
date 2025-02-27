@@ -16,15 +16,15 @@ namespace openflow{
  */
 class PingAppRandom : public inet::PingApp {
   protected:
-    virtual void initialize(int stage);
-    virtual void handleMessage(cMessage *msg);
-    virtual bool isEnabled();
+    virtual bool isEnabled() override;
+    virtual void initialize(int stage) override;
+    virtual void handleSelfMessage(omnetpp::cMessage *msg) override;
 
-    cTopology topo;
+    omnetpp::cTopology topo;
     std::string connectAddress;
 
     //stats
-    simsignal_t pingPacketHash;
+    inet::simsignal_t pingPacketHash;
 };
 
 } /*end namespace openflow*/

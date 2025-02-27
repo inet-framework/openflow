@@ -22,11 +22,11 @@ public:
     LLDPMibGraph * getMibGraph();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
+    virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
     void triggerFlowMod(Switch_Info * swInfo);
-    virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
+    virtual void handlePacketIn(Packet * packet_in_msg);
     void sendLLDP();
     double pollInterval;
     double timeOut;

@@ -3,6 +3,7 @@
 #include "openflow/messages/HF_SyncRequest_m.h"
 #include "openflow/messages/HF_ReportIn_m.h"
 #include "openflow/messages/HF_SyncReply_m.h"
+#include "inet/common/socket/SocketTag_m.h"
 
 using namespace std;
 
@@ -28,34 +29,38 @@ HyperFlowSynchronizer::~HyperFlowSynchronizer(){
     socketMap.clear();
 }
 
-void HyperFlowSynchronizer::initialize(){
+void HyperFlowSynchronizer::initialize(int stage){
 
     //stats
-    queueSize = registerSignal("queueSize");
-    waitingTime = registerSignal("waitingTime");
+    OperationalBase::initialize(stage);
+    if (stage == INITSTAGE_LINK_LAYER) {
+        queueSize = registerSignal("queueSize");
+        waitingTime = registerSignal("waitingTime");
+        // TCP socket; listen on incoming connections
+        const char *address = par("address");
+        int port = par("port");
+        socket.setOutputGate(gate("socketOut"));
+        //socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
+        socket.bind(address[0] ? L3Address(address) : L3Address(), port);
+        dataChannelSizeCache =0;
 
-    // TCP socket; listen on incoming connections
-    const char *address = par("address");
-    int port = par("port");
-    socket.setOutputGate(gate("tcpOut"));
-    socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
-    socket.bind(address[0] ? L3Address(address) : L3Address(), port);
-    socket.listen();
-
-    dataChannelSizeCache =0;
-
-    serviceTime = par("serviceTime");
-    busy=false;
+        serviceTime = par("serviceTime");
+        busy=false;
+    }
+    else if (stage == INITSTAGE_APPLICATION_LAYER) {
+        socket.listen();
+    }
 }
 
 
-void HyperFlowSynchronizer::handleMessage(cMessage *msg){
+void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg){
     if(msg->isSelfMessage()){
         //This is message which has been scheduled due to service time
         //Get the Original message
         cMessage *data_msg = (cMessage *) msg->getContextPointer();
         emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
-        processQueuedMsg(data_msg);
+        auto pkt = check_and_cast<Packet *>(data_msg);
+        processQueuedMsg(pkt);
 
         //delete the processed msg
         delete data_msg;
@@ -75,12 +80,18 @@ void HyperFlowSynchronizer::handleMessage(cMessage *msg){
         delete msg;
     } else {
         //imlement service time
+        auto recPacket = dynamic_cast<Packet *>(msg);
+        if (recPacket == nullptr) {
+            delete msg;
+            return;
+        }
+
         if (busy) {
-            msgList.push_back(msg);
+            msgList.push_back(recPacket);
         }else{
             busy = true;
             cMessage *event = new cMessage("event");
-            event->setContextPointer(msg);
+            event->setContextPointer(recPacket);
             scheduleAt(simTime()+serviceTime, event);
         }
         emit(queueSize,static_cast<unsigned long>(msgList.size()));
@@ -89,23 +100,29 @@ void HyperFlowSynchronizer::handleMessage(cMessage *msg){
 
 }
 
-void HyperFlowSynchronizer::handleChangeNotification(HF_ChangeNotification * msg){
+void HyperFlowSynchronizer::handleChangeNotification(Packet * pkt){
+    auto msg = pkt->peekAtFront<HF_ChangeNotification>();
+
     dataChannel.push_front(msg->getEntry());
     dataChannelSizeCache++;
 }
 
-void HyperFlowSynchronizer::handleSyncRequest(HF_SyncRequest * msg){
+void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
     //return syncreply
-    TcpSocket *socket = findSocketFor(msg);
 
-    HF_SyncReply * reply = new HF_SyncReply("SyncReply");
+    auto msg = pkt->peekAtFront<HF_SyncRequest>();
+
+    TcpSocket *socket = findSocketFor(pkt);
+
+    auto reply = makeShared<HF_SyncReply>();
+    //HF_SyncReply * reply = new HF_SyncReply("SyncReply");
+    auto pktReply = new Packet("SyncReply");
 
     //create control channel
     std::list<ControlChannelEntry> tempControlChannel = std::list<ControlChannelEntry>();
     SimTime lastValidTime = simTime()-par("aliveInterval");
 
-    auto iterControl = controlChannel.begin();
-    while(iterControl!=controlChannel.end()){
+    for(iterControl=controlChannel.begin();iterControl!=controlChannel.end(); ) {
         if((*iterControl).time >= lastValidTime){
            tempControlChannel.push_back(*iterControl);
            ++iterControl;
@@ -120,60 +137,59 @@ void HyperFlowSynchronizer::handleSyncRequest(HF_SyncRequest * msg){
     std::list<DataChannelEntry> tempDataChannel = std::list<DataChannelEntry>();
     std::list<DataChannelEntry>::iterator iterData;
     int counter = dataChannelSizeCache - msg->getLastSyncCounter();
-    for(iterData=dataChannel.begin();counter != 0 && iterData != dataChannel.end();iterData++){
+    for(iterData=dataChannel.begin();counter != 0 && iterData != dataChannel.end(); ++iterData){
         counter--;
         tempDataChannel.push_back(*iterData);
     }
     reply->setDataChannel(tempDataChannel);
-
-
-    reply->setByteLength(sizeof(controlChannel)+sizeof(tempDataChannel));
-    reply->setKind(TCP_C_SEND);
-    socket->send(reply);
+    reply->setChunkLength(B(sizeof(controlChannel)+sizeof(tempDataChannel)));
+    //reply->setByteLength(sizeof(controlChannel)+sizeof(tempDataChannel));
+    pktReply->insertAtFront(reply);
+    pktReply->setKind(TCP_C_SEND);
+    socket->send(pktReply);
 }
 
 
-void HyperFlowSynchronizer::handleReportIn(HF_ReportIn * msg){
+void HyperFlowSynchronizer::handleReportIn(Packet * pkt){
     //store to datachannel
+
+    auto msg = pkt->peekAtFront<HF_ReportIn>();
     ControlChannelEntry entry = ControlChannelEntry();
     entry.switches= std::list<Switch_Info *>(msg->getSwitchInfoList());
     entry.controllerId = msg->getControllerId();
     entry.time = simTime();
-
     controlChannel.push_front(entry);
 }
 
 
 TcpSocket * HyperFlowSynchronizer::findSocketFor(cMessage *msg){
-    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
-    if (!ind)
-        throw cRuntimeError("TCPSocketMap: findSocketFor(): no TcpCommand control info in message (not from TCP?)");
-    int connId = ind->getConnId();
-    std::map<int,TcpSocket*>::iterator i = socketMap.find(connId);
-    ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());
-    return (i==socketMap.end()) ? NULL : i->second;
+
+    auto pkt = check_and_cast<Packet *>(msg);
+    auto tag = pkt->findTag<SocketInd>();
+    if (tag == nullptr)
+        throw cRuntimeError("TcpSocketMap: findSocketFor(): no SocketInd (not from TCP?)");
+    int connId = tag->getSocketId();
+    auto i = socketMap.find(connId);
+    ASSERT(i==socketMap.end() || i->first==i->second->getSocketId());
+    return (i==socketMap.end()) ? nullptr : i->second;
 }
 
-void HyperFlowSynchronizer::processQueuedMsg(cMessage * msg){
-    if (dynamic_cast<HF_ReportIn *>(msg) != NULL) {
-        HF_ReportIn *castMsg = (HF_ReportIn *) msg;
-        handleReportIn(castMsg);
+void HyperFlowSynchronizer::processQueuedMsg(Packet * msg){
+    auto chunk = msg->peekAtFront<Chunk>();
+    if (dynamicPtrCast<const HF_ReportIn>(chunk) != nullptr) {
+        handleReportIn(msg);
 
-    } else if(dynamic_cast<HF_SyncRequest *>(msg) != NULL){
-        HF_SyncRequest *castMsg = (HF_SyncRequest *) msg;
-        handleSyncRequest(castMsg);
-
-    } else if(dynamic_cast<HF_ChangeNotification *>(msg) != NULL){
-        HF_ChangeNotification *castMsg = (HF_ChangeNotification *) msg;
-        handleChangeNotification(castMsg);
-
+    } else if(dynamicPtrCast<const HF_SyncRequest>(chunk) != nullptr){
+        handleSyncRequest(msg);
+    } else if(dynamicPtrCast<const HF_ChangeNotification>(chunk) != nullptr){
+        handleChangeNotification(msg);
     } else {
         TcpSocket *socket = findSocketFor(msg);
         if(!socket){
             socket = new TcpSocket(msg);
-            socket->setOutputGate(gate("tcpOut"));
-            ASSERT(socketMap.find(socket->getConnectionId())==socketMap.end());
-            socketMap[socket->getConnectionId()] = socket;
+            socket->setOutputGate(gate("socketOut"));
+            ASSERT(socketMap.find(socket->getSocketId())==socketMap.end());
+            socketMap[socket->getSocketId()] = socket;
         }
     }
 }

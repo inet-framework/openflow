@@ -1,4 +1,6 @@
 #include "openflow/controllerApps/AbstractTCPControllerApp.h"
+#include "inet/common/socket/SocketTag_m.h"
+#include "inet/transportlayer/contract/tcp/TcpCommand_m.h"
 
 namespace openflow{
 
@@ -27,41 +29,33 @@ AbstractTCPControllerApp::~AbstractTCPControllerApp()
 }
 
 
-void AbstractTCPControllerApp::initialize(){
-    AbstractControllerApp::initialize();
-
-    busy = false;
-    serviceTime =par("serviceTime");
-
-    queueSize = registerSignal("queueSize");
-    waitingTime = registerSignal("waitingTime");
-
-    lastQueueSize =0;
-    lastChangeTime=0.0;
-
+void AbstractTCPControllerApp::initialize(int stage){
+    AbstractControllerApp::initialize(stage);
+    if (stage == INITSTAGE_LOCAL) {
+        busy = false;
+        serviceTime =par("serviceTime");
+        queueSize = registerSignal("queueSize");
+        waitingTime = registerSignal("waitingTime");
+        lastQueueSize =0;
+        lastChangeTime=0.0;
+    }
 }
 
-void AbstractTCPControllerApp::processQueuedMsg(cMessage *msg){
-
-}
-
-
-void AbstractTCPControllerApp::handleMessage(cMessage *msg){
+void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg){
     if (msg->isSelfMessage()){
         if(msg->getKind()==MSGKIND_TCPSERVICETIME){
             //This is message which has been scheduled due to service time
-
             //Get the Original message
-            cMessage *data_msg = (cMessage *) msg->getContextPointer();
+            auto data_msg = dynamic_cast<Packet *>((cObject *)msg->getContextPointer());
+            if (data_msg == nullptr)
+                throw cRuntimeError("AbstractTCPControllerApp::handleMessage not of type Packet");
             emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
             processQueuedMsg(data_msg);
-
-
             //Trigger next service time
             if (msgList.empty()){
                 busy = false;
             } else {
-                cMessage *msgFromList = msgList.front();
+                auto msgFromList = msgList.front();
                 msgList.pop_front();
                 cMessage *event = new cMessage("event");
                 event->setKind(MSGKIND_TCPSERVICETIME);
@@ -69,41 +63,51 @@ void AbstractTCPControllerApp::handleMessage(cMessage *msg){
                 scheduleAt(simTime()+serviceTime, event);
             }
             calcAvgQueueSize(msgList.size());
-
             //delete the msg for efficiency
-            delete msg;
+            //delete msg;
         }
 
 
     } else {
-            //imlement service time
-            if (busy) {
-                msgList.push_back(msg);
-            } else {
-                busy = true;
-                cMessage *event = new cMessage("event");
-                event->setKind(MSGKIND_TCPSERVICETIME);
-                event->setContextPointer(msg);
-                scheduleAt(simTime()+serviceTime, event);
-            }
-            emit(queueSize,static_cast<unsigned long>(msgList.size()));
-            if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
-                packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
-            } else {
-                packetsPerSecond[floor(simTime().dbl())]++;
-            }
-            calcAvgQueueSize(msgList.size());
+        //imlement service time
+
+        if (msg->getKind() != TCP_I_DATA &&  msg->getKind() != TCP_I_URGENT_DATA)
+            return;
+
+        auto data_msg = dynamic_cast<Packet *>(msg);
+        if (data_msg == nullptr)
+            throw cRuntimeError("AbstractTCPControllerApp::handleMessage not of type Packet");
+        if (busy) {
+            msgList.push_back(data_msg);
+        } else {
+            busy = true;
+            cMessage *event = new cMessage("event");
+            event->setKind(MSGKIND_TCPSERVICETIME);
+            event->setContextPointer(msg);
+            scheduleAt(simTime()+serviceTime, event);
+        }
+        emit(queueSize,msgList.size());
+        if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
+            packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
+        } else {
+            packetsPerSecond[floor(simTime().dbl())]++;
+        }
+        calcAvgQueueSize(msgList.size());
     }
 }
 
-TcpSocket * AbstractTCPControllerApp::findSocketFor(cMessage *msg) {
-    TcpCommand *ind = dynamic_cast<TcpCommand *>(msg->getControlInfo());
-    if (!ind)
-        throw cRuntimeError("SocketMap: findSocketFor(): no TcpCommand control info in message (not from TCP?)");
+TcpSocket * AbstractTCPControllerApp::findSocketFor(Packet *pkt) {
 
-    std::map<int,TcpSocket*>::iterator i = socketMap.find(ind->getConnId());
-    ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());
-    return (i==socketMap.end()) ? NULL : i->second;
+    auto tag = pkt->findTag<SocketInd>();
+    if (tag == nullptr)
+        throw cRuntimeError("SocketMap: findSocketFor(): no SocketInd (not from TCP?)");
+
+    //TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+    //if (!ind)
+    //    throw cRuntimeError("SocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+    auto i = socketMap.find(tag->getSocketId());
+    ASSERT(i==socketMap.end() || i->first==i->second->getSocketId());
+    return (i==socketMap.end()) ? nullptr : i->second;
 }
 
 void AbstractTCPControllerApp::calcAvgQueueSize(int size){
@@ -122,18 +126,31 @@ void AbstractTCPControllerApp::calcAvgQueueSize(int size){
 void AbstractTCPControllerApp::finish(){
     // record statistics
 
-    std::map<int,int>::iterator iterMap;
-    for(iterMap = packetsPerSecond.begin(); iterMap != packetsPerSecond.end(); iterMap++){
+    //std::map<int,int>::iterator iterMap;
+    /*
+    for(auto iterMap = packetsPerSecond.begin(); iterMap != packetsPerSecond.end(); ++iterMap){
         stringstream name;
         name << "packetsPerSecondAt-" << iterMap->first;
         recordScalar(name.str().c_str(),iterMap->second);
     }
 
-    std::map<int,double>::iterator iterMap2;
-    for(iterMap2 = avgQueueSize.begin(); iterMap2 != avgQueueSize.end(); iterMap2++){
+    //std::map<int,double>::iterator iterMap2;
+    for(auto iterMap2 = avgQueueSize.begin(); iterMap2 != avgQueueSize.end(); ++iterMap2){
         stringstream name;
         name << "avgQueueSizeAt-" << iterMap2->first;
         recordScalar(name.str().c_str(),(iterMap2->second/1.0));
+    }
+    */
+    for(auto elem : packetsPerSecond){
+        stringstream name;
+        name << "packetsPerSecondAt-" << elem.first;
+        recordScalar(name.str().c_str(),elem.second);
+    }
+
+    for(auto elem :avgQueueSize){
+        stringstream name;
+        name << "avgQueueSizeAt-" << elem.first;
+        recordScalar(name.str().c_str(),(elem.second/1.0));
     }
 }
 

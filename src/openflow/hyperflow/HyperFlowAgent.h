@@ -23,9 +23,9 @@ public:
 
 protected:
 
-    void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual void processQueuedMsg(cMessage *data_msg);
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
+    virtual void processQueuedMsg(Packet *data_msg) override;
 
     void sendReportIn();
     void sendSyncRequest();
@@ -48,7 +48,9 @@ protected:
     std::list<std::string> knownControllers;
     std::list<std::string> failedControllers;
 
-    simsignal_t HyperFlowReFireSignalId;
+    static simsignal_t HyperFlowReFireSignalId;
+
+    virtual void handleStartOperation(LifecycleOperation *operation) override;
 
 
 };

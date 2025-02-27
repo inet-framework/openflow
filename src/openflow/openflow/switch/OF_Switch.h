@@ -3,23 +3,31 @@
 #ifndef OF_SWITCH_H_
 #define OF_SWITCH_H_
 
-#include <omnetpp.h>
+#include "inet/common/lifecycle/OperationalBase.h"
+#include "inet/common/lifecycle/ModuleOperations.h"
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
 #include "openflow/openflow/switch/Buffer.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
 #include "openflow/openflow/switch/Flow_Table.h"
+#include "inet/networklayer/common/NetworkInterface.h"
 #include <vector>
 
 namespace openflow{
 
-class OF_Switch: public cSimpleModule
+class OF_Switch: public OperationalBase, public TcpSocket::ICallback
 {
+    std::map<int, int> ifaceIndex;
+    std::map<int, int> controlPlaneIndex;
+
+    cModule *parent = nullptr;
+
 public:
     OF_Switch();
     ~OF_Switch();
     void disablePorts(std::vector<int> ports);
-    virtual void finish();
+    virtual void finish() override;
+    virtual int getIndexFromId(int id);
 
 protected:
     double flowTimeoutPollInterval;
@@ -43,21 +51,50 @@ protected:
     std::vector<ofp_port> portVector;
 
 
+
     Buffer buffer;
     Flow_Table flowTable;
     TcpSocket socket;
+    std::vector<NetworkInterface *> listInterfacesToDelete;
 
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
     void connect(const char *connectToAddress);
 
-    void processQueuedMsg(cMessage *data_msg);
-    void handleFeaturesRequestMessage(Open_Flow_Message *of_msg);
-    void handleFlowModMessage(Open_Flow_Message *of_msg);
-    void handlePacketOutMessage(Open_Flow_Message *of_msg);
-    void executePacketOutAction(ofp_action_header *action, EthernetIIFrame *frame, uint32_t inport);
-    void processFrame(EthernetIIFrame *frame);
-    void handleMissMatchedPacket(EthernetIIFrame *frame);
+    void processQueuedMsg(Packet *data_msg);
+    void handleFeaturesRequestMessage(Packet *of_msg);
+    void handleFlowModMessage(Packet *of_msg);
+    void handlePacketOutMessage(Packet *of_msg);
+    void executePacketOutAction(const ofp_action_header *action, Packet *frame, uint32_t inport);
+    void processFrame(Packet *frame);
+    void handleMissMatchedPacket(Packet *frame);
+
+    // Lifecycle methods
+    virtual void handleStartOperation(LifecycleOperation *operation) override;
+    virtual void handleStopOperation(LifecycleOperation *operation) override {};
+    virtual void handleCrashOperation(LifecycleOperation *operation) override {};
+
+#if INET_VERSION >= 0x0404
+    virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) const override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) const override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#else
+    virtual bool isInitializeStage(int stage) override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#endif
+
+    /* TcpSocket::ICallback callback methods */
+     virtual void socketDataArrived(TcpSocket *socket, Packet *msg, bool urgent) override;
+     virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override { socket->accept(availableInfo->getNewSocketId()); }
+     virtual void socketEstablished(TcpSocket *socket) override;
+     virtual void socketPeerClosed(TcpSocket *socket) override;
+     virtual void socketClosed(TcpSocket *socket) override;
+     virtual void socketFailure(TcpSocket *socket, int code) override;
+     virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
+     virtual void socketDeleted(TcpSocket *socket) override {}
+
+
 };
 
 } /*end namespace openflow*/

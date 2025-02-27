@@ -40,7 +40,7 @@ simple OF_Switch like IOpenFlowRelayUnit
         input controlPlaneIn @labels(TcpCommand/up);
         output controlPlaneOut @labels(TcpCommand/down);
         
-        input  dataPlaneIn[];
-        output dataPlaneOut[];
+        input  dataPlaneIn;
+        output dataPlaneOut;
 
 }

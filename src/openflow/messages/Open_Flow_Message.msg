@@ -1,4 +1,7 @@
 
+import inet.common.INETDefs;
+import inet.common.packet.chunk.Chunk;
+import openflow.messages.OpenFlowStructs; 
 
 cplusplus {{
     #include "openflow/openflow/protocol/OpenFlow.h"
@@ -44,8 +47,7 @@ struct ofp_action_output {
 }
 
 // base class for all OpenFlow protocol messages; only contains the OpenFlow header
-packet Open_Flow_Message
+class Open_Flow_Message extends inet::FieldsChunk 
 {
     ofp_header header;
-    
 }

@@ -3,12 +3,12 @@
 package openflow.scenarios.networks;
 
 import inet.common.misc.ThruputMeteringChannel;
-import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
+import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
 import openflow.nodes.DynamicFatTree;
 import openflow.openflow.controller.Open_Flow_Controller;
 import openflow.utility.OpenFlowGraphAnalyzer;
 import openflow.utility.StaticSpanningTree;
-
+import inet.node.ethernet.Eth40G;
 
 network Scenario_DynamicFatTree
 {
@@ -32,11 +32,11 @@ network Scenario_DynamicFatTree
             @display("p=458,270");
         }
 
-
-        configurator: IPv4NetworkConfigurator {
+        configurator: Ipv4NetworkConfigurator {
             parameters:
                 @display("p=198,190");
         }
+
         open_flow_controller1: Open_Flow_Controller {
             @display("p=322,190");
         }
@@ -44,8 +44,6 @@ network Scenario_DynamicFatTree
         fat_tree: DynamicFatTree {
             @display("p=322,367;is=vl");
         }
-
-
 
     connections allowunconnected:
 

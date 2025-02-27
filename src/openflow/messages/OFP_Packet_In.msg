@@ -7,7 +7,7 @@ namespace openflow;
 // When packets are received by the data plane and sent to the connected controller,
 // the OFP_PACKET_IN messages are used. If the complete packet needs to be sent to the controller, because it can not be
 // stored in the bufer, it is encapsulated in the packet-in message.
-packet OFP_Packet_In extends Open_Flow_Message
+class OFP_Packet_In extends Open_Flow_Message
 {
     uint32_t buffer_id;     // ID assigned by datapath. 
     uint16_t total_len;     // Full length of frame. 

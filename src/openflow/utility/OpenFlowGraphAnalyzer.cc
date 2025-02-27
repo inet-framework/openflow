@@ -16,7 +16,9 @@ struct compNodeInt {
 
 
 void OpenFlowGraphAnalyzer::initialize(int stage) {
-    if (stage == INITSTAGE_LINK_LAYER_2) {
+
+    OperationalBase::initialize(stage);
+    if (stage == INITSTAGE_NETWORK_CONFIGURATION) {
         const char *NodeType = par("NodeType");
         considerOnlyEndToEnd = par("considerOnlyEndToEnd");
 
@@ -209,7 +211,7 @@ void OpenFlowGraphAnalyzer::finish(){
     recordScalar("numClients", numClientNodes);
     recordScalar("numSwitches", numSwitchNodes);
     recordScalar("numPaths", computedPaths.size());
-
+/*
     std::map<std::string,int>::iterator iterMap;
     for(iterMap = swMap.begin(); iterMap != swMap.end(); iterMap++){
         recordScalar(("nodeInNumPaths-"+iterMap->first).c_str(),iterMap->second);
@@ -217,12 +219,19 @@ void OpenFlowGraphAnalyzer::finish(){
     for(iterMap = clMap.begin(); iterMap != clMap.end(); iterMap++){
         recordScalar(("nodeInNumPaths-"+iterMap->first).c_str(),iterMap->second);
     }
+*/
+    for(const auto &elem : swMap){
+        recordScalar(("nodeInNumPaths-"+elem.first).c_str(), elem.second);
+    }
+    for(const auto &elem : clMap){
+        recordScalar(("nodeInNumPaths-"+elem.first).c_str(), elem.second);
+    }
 
 }
 
 
-void OpenFlowGraphAnalyzer::handleMessage(cMessage *msg) {
-    error("this module doesn't handle messages, it runs only in initialize()");
+void OpenFlowGraphAnalyzer::handleMessageWhenUp(cMessage *msg) {
+    throw cRuntimeError("this module doesn't handle messages, it runs only in initialize()");
 }
 
 } /*end namespace openflow*/

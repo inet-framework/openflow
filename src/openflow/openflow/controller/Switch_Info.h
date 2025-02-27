@@ -25,8 +25,16 @@ class Switch_Info {
         TcpSocket* getSocket() const;
         void setSocket(TcpSocket* socket);
 
+        void setSwitchPortsIndexId(const int &, const int &);
+
+
+        int getIndexPort(const int&);
+        int getIdPort(const int&);
+
 
     protected:
+        std::vector<int> idPort;
+
         int connID;
         int numOfPorts;
         std::string macAddress;

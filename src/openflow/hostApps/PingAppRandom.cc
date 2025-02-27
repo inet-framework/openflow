@@ -5,10 +5,10 @@
 #include "openflow/hostApps/PingAppRandom.h"
 
 #include "inet/networklayer/common/L3AddressResolver.h"
-#include "inet/applications/pingapp/PingPayload_m.h"
-#include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
-#include "inet/networklayer/contract/ipv6/IPv6ControlInfo.h"
-
+#include "inet/networklayer/contract/ipv4/Ipv4Socket.h"
+#include "inet/networklayer/ipv4/Icmp.h"
+#include "inet/networklayer/ipv4/IcmpHeader.h"
+#include "inet/networklayer/ipv4/Ipv4InterfaceData.h"
 #include <iostream>
 #include <functional>
 #include <string>
@@ -31,21 +31,32 @@ void PingAppRandom::initialize(int stage){
 
 }
 
-void PingAppRandom::handleMessage(cMessage *msg){
+void PingAppRandom::handleSelfMessage(cMessage *msg){
 
-    if (!isNodeUp()){
-            if (msg->isSelfMessage())
-                throw cRuntimeError("Application is not running");
-            delete msg;
-            return;
-        }
         if (msg == timer){
             // connect to random destination node
             unsigned nodeNum = topo.getNumNodes();
             if (nodeNum == 0)
                 throw cRuntimeError("No potential destination nodes found");
             int random_num = intrand(nodeNum);
-            connectAddress =topo.getNode(random_num)->getModule()->getFullPath();
+
+            std::string connectAddressAux =topo.getNode(random_num)->getModule()->getFullPath();
+
+            if (connectAddressAux != connectAddress && currentSocket != nullptr) {
+                currentSocket->close();
+                currentSocket = nullptr;
+            }
+
+            if (currentSocket == nullptr) {
+                auto networkProtocol = &Protocol::ipv4;
+                const Protocol *icmp = l3Echo.at(networkProtocol);
+                currentSocket = new Ipv4Socket(gate("socketOut"));
+                currentSocket->bind(icmp, L3Address());
+                currentSocket->setCallback(this);
+                socketMap.addSocket(currentSocket);
+            }
+
+            connectAddress = connectAddressAux;
             while (topo.getNode(random_num)->getModule() == getParentModule()) {
 
                 // avoid same source and destination
@@ -58,24 +69,9 @@ void PingAppRandom::handleMessage(cMessage *msg){
             srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
             EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
 
-            sendPing();
+            sendPingRequest();
             if (isEnabled())
                 scheduleNextPingRequest(simTime(), true);
-        } else {
-            inet::PingPayload * pingMsg = check_and_cast<inet::PingPayload *>(msg);
-
-            //generate and emit hash
-            std::stringstream hashString;
-            hashString << "SeqNo-" << pingMsg->getSeqNo() << "-Pid-" << pingMsg->getOriginatorId();
-            unsigned long hash = std::hash<std::string>()(hashString.str().c_str());
-            emit(pingPacketHash,hash);
-            processPingResponse(pingMsg);
-
-        }
-        if (hasGUI()){
-            char buf[40];
-            sprintf(buf, "sent: %ld pks\nrcvd: %ld pks", sentCount, numPongs);
-            getDisplayString().setTagArg("t", 0, buf);
         }
 }
 

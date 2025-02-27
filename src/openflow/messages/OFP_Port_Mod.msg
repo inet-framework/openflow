@@ -3,7 +3,7 @@ import openflow.messages.Open_Flow_Message;
 
 namespace openflow;
 
-packet OFP_Port_Mod extends Open_Flow_Message
+class OFP_Port_Mod extends Open_Flow_Message
 {
 	uint32_t port_no;
 	//uint8_t pad[4];

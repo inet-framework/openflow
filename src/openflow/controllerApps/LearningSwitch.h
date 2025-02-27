@@ -16,9 +16,14 @@ public:
     ~LearningSwitch();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize() override;
-    void doSwitching(OFP_Packet_In *packet_in_msg);
+    virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
+    virtual void initialize(int stage) override;
+    void doSwitching(Packet *packet_in_msg);
+
+    virtual void handleMessageWhenUp(cMessage *msg) override {
+        throw cRuntimeError("Received message, this module should not receive a message");
+    }
+
 
     std::map<Switch_Info *,std::map<MacAddress,uint32_t> > lookupTable;
 

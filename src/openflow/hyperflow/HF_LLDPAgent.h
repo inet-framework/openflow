@@ -26,11 +26,12 @@ public:
     LLDPMibGraph * getMibGraph();
 
 protected:
-    void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize() override;
-    void handlePacketIn(OFP_Packet_In * packet_in_msg) override;
-    HyperFlowAgent * hfAgent;
-    simsignal_t HyperFlowReFireSignalId;
+    virtual bool searchHyperFlowAggent();
+    virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
+    virtual void initialize(int stage) override;
+    virtual void handlePacketIn(Packet *) override;
+    HyperFlowAgent * hfAgent = nullptr;
+    static simsignal_t HyperFlowReFireSignalId;
 };
 
 } /*end namespace openflow*/

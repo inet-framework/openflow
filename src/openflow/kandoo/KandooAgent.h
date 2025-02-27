@@ -25,17 +25,19 @@ public:
     bool getIsRootController();
 
     void sendRequest(KandooEntry entry);
-    void sendReply(KN_Packet * knpck,KandooEntry entry);
+    void sendReply(Packet * knpck,KandooEntry entry);
 
-    void handleKandooPacket(KN_Packet * knpck);
+    void handleKandooPacket(Packet * knpck);
 
     void sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry entry);
 
 protected:
 
-    void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual void processQueuedMsg(cMessage *data_msg);
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
+    virtual void processQueuedMsg(Packet *data_msg) override;
+
+    virtual void handleStartOperation(LifecycleOperation *operation) override;
 
     bool isRootController;
 

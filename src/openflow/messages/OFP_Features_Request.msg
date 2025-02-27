@@ -9,6 +9,6 @@ namespace openflow;
 //to get information about the capabilities of a switch. This message does
 //not contain a body beyond the OpenFlow header. The switch responds with an
 //OFP Features Reply message.
-packet OFP_Features_Request extends Open_Flow_Message
+class OFP_Features_Request extends Open_Flow_Message
 {
 }

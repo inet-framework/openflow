@@ -16,7 +16,7 @@ public:
 
 protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
-    void initialize() override;
+    void initialize(int stage) override;
 };
 
 } /*end namespace openflow*/

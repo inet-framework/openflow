@@ -1,6 +1,7 @@
 #include <omnetpp.h>
 #include "openflow/openflow/switch/Buffer.h"
 #include "openflow/openflow/protocol/OpenFlow.h"
+#include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
 using namespace std;
 using namespace inet;
@@ -35,8 +36,9 @@ bool Buffer::isfull(){
 
 
 // store message in buffer and return buffer_id.
-uint32_t Buffer::storeMessage(EthernetIIFrame *msg){
-    pending_msgs.insert(pair<uint32_t, EthernetIIFrame *> (next_buffer_id, msg));
+uint32_t Buffer::storeMessage(Packet *msg){
+    auto header = msg->peekAtFront<EthernetMacHeader>();
+    pending_msgs.insert(pair<uint32_t, Packet *> (next_buffer_id, msg));
 
     // OFP_NO_BUFFER = 0xffffffff;
     if (next_buffer_id != OFP_NO_BUFFER){
@@ -48,7 +50,7 @@ uint32_t Buffer::storeMessage(EthernetIIFrame *msg){
         return next_buffer_id;
     }
 }
-bool Buffer::deleteMessage(EthernetIIFrame *msg){
+bool Buffer::deleteMessage(Packet *msg){
     bool result = false;
     for (std::map<uint32_t, inet::EthernetIIFrame *>::const_iterator it = pending_msgs.begin(); it != pending_msgs.end(); ++it) {
       if (it->second == msg) {
@@ -66,9 +68,13 @@ uint32_t Buffer::getCapacity(){
 }
 
 // return message that is stored at the specified buffer_id
-EthernetIIFrame *Buffer::returnMessage(uint32_t buffer_id){
-    EthernetIIFrame *frame = (EthernetIIFrame *)pending_msgs[buffer_id];
-    pending_msgs.erase(buffer_id);
+Packet *Buffer::returnMessage(uint32_t buffer_id){
+    auto it = pending_msgs.find(buffer_id);
+    Packet *frame = nullptr;
+    if (it != pending_msgs.end()) {
+        frame = it->second;
+        pending_msgs.erase(it);
+    }
     return frame;
 }
 

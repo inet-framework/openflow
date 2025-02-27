@@ -8,7 +8,6 @@
 #define OFP_MAX_PORT_NAME_LEN 16
 #define OFP_ETH_ALEN 6
 
-
 #include "inet/linklayer/common/MacAddress.h"
 #include "inet/networklayer/contract/ipv4/Ipv4Address.h"
 
@@ -44,6 +43,7 @@ struct oxm_basic_match {
     MacAddress OFB_ARP_THA; /* ARP target hardware address. */
 
     uint32_t wildcards;        /* Wildcard fields. */
+    int getPriority();
 };
 
 inline bool operator==(const oxm_basic_match &m1, const oxm_basic_match& m2) {
@@ -294,6 +294,7 @@ public:
 //    uint8_t pad[6]; /* Pad to 64 bits. */
 //protected:
 //    virtual void doNothing();
+     std::string creationModule;
 };
 
 /* Flow setup and teardown (controller -> datapath). */
@@ -328,6 +329,8 @@ struct ofp_port {
     uint32_t peer;          /* Features advertised by peer. */
     uint32_t curr_speed;    /* Current port bitrate in kbps. */
     uint32_t max_speed;     /* Max port bitrate in kbps */
+    int interfaceId = -1;
+    cModule *mac = nullptr;
 };
 
 enum ofp_port_config {

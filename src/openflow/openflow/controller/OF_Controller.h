@@ -7,30 +7,33 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "openflow/messages/OFP_Hello_m.h"
 #include "openflow/openflow/controller/Switch_Info.h"
-#include <omnetpp.h>
+#include "inet/common/lifecycle/OperationalBase.h"
+#include "inet/common/lifecycle/ModuleOperations.h"
+
 
 namespace openflow{
 
 class AbstractControllerApp;
 
-class OF_Controller: public cSimpleModule
+class OF_Controller: public OperationalBase
 {
 public:
     OF_Controller();
     ~OF_Controller();
-    virtual void finish();
+    virtual void finish() override;
 
-    void sendPacketOut(Open_Flow_Message *of_msg, TcpSocket * socket);
+    void sendPacketOut(Packet *of_msg, TcpSocket * socket);
 
     void registerApp(AbstractControllerApp * app);
 
-    TcpSocket *findSocketFor(cMessage *msg) const;
-    Switch_Info *findSwitchInfoFor(cMessage *msg) ;
+    TcpSocket *findSocketFor(Packet *) const;
+    Switch_Info *findSwitchInfoFor(Packet *msg) ;
     TcpSocket *findSocketForChassisId(std::string chassisId) const;
 
     std::vector<Switch_Info >* getSwitchesList() ;
     std::vector<AbstractControllerApp *>* getAppList() ;
 
+    virtual void sendPacket(TcpSocket *tcp, Packet *msg);
 
 
 protected:
@@ -77,16 +80,31 @@ protected:
      */
     TcpSocket socket;
 
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    void processQueuedMsg(cMessage *data_msg);
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
+    void processQueuedMsg(Packet *);
     void calcAvgQueueSize(int size);
-    void sendHello(Open_Flow_Message *msg);
-    void registerConnection(Open_Flow_Message *msg);
-    void sendFeatureRequest(cMessage *msg);
-    virtual void handleFeaturesReply(Open_Flow_Message *of_msg);
-    virtual void handlePacketIn(Open_Flow_Message *of_msg);
-    virtual void handleExperimenter(Open_Flow_Message* of_msg);
+    void sendHello(Packet *msg);
+    virtual void registerConnection(Indication *sockInfo);
+    virtual void checkConnection(Packet *msg);
+    void sendFeatureRequest(Packet *msg);
+    virtual void handleFeaturesReply(Packet *of_msg);
+    virtual void handlePacketIn(Packet *of_msg);
+
+    // Lifecycle methods
+    virtual void handleStartOperation(LifecycleOperation *operation) override;
+    virtual void handleStopOperation(LifecycleOperation *operation) override {};
+    virtual void handleCrashOperation(LifecycleOperation *operation) override {};
+
+#if INET_VERSION >= 0x0404
+    virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) const override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) const override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#else
+    virtual bool isInitializeStage(int stage) override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+#endif
 };
 
 } /*end namespace openflow*/

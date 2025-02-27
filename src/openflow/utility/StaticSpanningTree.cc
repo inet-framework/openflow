@@ -6,7 +6,9 @@ Define_Module(StaticSpanningTree);
 
 
 void StaticSpanningTree::initialize(int stage) {
-    if (stage == INITSTAGE_LINK_LAYER_2) {
+
+    OperationalBase::initialize(stage);
+    if (stage == INITSTAGE_NETWORK_LAYER) {
         const char *NodeType = par("NodeType");
         int startNode = par("startNode");
 
@@ -15,6 +17,8 @@ void StaticSpanningTree::initialize(int stage) {
        topo_spanntree.extractByNedTypeName(nodeTypes);
        EV << "cTopology found " << topo_spanntree.getNumNodes() << "\n";
 
+       if (topo_spanntree.getNumNodes() == 0)
+           throw cRuntimeError("Impossible to compute the Spanning tree, 0 nodes found");
 
         nodeInfo.resize(topo_spanntree.getNumNodes());
         for (int i = 0; i < topo_spanntree.getNumNodes(); i++) {
@@ -98,7 +102,7 @@ void StaticSpanningTree::initialize(int stage) {
     }
 }
 
-void StaticSpanningTree::handleMessage(cMessage *msg) {
+void StaticSpanningTree::handleMessageWhenUp(cMessage *msg) {
     error("this module doesn't handle messages, it runs only in initialize()");
 }
 

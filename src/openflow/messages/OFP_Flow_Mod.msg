@@ -4,7 +4,7 @@ import openflow.messages.Open_Flow_Message;
 namespace openflow;
 
 // Modifications to a flow table by the controller.
-packet OFP_Flow_Mod extends Open_Flow_Message
+class OFP_Flow_Mod extends Open_Flow_Message
 {
     
     
