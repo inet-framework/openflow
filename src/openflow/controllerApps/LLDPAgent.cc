@@ -77,7 +77,7 @@ void LLDPAgent::sendLLDP(){
                 frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);  // "padding"
 
             // add Ethernet PHY header
-            frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
+            // frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
 
             //create packet out*/
             OFP_Packet_Out *packetOut = new OFP_Packet_Out("packetOut");

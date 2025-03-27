@@ -126,7 +126,7 @@ EtherFrame * ARPResponder::createArpReply(IPv4Address srcIp, IPv4Address dstIp, 
     if (frame->getByteLength() < MIN_ETHERNET_FRAME_BYTES)
         frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);  // "padding"
 
-    frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
+    // frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
 
     return frame;
 }

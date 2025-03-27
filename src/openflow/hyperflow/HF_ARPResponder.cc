@@ -83,7 +83,7 @@ void HF_ARPResponder::handlePacketIn(OFP_Packet_In * packet_in_msg){
                     frame->encapsulate(arpReply);
                     if (frame->getByteLength() < MIN_ETHERNET_FRAME_BYTES)
                         frame->setByteLength(MIN_ETHERNET_FRAME_BYTES);  // "padding"
-                    frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
+                    // frame->addByteLength(PREAMBLE_BYTES+SFD_BYTES);
 
 
                     //encap the arp reply
