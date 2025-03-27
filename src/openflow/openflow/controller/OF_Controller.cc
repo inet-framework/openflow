@@ -82,6 +82,7 @@ void OF_Controller::handleMessage(cMessage *msg){
             //This is message which has been scheduled due to service time
             //Get the Original message
             cMessage *data_msg = (cMessage *) msg->getContextPointer();
+            EV_DEBUG << "End of processing message " << data_msg->getName() << endl;
             emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
             processQueuedMsg(data_msg);
 
@@ -96,6 +97,7 @@ void OF_Controller::handleMessage(cMessage *msg){
                 msgList.pop_front();
                 cMessage *event = new cMessage("event");
                 event->setContextPointer(msgfromlist);
+                EV_DEBUG << "Start processing of message " << msgfromlist->getName() << endl;
                 scheduleAt(simTime()+serviceTime, event);
             }
             calcAvgQueueSize(msgList.size());
@@ -110,6 +112,7 @@ void OF_Controller::handleMessage(cMessage *msg){
             busy = true;
             cMessage *event = new cMessage("event");
             event->setContextPointer(msg);
+            EV_DEBUG << "Start processing of message " << msg->getName() << endl;
             scheduleAt(simTime()+serviceTime, event);
         }
 
