@@ -139,6 +139,12 @@ OFP_Packet_In* OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, 
 
     if(sendFullFrame){
         msg->setByteLength(18);
+        oxm_basic_match match = oxm_basic_match();
+        match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
+//        match.OFB_ETH_SRC = frame->getSrc();
+//        match.OFB_ETH_DST = frame->getDest();
+//        match.OFB_ETH_TYPE = frame->getEtherType();
+        msg->setMatch(match);
         msg->encapsulate(frame->dup());
     } else {
         // packet in buffer so only send header fields

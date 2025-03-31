@@ -138,6 +138,7 @@ OFP_Packet_Out * AbstractControllerApp::createPacketOutFromPacketIn(OFP_Packet_I
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
         EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
         packetOut->encapsulate(frame->dup());
+        ASSERT(frame->getArrivalGate()->getIndex() == packet_in_msg->getMatch().OFB_IN_PORT);
         packetOut->setIn_port(frame->getArrivalGate()->getIndex());
     } else {
         packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
@@ -167,6 +168,7 @@ OFP_Packet_Out * AbstractControllerApp::createFloodPacketFromPacketIn(OFP_Packet
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
         EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
         packetOut->encapsulate(frame->dup());
+        ASSERT(frame->getArrivalGate()->getIndex() == packet_in_msg->getMatch().OFB_IN_PORT);
         packetOut->setIn_port(frame->getArrivalGate()->getIndex());
     }else{
         packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
@@ -194,6 +196,7 @@ OFP_Packet_Out * AbstractControllerApp::createDropPacketFromPacketIn(OFP_Packet_
     if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
         EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
         packetOut->encapsulate(frame->dup());
+        ASSERT(frame->getArrivalGate()->getIndex() == packet_in_msg->getMatch().OFB_IN_PORT);
         packetOut->setIn_port(frame->getArrivalGate()->getIndex());
     }else{
         packetOut->setIn_port(packet_in_msg->getMatch().OFB_IN_PORT);
@@ -218,6 +221,7 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(OFP_Packet_I
 
     // packet is encapsulated in packet-in message
     if (headerFields.buffer_id == OFP_NO_BUFFER){
+        ASSERT(packet_in_msg->getEncapsulatedPacket()->getArrivalGate()->getIndex() == packet_in_msg->getMatch().OFB_IN_PORT);
         headerFields.inport = packet_in_msg->getEncapsulatedPacket()->getArrivalGate()->getIndex();
         headerFields.src_mac = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getSrc();
         headerFields.dst_mac = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getDest();

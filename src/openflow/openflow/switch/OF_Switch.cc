@@ -281,6 +281,7 @@ void OF_Switch::processFrame(EthernetIIFrame *frame){
            header.version = OFP_VERSION;
            header.type = OFPT_PACKET_IN;
            packetIn->setHeader(header); 
+           packetIn->setMatch(match);
            packetIn->setReason(OFPR_ACTION);
            packetIn->setByteLength(32);
            packetIn->encapsulate(frame);
@@ -355,6 +356,12 @@ void OF_Switch::handleMissMatchedPacket(EthernetIIFrame *frame){
 
     if (sendCompletePacket || buffer.isfull()){
         // send full packet with packet-in message
+        oxm_basic_match match = oxm_basic_match();
+        match.OFB_IN_PORT = frame->getArrivalGate()->getIndex();
+//        match.OFB_ETH_SRC = frame->getSrc();
+//        match.OFB_ETH_DST = frame->getDest();
+//        match.OFB_ETH_TYPE = frame->getEtherType();
+        packetIn->setMatch(match);
         packetIn->encapsulate(frame);
         packetIn->setBuffer_id(OFP_NO_BUFFER);
 
