@@ -24,7 +24,7 @@ protected:
         cTopology topo_spanntree;
         NodeInfoVector nodeInfo;
 
-        virtual int numInitStages() const  {return 5;}
+        virtual int numInitStages() const  { return NUM_INIT_STAGES; }
         virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);
 };
