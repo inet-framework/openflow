@@ -19,11 +19,6 @@ AbstractTCPControllerApp::~AbstractTCPControllerApp()
       delete msg;
     }
     msgList.clear();
-
-    for(auto&& pair : socketMap){
-        delete pair.second;
-    }
-    socketMap.clear();
 }
 
 
@@ -94,16 +89,6 @@ void AbstractTCPControllerApp::handleMessage(cMessage *msg){
             }
             calcAvgQueueSize(msgList.size());
     }
-}
-
-TCPSocket * AbstractTCPControllerApp::findSocketFor(cMessage *msg) {
-    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
-    if (!ind)
-        throw cRuntimeError("SocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
-
-    std::map<int,TCPSocket*>::iterator i = socketMap.find(ind->getConnId());
-    ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());
-    return (i==socketMap.end()) ? NULL : i->second;
 }
 
 void AbstractTCPControllerApp::calcAvgQueueSize(int size){

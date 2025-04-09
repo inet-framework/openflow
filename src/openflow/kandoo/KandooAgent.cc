@@ -15,7 +15,10 @@ KandooAgent::KandooAgent(){
 }
 
 KandooAgent::~KandooAgent(){
-
+    for(auto&& pair : socketMap){
+        delete pair.second;
+    }
+    socketMap.clear();
 }
 
 void KandooAgent::initialize(){
@@ -186,9 +189,14 @@ void KandooAgent::handleKandooPacket(KN_Packet * knpck){
     emit(kandooEventSignalId,knpck);
 }
 
+TCPSocket * KandooAgent::findSocketFor(cMessage *msg) {
+    TCPCommand *ind = dynamic_cast<TCPCommand *>(msg->getControlInfo());
+    if (!ind)
+        throw cRuntimeError("SocketMap: findSocketFor(): no TCPCommand control info in message (not from TCP?)");
+
+    std::map<int,TCPSocket*>::iterator i = socketMap.find(ind->getConnId());
+    ASSERT(i==socketMap.end() || i->first==i->second->getConnectionId());
+    return (i==socketMap.end()) ? NULL : i->second;
+}
+
 } /*end namespace openflow*/
-
-
-
-
-

@@ -43,7 +43,8 @@ protected:
 
     simsignal_t kandooEventSignalId;
 
-
+    TCPSocket *findSocketFor(cMessage *msg);
+    std::map< int,TCPSocket * > socketMap;
 };
 
 } /*end namespace openflow*/

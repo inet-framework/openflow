@@ -33,10 +33,6 @@ protected:
 
     TCPSocket socket;
 
-    TCPSocket *findSocketFor(cMessage *msg);
-    std::map< int,TCPSocket * > socketMap;
-
-
 public:
     AbstractTCPControllerApp();
     ~AbstractTCPControllerApp();
