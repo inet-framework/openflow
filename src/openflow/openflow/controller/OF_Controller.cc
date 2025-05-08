@@ -182,7 +182,7 @@ void OF_Controller::sendHello(Open_Flow_Message *msg){
     hello->setKind(TCP_C_SEND);
 
     emit(PacketHelloSignalId,hello);
-    TCPSocket *socket = findSocketFor(msg);
+    TCPSocket *socket = CHK(findSocketFor(msg));
     socket->send(hello);
 }
 
@@ -196,7 +196,7 @@ void OF_Controller::sendFeatureRequest(cMessage *msg){
     featuresRequest->setKind(TCP_C_SEND);
 
     emit(PacketFeatureRequestSignalId,featuresRequest);
-    TCPSocket *socket = findSocketFor(msg);
+    TCPSocket *socket = CHK(findSocketFor(msg));
     socket->send(featuresRequest);
 }
 
