@@ -21,7 +21,7 @@ network Scenario_TestCaseKandooSplit
     types:
         channel ethernetline extends ThruputMeteringChannel
         {
-            delay = 1us;
+            delay = default(1us);
             datarate = 100Mbps;
             thruputDisplayFormat = "u";
         }
@@ -76,25 +76,23 @@ network Scenario_TestCaseKandooSplit
 
     connections allowunconnected:
         for i=0..(numClients)-1 {
-            clientG1[i].ethg++ <--> ethernetline <--> open_flow_switch1.gateDataPlane++;
+            clientG1[i].ethg++ <--> ethernetline { delay = 1us+i*1ns; } <--> open_flow_switch1.gateDataPlane++;
         }
 
         for i=0..(numClients)-1 {
-            clientG2[i].ethg++ <--> ethernetline <--> open_flow_switch4.gateDataPlane++;
+            clientG2[i].ethg++ <--> ethernetline { delay = 1.1us+i*1ns; } <--> open_flow_switch4.gateDataPlane++;
         }
 
-        open_flow_switch1.gateDataPlane++ <--> ethernetline <--> open_flow_switch2.gateDataPlane++;
-        open_flow_switch2.gateDataPlane++ <--> ethernetline <--> open_flow_switch3.gateDataPlane++;
-        open_flow_switch3.gateDataPlane++ <--> ethernetline <--> open_flow_switch4.gateDataPlane++;
+        open_flow_switch1.gateDataPlane++ <--> ethernetline { delay = 1.50us; } <--> open_flow_switch2.gateDataPlane++;
+        open_flow_switch2.gateDataPlane++ <--> ethernetline { delay = 1.51us; } <--> open_flow_switch3.gateDataPlane++;
+        open_flow_switch3.gateDataPlane++ <--> ethernetline { delay = 1.52us; } <--> open_flow_switch4.gateDataPlane++;
 
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch1.gateControlPlane++;
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch2.gateControlPlane++;
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch3.gateControlPlane++;
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_switch4.gateControlPlane++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.53us; } <--> open_flow_switch1.gateControlPlane++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.54us; } <--> open_flow_switch2.gateControlPlane++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.55us; } <--> open_flow_switch3.gateControlPlane++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.56us; } <--> open_flow_switch4.gateControlPlane++;
 
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller1.ethg++;
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller2.ethg++;
-        etherSwitch.ethg++ <--> ethernetline <--> open_flow_controller_knroot.ethg++;
-
-
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.57us; } <--> open_flow_controller1.ethg++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.58us; } <--> open_flow_controller2.ethg++;
+        etherSwitch.ethg++ <--> ethernetline { delay = 1.59us; } <--> open_flow_controller_knroot.ethg++;
 }

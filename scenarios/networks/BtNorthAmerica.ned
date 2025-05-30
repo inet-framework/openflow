@@ -34,7 +34,7 @@ network Scenario_BtNorthAmerica
     types:
         channel backboneline extends ThruputMeteringChannel
         {
-            delay = 1us;
+            delay = default(1us);
             datarate = 40Gbps;
             thruputDisplayFormat = "u";
         }
@@ -316,355 +316,355 @@ network Scenario_BtNorthAmerica
         // this edge is not part of the MST, skipping
         // placement 1, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_1.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 1);
-        ofs_1.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 1);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 1);
+        ofs_1.gateCPlane++ <--> backboneline { delay = 1.001us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 1);
+        ofs_1.gateCPlane++ <--> backboneline { delay = 1.002us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 1);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.003us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 1);
         // placement 2, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_2.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 2);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 2);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 2);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.004us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 2);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.005us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 2);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.006us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 2);
         // placement 3, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_2.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 3);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 3);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 3);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.007us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 3);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.008us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 3);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.009us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 3);
         // placement 4, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 4);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 4);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 4);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.010us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 4);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.011us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 4);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.012us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 4);
         // placement 5, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 5);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 5);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 5);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.013us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 5);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.014us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 5);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.015us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 5);
         // placement 6, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 6);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 6);
-        ofs_31.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 6);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.016us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 6);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.017us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 6);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.018us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 6);
         // placement 7, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_7.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 7);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 7);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 7);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.019us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 7);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.020us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 7);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.0210us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 7);
         // placement 8, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_8.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 8);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 8);
-        ofs_9.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 8);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.022us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 8);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.023us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 8);
+        ofs_9.gateCPlane++ <--> backboneline { delay = 1.024us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 8);
         // placement 9, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_13.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 9);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 9);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 9);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.025us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 9);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.026us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 9);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.027us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 9);
         // placement 10, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_16.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 10);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 10);
-        ofs_21.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 10);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.028us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 10);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.029us; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 10);
+        ofs_21.gateCPlane++ <--> backboneline { delay = 1.030us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 10);
         // placement 11, k = 2
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_32.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 11);
-        ofs_32.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 11);
-        ofs_33.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 11);
+        ofs_32.gateCPlane++ <--> backboneline { delay = 1.031us; } <--> hf_synchronizer.ethg++ if (numControllers == 2 && placementID == 11);
+        ofs_32.gateCPlane++ <--> backboneline { delay = 1.032s; } <--> open_flow_controller1.ethg++ if (numControllers == 2 && placementID == 11);
+        ofs_33.gateCPlane++ <--> backboneline { delay = 1.033us; } <--> open_flow_controller2.ethg++ if (numControllers == 2 && placementID == 11);
         // placement 12, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 12);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 12);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 12);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 12);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.034us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 12);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.035us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 12);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.036us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 12);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.037us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 12);
         // placement 13, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 13);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 13);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 13);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 13);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.038us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 13);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.039us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 13);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.040us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 13);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.041us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 13);
         // placement 14, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 14);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 14);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 14);
-        ofs_17.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 14);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.042us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 14);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.043us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 14);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.044us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 14);
+        ofs_17.gateCPlane++ <--> backboneline { delay = 1.045us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 14);
         // placement 15, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 15);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 15);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 15);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 15);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.046us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 15);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.047us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 15);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.048us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 15);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.049us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 15);
         // placement 16, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 16);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 16);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 16);
-        ofs_17.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 16);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.050us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 16);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.051us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 16);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.052us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 16);
+        ofs_17.gateCPlane++ <--> backboneline { delay = 1.053us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 16);
         // placement 17, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 17);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 17);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 17);
-        ofs_17.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 17);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.054us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 17);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.055us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 17);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.056us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 17);
+        ofs_17.gateCPlane++ <--> backboneline { delay = 1.057us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 17);
         // placement 18, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_17.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 18);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 18);
-        ofs_17.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 18);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 18);
+        ofs_17.gateCPlane++ <--> backboneline { delay = 1.058us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 18);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.059us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 18);
+        ofs_17.gateCPlane++ <--> backboneline { delay = 1.060us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 18);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.061us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 18);
         // placement 19, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 19);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 19);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 19);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 19);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.062us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 19);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.063us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 19);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.064us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 19);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.065us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 19);
         // placement 20, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_14.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 20);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 20);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 20);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 20);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.066us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 20);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.067us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 20);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.068us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 20);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.069us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 20);
         // placement 21, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_7.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 21);
-        ofs_6.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 21);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 21);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 21);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.070us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 21);
+        ofs_6.gateCPlane++ <--> backboneline { delay = 1.071us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 21);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.072us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 21);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.073us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 21);
         // placement 22, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 22);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 22);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 22);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 22);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.074us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 22);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.075us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 22);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.076us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 22);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.077us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 22);
         // placement 23, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 23);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 23);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 23);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 23);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.078us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 23);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.079us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 23);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.080us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 23);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.081us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 23);
         // placement 24, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_11.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 24);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 24);
-        ofs_11.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 24);
-        ofs_12.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 24);
+        ofs_11.gateCPlane++ <--> backboneline { delay = 1.082us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 24);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.083us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 24);
+        ofs_11.gateCPlane++ <--> backboneline { delay = 1.084us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 24);
+        ofs_12.gateCPlane++ <--> backboneline { delay = 1.085us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 24);
         // placement 25, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_13.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 25);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 25);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 25);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 25);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.086us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 25);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.087us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 25);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.088us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 25);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.089us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 25);
         // placement 26, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_13.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 26);
-        ofs_11.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 26);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 26);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 26);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.090us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 26);
+        ofs_11.gateCPlane++ <--> backboneline { delay = 1.091us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 26);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.092us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 26);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.093us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 26);
         // placement 27, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 27);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 27);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 27);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 27);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.094us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 27);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.095us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 27);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.096us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 27);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.097us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 27);
         // placement 28, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_18.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 28);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 28);
-        ofs_18.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 28);
-        ofs_19.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 28);
+        ofs_18.gateCPlane++ <--> backboneline { delay = 1.098us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 28);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.099us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 28);
+        ofs_18.gateCPlane++ <--> backboneline { delay = 1.100us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 28);
+        ofs_19.gateCPlane++ <--> backboneline { delay = 1.101us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 28);
         // placement 29, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_18.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 29);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 29);
-        ofs_18.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 29);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 29);
+        ofs_18.gateCPlane++ <--> backboneline { delay = 1.102us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 29);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.103us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 29);
+        ofs_18.gateCPlane++ <--> backboneline { delay = 1.104us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 29);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.105us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 29);
         // placement 30, k = 3
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 30);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 30);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 30);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 30);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.106us; } <--> hf_synchronizer.ethg++ if (numControllers == 3 && placementID == 30);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.107us; } <--> open_flow_controller1.ethg++ if (numControllers == 3 && placementID == 30);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.108us; } <--> open_flow_controller2.ethg++ if (numControllers == 3 && placementID == 30);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.109us; } <--> open_flow_controller3.ethg++ if (numControllers == 3 && placementID == 30);
         // placement 31, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 31);
-        ofs_1.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 31);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 31);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 31);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 31);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.110us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_1.gateCPlane++ <--> backboneline { delay = 1.111us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.112us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.113us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.114us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 31);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.115us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 31);
         // placement 32, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 32);
-        ofs_1.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 32);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 32);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 32);
-        ofs_26.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 32);
-        ofs_30.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.116us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_1.gateCPlane++ <--> backboneline { delay = 1.117us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.118us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.119us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_26.gateCPlane++ <--> backboneline { delay = 1.120us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 32);
+        ofs_30.gateCPlane++ <--> backboneline { delay = 1.121us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 32);
         // placement 33, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 33);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 33);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 33);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 33);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 33);
-        ofs_30.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.122us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.123us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.124us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.125us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.126us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 33);
+        ofs_30.gateCPlane++ <--> backboneline { delay = 1.127us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 33);
         // placement 34, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 34);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 34);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 34);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 34);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 34);
-        ofs_19.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.128us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.129us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.130us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.131us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.132us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 34);
+        ofs_19.gateCPlane++ <--> backboneline { delay = 1.133us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 34);
         // placement 35, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 35);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 35);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 35);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 35);
-        ofs_19.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 35);
-        ofs_31.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.134us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.135us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.136us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.137us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_19.gateCPlane++ <--> backboneline { delay = 1.138us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 35);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.139us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 35);
         // placement 36, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 36);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 36);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 36);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 36);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 36);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.140us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.141us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.142us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.143us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.144us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 36);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.145us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 36);
         // placement 37, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_2.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 37);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 37);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 37);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 37);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 37);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.146us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.147us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.148us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.149us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.150us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 37);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.151us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 37);
         // placement 38, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_2.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 38);
-        ofs_2.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 38);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 38);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 38);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 38);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.152us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_2.gateCPlane++ <--> backboneline { delay = 1.153us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.154us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.155us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.156us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 38);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.157us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 38);
         // placement 39, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 39);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 39);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 39);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 39);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 39);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.158us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.159us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.160us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.161us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.162us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 39);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.163us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 39);
         // placement 40, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_3.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 40);
-        ofs_3.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 40);
-        ofs_8.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 40);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 40);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 40);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.164us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_3.gateCPlane++ <--> backboneline { delay = 1.165us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_8.gateCPlane++ <--> backboneline { delay = 1.166us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.167us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.168us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 40);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.169us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 40);
         // placement 41, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_14.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 41);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 41);
-        ofs_5.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 41);
-        ofs_6.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 41);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 41);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.170us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.171us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_5.gateCPlane++ <--> backboneline { delay = 1.172us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_6.gateCPlane++ <--> backboneline { delay = 1.173us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.174us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 41);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.175us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 41);
         // placement 42, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_14.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 42);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 42);
-        ofs_5.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 42);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 42);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 42);
-        ofs_27.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.176us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.177us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_5.gateCPlane++ <--> backboneline { delay = 1.178us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.179us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.180us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 42);
+        ofs_27.gateCPlane++ <--> backboneline { delay = 1.181us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 42);
         // placement 43, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_14.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 43);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 43);
-        ofs_5.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 43);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 43);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 43);
-        ofs_28.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.182us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.183us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_5.gateCPlane++ <--> backboneline { delay = 1.184us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.185us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.186us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 43);
+        ofs_28.gateCPlane++ <--> backboneline { delay = 1.187us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 43);
         // placement 44, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_14.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 44);
-        ofs_4.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 44);
-        ofs_6.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 44);
-        ofs_7.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 44);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 44);
-        ofs_27.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.188us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_4.gateCPlane++ <--> backboneline { delay = 1.189us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_6.gateCPlane++ <--> backboneline { delay = 1.190us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_7.gateCPlane++ <--> backboneline { delay = 1.191us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.192us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 44);
+        ofs_27.gateCPlane++ <--> backboneline { delay = 1.193us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 44);
         // placement 45, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_10.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 45);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 45);
-        ofs_11.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 45);
-        ofs_12.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 45);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 45);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.194us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.195us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_11.gateCPlane++ <--> backboneline { delay = 1.196us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_12.gateCPlane++ <--> backboneline { delay = 1.197us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.198us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 45);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.199us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 45);
         // placement 46, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 46);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 46);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 46);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 46);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 46);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.200us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.201us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.202us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.203us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.204us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 46);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.205us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 46);
         // placement 47, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 47);
-        ofs_10.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 47);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 47);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 47);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 47);
-        ofs_33.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.206us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_10.gateCPlane++ <--> backboneline { delay = 1.207us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.208us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.209us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.210us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 47);
+        ofs_33.gateCPlane++ <--> backboneline { delay = 1.211us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 47);
         // placement 48, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 48);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 48);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 48);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 48);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 48);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.212us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.213us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.214us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.215us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.216us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 48);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.217us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 48);
         // placement 49, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 49);
-        ofs_13.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 49);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 49);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 49);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 49);
-        ofs_33.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.218us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_13.gateCPlane++ <--> backboneline { delay = 1.219us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.220us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.221us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.222us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 49);
+        ofs_33.gateCPlane++ <--> backboneline { delay = 1.223us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 49);
         // placement 50, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_25.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 50);
-        ofs_14.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 50);
-        ofs_15.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 50);
-        ofs_20.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 50);
-        ofs_22.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 50);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.224us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_14.gateCPlane++ <--> backboneline { delay = 1.225us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_15.gateCPlane++ <--> backboneline { delay = 1.226us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_20.gateCPlane++ <--> backboneline { delay = 1.227us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_22.gateCPlane++ <--> backboneline { delay = 1.228us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 50);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.229us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 50);
         // placement 51, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_31.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 51);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 51);
-        ofs_21.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 51);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 51);
-        ofs_30.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 51);
-        ofs_31.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.230us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.231us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_21.gateCPlane++ <--> backboneline { delay = 1.232us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.233us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_30.gateCPlane++ <--> backboneline { delay = 1.234us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 51);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.235us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 51);
         // placement 52, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_16.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 52);
-        ofs_16.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 52);
-        ofs_21.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 52);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 52);
-        ofs_31.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 52);
-        ofs_33.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.236us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_16.gateCPlane++ <--> backboneline { delay = 1.237us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_21.gateCPlane++ <--> backboneline { delay = 1.238us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.239us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.240us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 52);
+        ofs_33.gateCPlane++ <--> backboneline { delay = 1.241us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 52);
         // placement 53, k = 5
         // hfSyncHost according to minimum avg distance to ctrl
-        ofs_32.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 53);
-        ofs_25.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 53);
-        ofs_30.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 53);
-        ofs_31.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 53);
-        ofs_32.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 53);
-        ofs_33.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_32.gateCPlane++ <--> backboneline { delay = 1.242us; } <--> hf_synchronizer.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_25.gateCPlane++ <--> backboneline { delay = 1.243us; } <--> open_flow_controller1.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_30.gateCPlane++ <--> backboneline { delay = 1.244us; } <--> open_flow_controller2.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_31.gateCPlane++ <--> backboneline { delay = 1.245us; } <--> open_flow_controller3.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_32.gateCPlane++ <--> backboneline { delay = 1.246us; } <--> open_flow_controller4.ethg++ if (numControllers == 5 && placementID == 53);
+        ofs_33.gateCPlane++ <--> backboneline { delay = 1.247us; } <--> open_flow_controller5.ethg++ if (numControllers == 5 && placementID == 53);
 }

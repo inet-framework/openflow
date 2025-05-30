@@ -22,7 +22,7 @@ network Scenario_DynamicFatTree_HF
     types:
         channel backboneline extends ThruputMeteringChannel
         {
-            delay = 1us;
+            delay = default(1us);
             datarate = 40Gbps;
             thruputDisplayFormat = "u";
         }
@@ -78,13 +78,13 @@ network Scenario_DynamicFatTree_HF
 
     connections allowunconnected:
 
-        etherSwitch.ethg++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers >=1;
-        etherSwitch.ethg++ <--> backboneline <--> open_flow_controller2.ethg++ if numControllers >=2;
-        etherSwitch.ethg++ <--> backboneline <--> open_flow_controller3.ethg++ if numControllers >=3;
-        etherSwitch.ethg++ <--> backboneline <--> open_flow_controller4.ethg++ if numControllers >=4;
-        etherSwitch.ethg++ <--> backboneline <--> open_flow_controller5.ethg++ if numControllers >=5;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.050us; } <--> open_flow_controller1.ethg++ if numControllers >=1;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.051us; } <--> open_flow_controller2.ethg++ if numControllers >=2;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.052us; } <--> open_flow_controller3.ethg++ if numControllers >=3;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.053us; } <--> open_flow_controller4.ethg++ if numControllers >=4;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.054us; } <--> open_flow_controller5.ethg++ if numControllers >=5;
 
-        etherSwitch.ethg++ <--> backboneline <--> hf_synchronizer.ethg++;
+        etherSwitch.ethg++ <--> backboneline {delay = 1.055us; } <--> hf_synchronizer.ethg++;
 
-        fat_tree.gateCPlane++ <--> backboneline <--> etherSwitch.ethg++;
+        fat_tree.gateCPlane++ <--> backboneline {delay = 1.056us; } <--> etherSwitch.ethg++;
 }
