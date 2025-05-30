@@ -151,7 +151,7 @@ void OF_Switch::handleMessage(cMessage *msg){
         //delete the msg for efficiency
         delete msg;
     } else {
-        if(msg->getKind() == TCP_I_ESTABLISHED){
+        if(!msg->arrivedOn("dataPlaneIn") && msg->getKind() == TCP_I_ESTABLISHED){
             socket.processMessage(msg);
         }else{
             //imlement service time
