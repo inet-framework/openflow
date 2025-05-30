@@ -24,7 +24,7 @@ network Scenario_USA_HF
     types:
         channel backboneline extends ThruputMeteringChannel
         {
-            delay = 1us;
+            delay = default(1us);
             datarate = 40Gbps;
             thruputDisplayFormat = "u";
         }
@@ -325,32 +325,31 @@ network Scenario_USA_HF
 
 
         //hf synchronizer
-        ofs_KansasCity.gateCPlane++ <--> backboneline <--> hf_synchronizer.ethg++;
+        ofs_KansasCity.gateCPlane++ <--> backboneline { delay=1.01us; } <--> hf_synchronizer.ethg++;
 
 		//numC 1
-        ofs_KansasCity.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers ==1;
+        ofs_KansasCity.gateCPlane++ <--> backboneline { delay=1.02us; } <--> open_flow_controller1.ethg++ if numControllers ==1;
 
         //numC 2
-        ofs_Louisville.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers ==2;
-        ofs_SaltLakeCity.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if numControllers ==2;
+        ofs_Louisville.gateCPlane++ <--> backboneline { delay=1.03us; } <--> open_flow_controller1.ethg++ if numControllers ==2;
+        ofs_SaltLakeCity.gateCPlane++ <--> backboneline { delay=1.04us; } <--> open_flow_controller2.ethg++ if numControllers ==2;
 
 
 		//numC 3
-        ofs_Denver.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers ==3;
-        ofs_Portland.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if numControllers ==3;
-        ofs_Atlanta.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if numControllers ==3;
+        ofs_Denver.gateCPlane++ <--> backboneline { delay=1.05us; } <--> open_flow_controller1.ethg++ if numControllers ==3;
+        ofs_Portland.gateCPlane++ <--> backboneline { delay=1.06us; } <--> open_flow_controller2.ethg++ if numControllers ==3;
+        ofs_Atlanta.gateCPlane++ <--> backboneline { delay=1.07us; } <--> open_flow_controller3.ethg++ if numControllers ==3;
 
         //numC 4
-        ofs_Seattle.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers ==4;
-        ofs_ElPaso.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if numControllers ==4;
-        ofs_Chicago.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if numControllers ==4;
-        ofs_Atlanta.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if numControllers ==4;
+        ofs_Seattle.gateCPlane++ <--> backboneline { delay=1.08us; } <--> open_flow_controller1.ethg++ if numControllers ==4;
+        ofs_ElPaso.gateCPlane++ <--> backboneline { delay=1.09us; } <--> open_flow_controller2.ethg++ if numControllers ==4;
+        ofs_Chicago.gateCPlane++ <--> backboneline { delay=1.10us; } <--> open_flow_controller3.ethg++ if numControllers ==4;
+        ofs_Atlanta.gateCPlane++ <--> backboneline { delay=1.11us; } <--> open_flow_controller4.ethg++ if numControllers ==4;
 
         //numC 5
-        ofs_Seattle.gateCPlane++ <--> backboneline <--> open_flow_controller1.ethg++ if numControllers ==5;
-        ofs_ElPaso.gateCPlane++ <--> backboneline <--> open_flow_controller2.ethg++ if numControllers ==5;
-        ofs_Atlanta.gateCPlane++ <--> backboneline <--> open_flow_controller3.ethg++ if numControllers ==5;
-        ofs_Houston.gateCPlane++ <--> backboneline <--> open_flow_controller4.ethg++ if numControllers ==5;
-        ofs_Cleveland.gateCPlane++ <--> backboneline <--> open_flow_controller5.ethg++ if numControllers ==5;
-
+        ofs_Seattle.gateCPlane++ <--> backboneline { delay=1.12us; } <--> open_flow_controller1.ethg++ if numControllers ==5;
+        ofs_ElPaso.gateCPlane++ <--> backboneline { delay=1.13us; } <--> open_flow_controller2.ethg++ if numControllers ==5;
+        ofs_Atlanta.gateCPlane++ <--> backboneline { delay=1.14us; } <--> open_flow_controller3.ethg++ if numControllers ==5;
+        ofs_Houston.gateCPlane++ <--> backboneline { delay=1.15us; } <--> open_flow_controller4.ethg++ if numControllers ==5;
+        ofs_Cleveland.gateCPlane++ <--> backboneline { delay=1.16us; } <--> open_flow_controller5.ethg++ if numControllers ==5;
 }
