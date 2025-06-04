@@ -1,0 +1,39 @@
+diff --git a/src/inet/transportlayer/tcp/Tcp.ned b/src/inet/transportlayer/tcp/Tcp.ned
+index 437f92bcbb..f16d58b861 100644
+--- a/src/inet/transportlayer/tcp/Tcp.ned
++++ b/src/inet/transportlayer/tcp/Tcp.ned
+@@ -186,7 +186,7 @@ simple Tcp like ITcp
+         string crcMode @enum("declared", "computed") = default("declared");
+         int advertisedWindow = default(14*this.mss); // in bytes, corresponds with the maximal receiver buffer capacity (Note: normally, NIC queues should be at least this size)
+         bool delayedAcksEnabled = default(false); // delayed ACK algorithm (RFC 1122) enabled/disabled
+-        bool nagleEnabled = default(true); // Nagle's algorithm (RFC 896) enabled/disabled
++        bool nagleEnabled = default(false); // Nagle's algorithm (RFC 896) enabled/disabled
+         bool limitedTransmitEnabled = default(false); // Limited Transmit algorithm (RFC 3042) enabled/disabled (can be used for TcpReno/TcpTahoe/TcpNewReno/TcpNoCongestionControl)
+         bool increasedIWEnabled = default(false); // Increased Initial Window (RFC 3390) enabled/disabled
+         bool sackSupport = default(false); // Selective Acknowledgment (RFC 2018, 2883, 3517) support (header option) (SACK will be enabled for a connection if both endpoints support it)
+diff --git a/src/inet/transportlayer/tcp/TcpConnectionUtil.cc b/src/inet/transportlayer/tcp/TcpConnectionUtil.cc
+index a1b2b0e8d8..8e7f0dba40 100644
+--- a/src/inet/transportlayer/tcp/TcpConnectionUtil.cc
++++ b/src/inet/transportlayer/tcp/TcpConnectionUtil.cc
+@@ -889,6 +889,7 @@ bool TcpConnection::sendData(uint32_t congestionWindow)
+     // start sending 'bytesToSend' bytes
+     EV_INFO << "May send " << bytesToSend << " bytes (effectiveWindow " << effectiveWin << ", in buffer " << buffered << " bytes)\n";
+ 
++
+     // send whole segments
+     while (bytesToSend >= effectiveMss) {
+         uint32_t sentBytes = sendSegment(effectiveMss);
+@@ -904,8 +905,11 @@ bool TcpConnection::sendData(uint32_t congestionWindow)
+         bool containsFin = state->send_fin && (state->snd_nxt + bytesToSend) == state->snd_fin_seq;
+         if (state->nagle_enabled && unacknowledgedData && !containsFin)
+             EV_WARN << "Cannot send (last) segment due to Nagle, not enough data for a full segment\n";
+-        else
+-            sendSegment(bytesToSend);
++        else {
++            buffered = sendQueue->getBytesAvailable(state->snd_nxt);
++            if ((bytesToSend == buffered && buffered > 0) || (old_snd_nxt == state->snd_nxt))
++                sendSegment(bytesToSend);
++        }
+     }
+ 
+     if (old_snd_nxt == state->snd_nxt)
