@@ -9,7 +9,8 @@
 
 #include "openflow/openflow/switch/Buffer.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
-#include "openflow/openflow/switch/Flow_Table.h"
+#include "openflow/openflow/switch/flowtable/OF_FlowTable.h"
+#include "openflow/openflow/switch/flowtable/OF100_FlowTableEntry.h"
 #include "inet/networklayer/common/NetworkInterface.h"
 #include <vector>
 
@@ -72,7 +73,7 @@ protected:
 
 
     Buffer buffer;
-    Flow_Table flowTable;
+    OF_FlowTable* flowTable;
     TcpSocket socket;
     std::vector<NetworkInterface *> listInterfacesToDelete;
 
