@@ -241,7 +241,7 @@ Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
     packetOut->setActionsArraySize(1);
     packetOut->setActions(0, *action_output);
 
-    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktOut->getByteLength();
+    packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + pktOut->getByteLength();
     pktOut->insertAtFront(packetOut);
     pktOut->setKind(TCP_C_SEND);
 
@@ -270,7 +270,7 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
     action_output->port = OFPP_ANY;
     packetOut->setActionsArraySize(1);
     packetOut->setActions(0, *action_output);
-    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktOut->getByteLength();
+    packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + pktOut->getByteLength();
 
     pktOut->insertAtFront(packetOut);
     pktOut->setKind(TCP_C_SEND);

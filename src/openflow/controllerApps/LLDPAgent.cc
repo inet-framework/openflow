@@ -102,7 +102,7 @@ void LLDPAgent::sendLLDP(){
             action_output->port = outPort;
             packetOut->setActionsArraySize(1);
             packetOut->setActions(0, *action_output);
-            packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + frame->getByteLength();
+            packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + frame->getByteLength();
 
             frame->insertAtFront(packetOut);
 

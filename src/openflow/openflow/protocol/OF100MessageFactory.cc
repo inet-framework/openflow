@@ -56,7 +56,7 @@ Packet* OF100MessageFactory::createFeaturesReply(std::string dpid,
     msg->setPortsArraySize(n_ports); // 10 Byte per port --> n_ports * 10
     //set message size
     msg->setChunkLength(B(24 + n_ports*10));
-    msg->getHeaderForUpdate().length = B(msg->getChunkLength()).get() + pk->getByteLength();
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
 
     pk->insertAtFront(msg);
     return pk;
@@ -109,7 +109,7 @@ Packet* OF100MessageFactory::createFlowModMessage(ofp_flow_mod_command mod_com,c
 
     //set message params
     msg->setChunkLength(B(69+4*n_outports));
-    msg->getHeaderForUpdate().length = B(msg->getChunkLength()).get() + pk->getByteLength();
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
 
     pk->insertAtFront(msg);
     return pk;
@@ -208,7 +208,7 @@ Packet* OF100MessageFactory::createPacketOut(uint32_t* outports, int n_outports,
             throw cRuntimeError("OF100MessageFactory::createPacketOut: OFP_NO_BUFFER was set but no frame was provided.");
         }
     }
-    msg->getHeaderForUpdate().length = B(msg->getChunkLength()).get() + pk->getByteLength();
+    msg->getHeaderForUpdate().length = msg->getChunkLength().get<B>() + pk->getByteLength();
     pk->insertAtFront(msg);
     return pk;
 }

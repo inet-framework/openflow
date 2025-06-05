@@ -359,7 +359,7 @@ void OF_Switch::connect(const char *addressToConnect){
     hello->getHeaderForUpdate().version = OFP_VERSION;
     hello->getHeaderForUpdate().type = OFPT_HELLO;
     hello->setChunkLength(B(8));
-    hello->getHeaderForUpdate().length = B(hello->getChunkLength()).get() + pktHello->getByteLength();
+    hello->getHeaderForUpdate().length = hello->getChunkLength().get<B>() + pktHello->getByteLength();
     pktHello->setKind(TCP_C_SEND);
     pktHello->insertAtFront(hello);
     socket.send(pktHello);
@@ -570,7 +570,7 @@ void OF_Switch::processFrame(Packet *pkt){
            packetIn->setReason(OFPR_ACTION);
            packetIn->setChunkLength(B(32));
            packetIn->setBuffer_id(OFP_NO_BUFFER);
-           packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pkt->getByteLength();
+           packetIn->getHeaderForUpdate().length = packetIn->getChunkLength().get<B>() + pkt->getByteLength();
            pkt->insertAtFront(packetIn);
            socket.send(pkt);
            if(hash !=0){
@@ -666,7 +666,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         // send full packet with packet-in message
 //        packetIn->encapsulate(frame);
         packetIn->setBuffer_id(OFP_NO_BUFFER);
-        packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pktFrame->getByteLength();
+        packetIn->getHeaderForUpdate().length = packetIn->getChunkLength().get<B>() + pktFrame->getByteLength();
         oxm_basic_match match = oxm_basic_match();
         match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
 //        match.OFB_ETH_SRC = etherHeader->getSrc();
@@ -699,7 +699,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         packetIn->setMatch(match);
         packetIn->setBuffer_id(buffer.storeMessage(pktFrame));
         pktIn = new Packet("packetIn");
-        packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pktIn->getByteLength();
+        packetIn->getHeaderForUpdate().length = packetIn->getChunkLength().get<B>() + pktIn->getByteLength();
         pktIn->insertAtFront(packetIn);
     }
     socket.send(pktIn);

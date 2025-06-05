@@ -141,7 +141,7 @@ void HF_ARPResponder::handlePacketIn(Packet * pkt){
                     action_output->port = headerFields.inport;
                     packetOut->setActionsArraySize(1);
                     packetOut->setActions(0, *action_output);
-                    packetOut->getHeaderForUpdate().length = B(packetOut->getChunkLength()).get() + pktArp->getByteLength();
+                    packetOut->getHeaderForUpdate().length = packetOut->getChunkLength().get<B>() + pktArp->getByteLength();
                     pktArp->insertAtFront(packetOut);
 
                     //send the packet

@@ -303,7 +303,7 @@ void OF_Controller::sendHello(Packet *pkt){
     hello->getHeaderForUpdate().version = OFP_VERSION;
     hello->getHeaderForUpdate().type = OFPT_HELLO;
     hello->setChunkLength(B(8));
-    hello->getHeaderForUpdate().length = B(hello->getChunkLength()).get() + pktHello->getByteLength();
+    hello->getHeaderForUpdate().length = hello->getChunkLength().get<B>() + pktHello->getByteLength();
     pktHello->setKind(TCP_C_SEND);
     pktHello->insertAtFront(hello);
 
@@ -318,7 +318,7 @@ void OF_Controller::sendFeatureRequest(Packet *pkt){
     featuresRequest->getHeaderForUpdate().version = OFP_VERSION;
     featuresRequest->getHeaderForUpdate().type = OFPT_FEATURES_REQUEST;
     featuresRequest->setChunkLength(B(8));
-    featuresRequest->getHeaderForUpdate().length = B(featuresRequest->getChunkLength()).get() + pktFeauresReq->getByteLength();
+    featuresRequest->getHeaderForUpdate().length = featuresRequest->getChunkLength().get<B>() + pktFeauresReq->getByteLength();
     pktFeauresReq->setKind(TCP_C_SEND);
     pktFeauresReq->insertAtFront(featuresRequest);
 
