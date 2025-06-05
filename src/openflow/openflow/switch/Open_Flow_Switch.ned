@@ -3,8 +3,8 @@
 package openflow.openflow.switch;
 
 import inet.common.MessageDispatcher;
-import inet.linklayer.contract.IEthernetInterface;
-import inet.linklayer.ethernet.contract.IEthernetLayer;
+import inet.linklayer.contract.IEthernetLayer;
+import inet.linklayer.ethernet.basic.EthernetInterface;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
@@ -60,12 +60,12 @@ module Open_Flow_Switch
 
         }
 
-        eth[sizeof(gateControlPlane)]: <default("EthernetInterface")> like IEthernetInterface {
+        eth[sizeof(gateControlPlane)]: EthernetInterface {
             parameters:
                 @display("p=313,664,row,90;q=txQueue");
         }
 
-        etherMAC[sizeof(gateDataPlane)]: <default("EthernetInterface")> like IEthernetInterface {
+        etherMAC[sizeof(gateDataPlane)]: EthernetInterface {
             parameters:
                 mac.promiscuous = true;
                 @display("p=736,598,row,70");
