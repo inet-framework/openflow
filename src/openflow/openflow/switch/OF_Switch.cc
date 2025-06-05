@@ -35,7 +35,7 @@ namespace openflow{
 Define_Module(OF_Switch);
 
 OF_Switch::OF_Switch(){
-
+    flowTable = nullptr;
 }
 
 OF_Switch::~OF_Switch(){
@@ -151,6 +151,12 @@ void OF_Switch::initialize(int stage){
         //socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
         //schedule connection setup
         WATCH_MAP(ifaceIndex);
+        
+        // Initialize flowTable pointer to the external OF_FlowTable module
+        flowTable = check_and_cast<OF_FlowTable*>(getParentModule()->getSubmodule("flowTable"));
+        if (flowTable == nullptr) {
+            throw cRuntimeError("OF_FlowTable module not found. Please add flowTable submodule to the switch.");
+        }
     }
 }
 
@@ -546,13 +552,19 @@ void OF_Switch::processFrame(Packet *pkt){
 //    }
 
 
-   Flow_Table_Entry *lookup = flowTable.lookup(match);
-   if (lookup != NULL){
+   OF_FlowTableEntry *lookup = flowTable->lookup(match);
+   if (lookup != nullptr){
        //lookup successful
        flowTableHit++;
        EV << "Found entry in flow table." << '\n';
-       ofp_action_output action_output = lookup->getInstructions();
-       uint32_t outport = action_output.port;
+       // Get the first instruction (action) from the new flowtable entry
+       auto instructions = dynamic_cast<OF100_FlowTableEntry*>(lookup)->getInstructions();
+       if (instructions.empty()) {
+           EV << "No instructions found in flow entry" << '\n';
+           handleMissMatchedPacket(pkt);
+           return;
+       }
+       uint32_t outport = instructions[0].port;
        if(outport == OFPP_CONTROLLER){
            //send it to the controller
 //           OFP_Packet_In *packetIn = new OFP_Packet_In("packetIn");
@@ -646,7 +658,8 @@ void OF_Switch::handleFlowModMessage(Packet *pktOf){
     EV << "OFA_switch::handleFlowModMessage" << '\n';
     auto flowModMsg = staticPtrCast<const OFP_Flow_Mod>(of_msg);//(OFP_Flow_Mod *) of_msg;
 
-    flowTable.addEntry(Flow_Table_Entry(flowModMsg.get()));
+    // Use the new OF_FlowTable's handleFlowMod method
+    flowTable->handleFlowMod(const_cast<OFP_Flow_Mod*>(flowModMsg.get()));
 }
 
 

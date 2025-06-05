@@ -63,7 +63,14 @@ OF_FlowTable::~OF_FlowTable() {
 void OF_FlowTable::initialize()
 {
     handleParameterChange(nullptr);
-    _tableIndex = this->getIndex();
+    
+    // Check if this module is part of a vector (has an index)
+    if (isVector()) {
+        _tableIndex = this->getIndex();
+    } else {
+        _tableIndex = 0; // Default table index for single flow table
+    }
+    
     _nextAging = simtime_t::getMaxTime();
 
     WATCH(_nextAging);

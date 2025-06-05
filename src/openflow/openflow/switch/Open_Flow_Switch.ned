@@ -9,6 +9,7 @@ import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
 import inet.protocolelement.contract.IProtocolLayer;
 import inet.transportlayer.contract.ITcp;
+import openflow.openflow.switch.flowtable.OF_FlowTable;
 
 
 module Open_Flow_Switch
@@ -58,6 +59,10 @@ module Open_Flow_Switch
         OF_Switch: OF_Switch {
             @display("p=442,43");
 
+        }
+
+        flowTable: OF_FlowTable {
+            @display("p=442,100");
         }
 
         eth[sizeof(gateControlPlane)]: <default("EthernetInterface")> like IEthernetInterface {
@@ -188,4 +193,3 @@ module Open_Flow_Switch
 
 
 }
-
