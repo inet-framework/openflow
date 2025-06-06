@@ -1,7 +1,7 @@
 OpenFlow-20250605
 -----------------
 
-* Ported to INET-4.x. See `inet4-migration-notes/` for details.
+* Ported to INET-4.x. See `inet4-migration-notes/` for details. Incorporates migration work by Alfonso Ariza Quintana.
 * Renamed `AbstractControllerApp` NED type to `IControllerApp`
 * Added NED documentation for several undocumented modules
 * Tested with omnetpp-6.1 and inet-4.5.4 and 4.4.2.
@@ -24,5 +24,7 @@ Patch release for OpenFlow 20240124.
 OpenFlow-20240124
 -----------------
 
-* Identical to https://github.com/CoRE-RG/OpenFlow/releases/tag/nightly%2F2024-01-24_15-05-30
+This repo started as a fork of the CoRE research group's OpenFlow fork, and this release represents their last version.
+
+* Identical to [CoRE-RG/OpenFlow's nightly/2024-01-24_15-05-30](https://github.com/CoRE-RG/OpenFlow/releases/tag/nightly%2F2024-01-24_15-05-30).
 * Compatible with omnetpp-6.0.3 and inet-3.8.3
