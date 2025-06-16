@@ -141,11 +141,9 @@ void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
 
     //check for hf messages to refire
     if(id == HyperFlowReFireSignalId){
-        if(dynamic_cast<HF_ReFire_Wrapper *>(obj) != NULL) {
-            HF_ReFire_Wrapper *hfRefire = (HF_ReFire_Wrapper *) obj;
+        if(HF_ReFire_Wrapper *hfRefire = dynamic_cast<HF_ReFire_Wrapper *>(obj)) {
             if(strcmp(hfRefire->getDataChannelEntry().trgSwitch.c_str(),"") == 0){
-                if (dynamic_cast<LLDP_Wrapper *>(hfRefire->getDataChannelEntry().payload) != NULL) {
-                    LLDP_Wrapper *wrapper = (LLDP_Wrapper *) hfRefire->getDataChannelEntry().payload;
+                if (LLDP_Wrapper *wrapper = dynamic_cast<LLDP_Wrapper *>(hfRefire->getDataChannelEntry().payload)) {
                     mibGraph.addEntry(wrapper->getSrcId(),wrapper->getSrcPort(),wrapper->getDstId(),wrapper->getDstPort(),timeOut);
                     if(printMibGraph){
                         EV << mibGraph.getStringGraph() << endl;
@@ -154,7 +152,6 @@ void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
             }
         }
     }
-
 }
 
 } /*end namespace openflow*/
