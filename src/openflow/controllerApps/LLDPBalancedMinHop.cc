@@ -121,8 +121,7 @@ void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject 
         auto appList = controller->getAppList();
 
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<LLDPAgent *>(*iterApp) != NULL) {
-                LLDPAgent *lldp = (LLDPAgent *) *iterApp;
+            if(LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
                 lldpAgent = lldp;
                 break;
             }
@@ -278,4 +277,3 @@ std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::st
 }
 
 } /*end namespace openflow*/
-

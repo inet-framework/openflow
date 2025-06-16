@@ -118,8 +118,7 @@ void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
         auto appList = controller->getAppList();
 
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<KandooAgent *>(*iterApp) != NULL) {
-                KandooAgent *kn = (KandooAgent *) *iterApp;
+            if(KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
                 kandooAgent = kn;
                 break;
             }
@@ -130,12 +129,10 @@ void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
 
     //check for kandoo events
     if(id == kandooEventSignalId){
-        if(dynamic_cast<KN_Packet *>(obj) != NULL) {
-            KN_Packet *knpck = (KN_Packet *) obj;
+        if(KN_Packet *knpck = dynamic_cast<KN_Packet *>(obj)) {
             if(strcmp(knpck->getKnEntry().trgApp.c_str(),appName.c_str())==0){
                 if(knpck->getKnEntry().type==0){
-                    if (dynamic_cast<LLDP_Wrapper *>(knpck->getKnEntry().payload) != NULL) {
-                        LLDP_Wrapper *wrapper = (LLDP_Wrapper *) knpck->getKnEntry().payload;
+                    if (LLDP_Wrapper *wrapper = dynamic_cast<LLDP_Wrapper *>(knpck->getKnEntry().payload)) {
                         mibGraph.addEntry(wrapper->getSrcId(),wrapper->getSrcPort(),wrapper->getDstId(),wrapper->getDstPort(),timeOut);
                         if(printMibGraph){
                             EV << mibGraph.getStringGraph() << endl;

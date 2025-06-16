@@ -163,8 +163,7 @@ bool HF_ARPResponder::searchHyperFlowAggent()
     if(hfAgent == nullptr && controller != nullptr){
         auto appList = controller->getAppList();
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<HyperFlowAgent *>(*iterApp) != NULL) {
-                HyperFlowAgent *hf = (HyperFlowAgent *) *iterApp;
+            if(HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(*iterApp)) {
                 hfAgent = hf;
                 return true;
                 break;
@@ -195,4 +194,3 @@ void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
 }
 
 } /*end namespace openflow*/
-
