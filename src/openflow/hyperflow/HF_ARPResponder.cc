@@ -183,11 +183,9 @@ void HF_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
 
     //check for hf messages to refire
     if(id == HyperFlowReFireSignalId){
-        if(dynamic_cast<HF_ReFire_Wrapper *>(obj) != NULL) {
-            HF_ReFire_Wrapper *hfRefire = (HF_ReFire_Wrapper *) obj;
+        if(HF_ReFire_Wrapper *hfRefire = dynamic_cast<HF_ReFire_Wrapper *>(obj)) {
             if(strcmp(hfRefire->getDataChannelEntry().trgSwitch.c_str(),"") == 0){
-                if (dynamic_cast<ARP_Wrapper *>(hfRefire->getDataChannelEntry().payload) != NULL) {
-                    ARP_Wrapper *wrapper = (ARP_Wrapper *) hfRefire->getDataChannelEntry().payload;
+                if (ARP_Wrapper *wrapper = dynamic_cast<ARP_Wrapper *>(hfRefire->getDataChannelEntry().payload)) {
                     addEntry(wrapper->getSrcIp().c_str(),MacAddress(wrapper->getSrcMacAddress().str().c_str()));
                 }
             }
