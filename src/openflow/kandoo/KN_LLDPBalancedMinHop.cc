@@ -132,8 +132,7 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
         auto appList = controller->getAppList();
 
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<KandooAgent *>(*iterApp) != NULL) {
-                KandooAgent *kn = (KandooAgent *) *iterApp;
+            if(KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
                 knAgent = kn;
                 break;
             }
@@ -307,7 +306,3 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
 }
 
 } /*end namespace openflow*/
-
-
-
-

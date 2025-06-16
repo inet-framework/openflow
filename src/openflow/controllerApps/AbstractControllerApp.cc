@@ -89,8 +89,7 @@ void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObje
     //register at controller
     if(id == BootedSignalId){
         EV << "ARPResponder::Booted" << '\n';
-        if (dynamic_cast<OF_Controller *>(obj) != NULL) {
-            OF_Controller *cntrl = (OF_Controller *) obj;
+        if (OF_Controller *cntrl = dynamic_cast<OF_Controller *>(obj)) {
             this->controller = cntrl;
             controller->registerApp(this);
         }

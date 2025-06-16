@@ -120,8 +120,7 @@ bool HF_LLDPAgent::searchHyperFlowAggent()
     if(hfAgent == nullptr && controller != nullptr){
         auto appList = controller->getAppList();
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<HyperFlowAgent *>(*iterApp) != NULL) {
-                HyperFlowAgent *hf = (HyperFlowAgent *) *iterApp;
+            if(HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(*iterApp)) {
                 hfAgent = hf;
                 return true;
                 break;
@@ -155,5 +154,3 @@ void HF_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
 }
 
 } /*end namespace openflow*/
-
-

@@ -125,8 +125,7 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
         auto appList = controller->getAppList();
 
         for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(dynamic_cast<KandooAgent *>(*iterApp) != NULL) {
-                KandooAgent *kn = (KandooAgent *) *iterApp;
+            if(KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
                 knAgent = kn;
                 break;
             }
@@ -144,14 +143,12 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
             if(strcmp(knpck->getKnEntry().trgApp.c_str(),appName.c_str())==0){
                 //this is a received inform
                 if(knpck->getKnEntry().type == 0){
-                    if (dynamic_cast<ARP_Wrapper *>(knpck->getKnEntry().payload) != nullptr) {
-                        ARP_Wrapper *wrapper = (ARP_Wrapper *) knpck->getKnEntry().payload;
+                    if (ARP_Wrapper *wrapper = dynamic_cast<ARP_Wrapper *>(knpck->getKnEntry().payload)) {
                         addEntry(wrapper->getSrcIp().c_str(),MacAddress(wrapper->getSrcMacAddress().str().c_str()));
                     }
                 } else if(knpck->getKnEntry().type == 1) {
                     //this is a received request
-                    if (dynamic_cast<Packet *>(knpck->getKnEntry().payload) != nullptr) {
-                        auto pktIn = dynamic_cast<Packet *>(knpck->getKnEntry().payload);
+                    if (auto pktIn = dynamic_cast<Packet *>(knpck->getKnEntry().payload)) {
                         auto pckin = pktIn->peekAtFront<OFP_Packet_In>();
 
                         CommonHeaderFields headerFields = extractCommonHeaderFields(pktIn);
@@ -249,4 +246,3 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
 
 
 } /*end namespace openflow*/
-
