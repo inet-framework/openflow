@@ -11,8 +11,11 @@ namespace openflow;
 class DataChannelEntry
 {
     @existingClass;
-    @opaque;
-//    @toString(.str());
+    @descriptor(readonly);
+    string srcController;
+    string trgSwitch;
+    int eventId;
+    cObject * payload;
 }
 
 // When packets are received by the data plane and sent to the connected controller,

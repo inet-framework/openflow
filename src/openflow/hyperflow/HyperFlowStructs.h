@@ -17,8 +17,13 @@ struct DataChannelEntry{
     std::string trgSwitch;
     int eventId;
     omnetpp::cObject * payload;
-};
 
+    // getters for descriptor:
+    const char *getSrcController() const { return srcController.c_str(); }
+    const char *getTrgSwitch() const { return trgSwitch.c_str(); }
+    int getEventId() const { return eventId; }
+    const omnetpp::cObject * getPayload() const { return payload; }
+};
 
 } /*end namespace openflow*/
 
