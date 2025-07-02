@@ -37,24 +37,3 @@ cplusplus {{
 
 namespace openflow;
 
-class ofp_action_output
-{
-    @existingClass;
-    @opaque;
-//    @toString(.str());
-}
-
-class oxm_basic_match
-{
-    @existingClass;
-    @opaque;
- //   @toString(.str());
-}
-  
-class ofp_header
-{
-    @existingClass;
-    @opaque;
-//    @toString(.str());
-}
-  
