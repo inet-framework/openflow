@@ -16,6 +16,16 @@ struct KandooEntry{
     std::string srcSwitch;
     omnetpp::cObject * payload = nullptr;
     int type = -1; //0 inform, 1 request, 2 reply
+
+    // getters for descriptor:
+    const char *getSrcController() const { return srcController.c_str(); }
+    const char *getTrgController() const { return trgController.c_str(); }
+    const char *getTrgApp() const { return trgApp.c_str(); }
+    const char *getSrcApp() const { return srcApp.c_str(); }
+    const char *getTrgSwitch() const { return trgSwitch.c_str(); }
+    const char *getSrcSwitch() const { return srcSwitch.c_str(); }
+    const omnetpp::cObject * getPayload() const { return payload; }
+    int getType() const { return type; }
 };
 
 } /*end namespace openflow*/

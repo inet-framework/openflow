@@ -11,8 +11,15 @@ namespace openflow;
 class KandooEntry
 {
     @existingClass;
-    @opaque;
-//    @toString(.str());
+    @descriptor(readonly);
+    string srcController;
+    string trgController;
+    string trgApp;
+    string srcApp;
+    string trgSwitch;
+    string srcSwitch;
+    cObject * payload;
+    int type;
 }
   
 // When packets are received by the data plane and sent to the connected controller,
