@@ -139,15 +139,15 @@ void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
     reply->setControlChannel(tempControlChannel);
 
     //copy only the relevant parts of the datachannel
-    std::list<DataChannelEntry> tempDataChannel = std::list<DataChannelEntry>();
-    std::list<DataChannelEntry>::iterator iterData;
-    int counter = dataChannelSizeCache - msg->getLastSyncCounter();
-    for(iterData=dataChannel.begin();counter != 0 && iterData != dataChannel.end(); ++iterData){
-        counter--;
-        tempDataChannel.push_back(*iterData);
+    ASSERT(dataChannel.size() == (size_t)dataChannelSizeCache);
+    int lastSyncCounter = msg->getLastSyncCounter();
+    size_t counter = (lastSyncCounter < 0 || lastSyncCounter > dataChannelSizeCache) ? dataChannelSizeCache : dataChannelSizeCache - lastSyncCounter;
+    reply->setDataChannelArraySize(counter);
+    size_t iter = 0;
+    for(auto iterData = dataChannel.begin(); iter < counter && iterData != dataChannel.end(); ++iterData, ++iter) {
+        reply->setDataChannel(iter, *iterData);
     }
-    reply->setDataChannel(tempDataChannel);
-    reply->setChunkLength(B(sizeof(controlChannel)+sizeof(tempDataChannel)));
+    reply->setChunkLength(B(sizeof(controlChannel)+sizeof(dataChannel)));
     //reply->setByteLength(sizeof(controlChannel)+sizeof(tempDataChannel));
     pktReply->insertAtFront(reply);
     pktReply->setKind(TCP_C_SEND);

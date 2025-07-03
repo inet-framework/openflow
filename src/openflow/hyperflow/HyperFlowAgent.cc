@@ -209,17 +209,14 @@ void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
     }
 
     //update data channel
-    std::list<DataChannelEntry>::reverse_iterator iterData;
-
-    std::list<DataChannelEntry> tempList = msg->getDataChannel();
-
-    for(iterData=tempList.rbegin();iterData!=tempList.rend();++iterData){
-        dataChannel.push_front((*iterData));
+    for (auto iter = msg->getDataChannelArraySize(); iter > 0; --iter) {
+        auto& iterData = msg->getDataChannel(iter - 1);
+        dataChannel.push_front(iterData);
         lastSyncCounter++;
         //check if we have to refire
-        if(strcmp((*iterData).srcController.c_str(),controller->getFullPath().c_str())!=0){
+        if (strcmp(iterData.srcController.c_str(), controller->getFullPath().c_str()) != 0) {
             HF_ReFire_Wrapper * rfWrapper = new HF_ReFire_Wrapper();
-            rfWrapper->setDataChannelEntry(*iterData);
+            rfWrapper->setDataChannelEntry(iterData);
             emit(HyperFlowReFireSignalId, rfWrapper);
             delete rfWrapper;
         }
