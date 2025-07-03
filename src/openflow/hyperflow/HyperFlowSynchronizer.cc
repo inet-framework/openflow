@@ -124,19 +124,21 @@ void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
     auto pktReply = new Packet("SyncReply");
 
     //create control channel
-    std::list<ControlChannelEntry> tempControlChannel = std::list<ControlChannelEntry>();
-    SimTime lastValidTime = simTime()-par("aliveInterval");
+    SimTime lastValidTime = simTime() - par("aliveInterval");
 
     for(auto iterControl=controlChannel.begin();iterControl!=controlChannel.end(); ) {
         if((*iterControl).time >= lastValidTime){
-           tempControlChannel.push_back(*iterControl);
            ++iterControl;
         } else {
             iterControl = controlChannel.erase(iterControl);
         }
     }
 
-    reply->setControlChannel(tempControlChannel);
+    reply->setControlChannelArraySize(controlChannel.size());
+    size_t i = 0;
+    for (const auto& item : controlChannel) {
+        reply->setControlChannel(i++, item);
+    }
 
     //copy only the relevant parts of the datachannel
     ASSERT(dataChannel.size() == (size_t)dataChannelSizeCache);

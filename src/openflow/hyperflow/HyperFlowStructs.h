@@ -10,6 +10,10 @@ struct ControlChannelEntry{
     std::list<Switch_Info *> switches;
     std::string controllerId;
     SimTime time;
+
+    // getters for descriptor:
+    const char *getControllerId() const { return controllerId.c_str(); }
+    simtime_t getTime() const { return time; }
 };
 
 struct DataChannelEntry{

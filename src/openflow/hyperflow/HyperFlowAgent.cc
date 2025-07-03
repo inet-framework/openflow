@@ -190,21 +190,19 @@ void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
     waitingForSyncResponse = false;
 
     //update control channel
-    controlChannel=std::list<ControlChannelEntry>(msg->getControlChannel());
+    controlChannel.clear();
+    size_t controlChannelCount = msg->getControlChannelArraySize();
 
     //update known hosts
-    std::list<ControlChannelEntry>::iterator iterControl;
-    std::list<std::string>::iterator iterTemp;
-    for(iterControl=controlChannel.begin();iterControl!=controlChannel.end();iterControl++){
-        iterTemp = std::find(knownControllers.begin(), knownControllers.end(), (*iterControl).controllerId);
-        if(iterTemp == knownControllers.end()){
-            knownControllers.push_front((*iterControl).controllerId);
+    for(size_t i = 0; i < controlChannelCount; i++) {
+        const auto& item = msg->getControlChannel(i);
+        if(std::find(knownControllers.begin(), knownControllers.end(), item.controllerId) == knownControllers.end()) {
+            knownControllers.push_front(item.controllerId);
         }
 
         //check if a failed controller has become alive
-        iterTemp = std::find(failedControllers.begin(), failedControllers.end(), (*iterControl).controllerId);
-        if(iterTemp != failedControllers.end()){
-            handleRecover((*iterControl).controllerId);
+        if(std::find(failedControllers.begin(), failedControllers.end(), item.controllerId) != failedControllers.end()){
+            handleRecover(item.controllerId);
         }
     }
 

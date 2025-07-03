@@ -8,6 +8,15 @@ cplusplus {{
 
 namespace openflow;
 
+class ControlChannelEntry
+{
+    @existingClass;
+    @descriptor(readonly);
+	// std::list<Switch_Info *> switches; // TODO add this variable to descriptor
+    string controllerId;
+    simtime_t time;
+}
+
 class DataChannelEntry
 {
     @existingClass;
