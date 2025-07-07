@@ -1,7 +1,7 @@
 
 import inet.common.INETDefs;
 import inet.common.packet.chunk.Chunk;
-import openflow.messages.OpenFlowStructs; 
+import openflow.openflow.protocol.OpenFlow; 
 
 namespace openflow;
 
