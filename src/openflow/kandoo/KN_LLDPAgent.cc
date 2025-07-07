@@ -3,25 +3,23 @@
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
-#define MSGKIND_TRIGGERLLDP        101
-#define MSGKIND_LLDPAGENTBOOTED    201
+enum {
+MSGKIND_TRIGGERLLDP =        101,
+MSGKIND_LLDPAGENTBOOTED =    201
+};
 
 namespace openflow {
 
 Define_Module(KN_LLDPAgent);
 
-KN_LLDPAgent::KN_LLDPAgent() {
+KN_LLDPAgent::KN_LLDPAgent() = default;
 
-}
-
-KN_LLDPAgent::~KN_LLDPAgent() {
-
-}
+KN_LLDPAgent::~KN_LLDPAgent() = default;
 
 void KN_LLDPAgent::initialize(int stage) {
     LLDPAgent::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        kandooAgent = NULL;
+        kandooAgent = nullptr;
         appName = "KN_LLDPAgent";
         //register signals
         kandooEventSignalId = registerSignal("KandooEvent");
@@ -109,11 +107,11 @@ void KN_LLDPAgent::handlePacketIn(Packet *pktIn) {
 
 void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     //set knagent link
-    if (kandooAgent == NULL && controller != NULL) {
+    if (kandooAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 kandooAgent = kn;
                 break;
             }

@@ -5,19 +5,17 @@
 #include "inet/linklayer/common/FcsMode_m.h"
 #include "inet/common/ProtocolTag_m.h"
 
-#define MSGKIND_ARPRESPONDERBOOTED    801
+enum {
+MSGKIND_ARPRESPONDERBOOTED =    801
+};
 
 namespace openflow {
 
 Define_Module(ARPResponder);
 
-ARPResponder::ARPResponder() {
+ARPResponder::ARPResponder() = default;
 
-}
-
-ARPResponder::~ARPResponder() {
-
-}
+ARPResponder::~ARPResponder() = default;
 
 void ARPResponder::initialize(int stage) {
     AbstractControllerApp::initialize(stage);

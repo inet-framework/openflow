@@ -19,13 +19,9 @@ struct comp {
 
 };
 
-LLDPBalancedMinHop::LLDPBalancedMinHop() {
+LLDPBalancedMinHop::LLDPBalancedMinHop() = default;
 
-}
-
-LLDPBalancedMinHop::~LLDPBalancedMinHop() {
-
-}
+LLDPBalancedMinHop::~LLDPBalancedMinHop() = default;
 
 void LLDPBalancedMinHop::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
@@ -33,7 +29,7 @@ void LLDPBalancedMinHop::initialize(int stage) {
         dropIfNoRouteFound = par("dropIfNoRouteFound");
         ignoreArpRequests = par("ignoreArpRequests");
         printMibGraph = par("printMibGraph");
-        lldpAgent = NULL;
+        lldpAgent = nullptr;
         version = -1;
         versionHit = 0;
         versionMiss = 0;
@@ -98,7 +94,7 @@ void LLDPBalancedMinHop::handlePacketIn(Packet *pkt) {
 
             auto socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if (socket != NULL) {
+            if (socket != nullptr) {
                 sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
@@ -110,11 +106,11 @@ void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject 
     Enter_Method("LLDPBalancedMinHop::receiveSignal %s", cComponent::getSignalName(id));
 
     //set lldp link
-    if (lldpAgent == NULL && controller != NULL) {
+    if (lldpAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(iterApp)) {
                 lldpAgent = lldp;
                 break;
             }

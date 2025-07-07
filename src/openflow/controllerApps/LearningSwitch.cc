@@ -6,13 +6,9 @@ namespace openflow {
 
 Define_Module(LearningSwitch);
 
-LearningSwitch::LearningSwitch() {
+LearningSwitch::LearningSwitch() = default;
 
-}
-
-LearningSwitch::~LearningSwitch() {
-
-}
+LearningSwitch::~LearningSwitch() = default;
 
 void LearningSwitch::initialize(int stage) {
     AbstractControllerApp::initialize(stage);

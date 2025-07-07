@@ -4,13 +4,9 @@ using namespace std;
 
 namespace openflow {
 
-ARP_Wrapper::ARP_Wrapper() {
+ARP_Wrapper::ARP_Wrapper() = default;
 
-}
-
-ARP_Wrapper::~ARP_Wrapper() {
-
-}
+ARP_Wrapper::~ARP_Wrapper() = default;
 
 const string& ARP_Wrapper::getSrcIp() const {
     return this->srcIp;

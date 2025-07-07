@@ -4,13 +4,9 @@ namespace openflow {
 
 Define_Module(Hub);
 
-Hub::Hub() {
+Hub::Hub() = default;
 
-}
-
-Hub::~Hub() {
-
-}
+Hub::~Hub() = default;
 
 void Hub::initialize(int stage) {
     AbstractControllerApp::initialize(stage);

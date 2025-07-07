@@ -28,14 +28,14 @@ void OpenFlowGraphAnalyzer::initialize(int stage) {
         EV << "cTopology found " << topo.getNumNodes() << "\n";
 
         for (int i = 0; i < topo.getNumNodes(); i++) {
-            if (strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "switch") != NULL || strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "Switch") != NULL) {
+            if (strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "switch") != nullptr || strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "Switch") != nullptr) {
                 continue;
             }
             for (int j = 0; j < topo.getNumNodes(); j++) {
                 if (i == j) {
                     continue;
                 }
-                if (strstr(topo.getNode(j)->getModule()->getFullPath().c_str(), "switch") != NULL || strstr(topo.getNode(j)->getModule()->getFullPath().c_str(), "Switch") != NULL) {
+                if (strstr(topo.getNode(j)->getModule()->getFullPath().c_str(), "switch") != nullptr || strstr(topo.getNode(j)->getModule()->getFullPath().c_str(), "Switch") != nullptr) {
                     continue;
                 }
                 computedPaths.push_front(getShortestPath(topo.getNode(i), topo.getNode(j)));
@@ -63,7 +63,7 @@ void OpenFlowGraphAnalyzer::initialize(int stage) {
 
             int temp = 0;
             for (iterInner = iterOuter->begin(); iterInner != iterOuter->end(); iterInner++ ) {
-                if (strstr((*iterInner)->getModule()->getFullName(), "switch") == NULL && strstr((*iterInner)->getModule()->getFullName(), "Switch") == NULL) {
+                if (strstr((*iterInner)->getModule()->getFullName(), "switch") == nullptr && strstr((*iterInner)->getModule()->getFullName(), "Switch") == nullptr) {
                     if (clMap.count((*iterInner)->getModule()->getFullPath()) > 0) {
                         temp = clMap[(*iterInner)->getModule()->getFullPath()];
                         clMap.erase((*iterInner)->getModule()->getFullPath());
@@ -92,11 +92,11 @@ void OpenFlowGraphAnalyzer::initialize(int stage) {
         //compute avg links switch
         int numLinks = 0;
         for (int i = 0; i < topo.getNumNodes(); i++) {
-            if (strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "switch") != NULL || strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "Switch") != NULL) {
+            if (strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "switch") != nullptr || strstr(topo.getNode(i)->getModule()->getFullPath().c_str(), "Switch") != nullptr) {
 
                 for (int j = 0; j < topo.getNode(i)->getNumOutLinks(); j++) {
                     //ignore control plane
-                    if (strstr(topo.getNode(i)->getLinkOut(j)->getLocalGate()->getName(), "gateCPlane") != NULL) {
+                    if (strstr(topo.getNode(i)->getLinkOut(j)->getLocalGate()->getName(), "gateCPlane") != nullptr) {
                         continue;
                     }
                     numLinks++;
@@ -147,15 +147,15 @@ std::list<cTopology::Node *> OpenFlowGraphAnalyzer::getShortestPath(cTopology::N
         }
         q.push(pair<cTopology::Node *, int>(tmpNode, std::numeric_limits<int>::max()));
         dist[tmpNode] = std::numeric_limits<int>::max();
-        prev[tmpNode] = NULL;
+        prev[tmpNode] = nullptr;
     }
 
     //init src
     q.push(pair<cTopology::Node *, int>(src, 0));
     dist[src] = 0;
-    prev[src] = NULL;
+    prev[src] = nullptr;
 
-    cTopology::Node *u = NULL;
+    cTopology::Node *u = nullptr;
     while (!q.empty()) {
 
         u = q.top().first;
@@ -169,7 +169,7 @@ std::list<cTopology::Node *> OpenFlowGraphAnalyzer::getShortestPath(cTopology::N
 
         for (int i = 0; i < u->getNumOutLinks(); i++) {
             //ignore control plane
-            if (strstr(u->getLinkOut(i)->getLocalGate()->getName(), "gateCPlane") != NULL) {
+            if (strstr(u->getLinkOut(i)->getLocalGate()->getName(), "gateCPlane") != nullptr) {
                 continue;
             }
 
@@ -187,7 +187,7 @@ std::list<cTopology::Node *> OpenFlowGraphAnalyzer::getShortestPath(cTopology::N
     }
 
     cTopology::Node *tempTrg = trg;
-    while (prev[tempTrg] != NULL) {
+    while (prev[tempTrg] != nullptr) {
         result.push_back(tempTrg);
         tempTrg = prev[tempTrg];
     }

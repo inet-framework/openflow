@@ -7,20 +7,18 @@
 #include "inet/linklayer/ethernet/common/Ethernet.h"
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 
-#define MSGKIND_TRIGGERLLDP        101
-#define MSGKIND_LLDPAGENTBOOTED    201
+enum {
+MSGKIND_TRIGGERLLDP =        101,
+MSGKIND_LLDPAGENTBOOTED =    201
+};
 
 namespace openflow {
 
 Define_Module(LLDPAgent);
 
-LLDPAgent::LLDPAgent() {
+LLDPAgent::LLDPAgent() = default;
 
-}
-
-LLDPAgent::~LLDPAgent() {
-
-}
+LLDPAgent::~LLDPAgent() = default;
 
 void LLDPAgent::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
@@ -50,25 +48,25 @@ void LLDPAgent::sendLLDP() {
     int j = 0;
     //iterate over all switches controlled by the controller
     auto list = controller->getSwitchesList();
-    for (auto i = list->begin(); i != list->end(); ++i) {
-        if (strcmp((*i).getMacAddress().c_str(), "") == 0) {
+    for (auto & i : *list) {
+        if (strcmp(i.getMacAddress().c_str(), "") == 0) {
             //only use full connections
             continue;
         }
 
-        TcpSocket *socket = (*i).getSocket();
+        TcpSocket *socket = i.getSocket();
         //iterate over all ports
-        for (j = 0; j < (*i).getNumOfPorts(); ++j) {
-            auto outPort = (*i).getIndexPort(j);
+        for (j = 0; j < i.getNumOfPorts(); ++j) {
+            auto outPort = i.getIndexPort(j);
             auto frame = new Packet("LLDP");
 
             auto lldpPacket = makeShared<LLDP>();
             lldpPacket->setPortID(outPort);
-            lldpPacket->setChassisID((*i).getMacAddress().c_str());
+            lldpPacket->setChassisID(i.getMacAddress().c_str());
             frame->insertAtFront(lldpPacket);
 
             auto ethHeader = makeShared<EthernetMacHeader>();
-            ethHeader->setSrc(MacAddress((*i).getMacAddress().c_str()));
+            ethHeader->setSrc(MacAddress(i.getMacAddress().c_str()));
             ethHeader->setDest(MacAddress("AA:80:c2:00:00:0e"));
             ethHeader->setTypeOrLength(0x88CC);
             frame->insertAtFront(ethHeader);

@@ -3,8 +3,10 @@
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 
-#define MSGKIND_TRIGGERLLDP        101
-#define MSGKIND_LLDPAGENTBOOTED    201
+enum {
+MSGKIND_TRIGGERLLDP =        101,
+MSGKIND_LLDPAGENTBOOTED =    201
+};
 
 namespace openflow {
 
@@ -12,13 +14,9 @@ simsignal_t HF_LLDPAgent::HyperFlowReFireSignalId = registerSignal("HyperFlowReF
 
 Define_Module(HF_LLDPAgent);
 
-HF_LLDPAgent::HF_LLDPAgent() {
+HF_LLDPAgent::HF_LLDPAgent() = default;
 
-}
-
-HF_LLDPAgent::~HF_LLDPAgent() {
-
-}
+HF_LLDPAgent::~HF_LLDPAgent() = default;
 
 void HF_LLDPAgent::initialize(int stage) {
     LLDPAgent::initialize(stage);
@@ -109,8 +107,8 @@ bool HF_LLDPAgent::searchHyperFlowAggent()
 
     if (hfAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(iterApp)) {
                 hfAgent = hf;
                 return true;
                 break;

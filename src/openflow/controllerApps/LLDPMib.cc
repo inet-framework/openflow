@@ -4,9 +4,7 @@ using namespace std;
 
 namespace openflow {
 
-LLDPMib::LLDPMib() {
-
-}
+LLDPMib::LLDPMib() = default;
 
 LLDPMib::LLDPMib(int sPort, int dPort, std::string sID, std::string dID, SimTime exp) {
     srcPort = sPort;

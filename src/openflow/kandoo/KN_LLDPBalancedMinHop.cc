@@ -9,18 +9,14 @@ namespace openflow {
 
 Define_Module(KN_LLDPBalancedMinHop);
 
-KN_LLDPBalancedMinHop::KN_LLDPBalancedMinHop() {
+KN_LLDPBalancedMinHop::KN_LLDPBalancedMinHop() = default;
 
-}
-
-KN_LLDPBalancedMinHop::~KN_LLDPBalancedMinHop() {
-
-}
+KN_LLDPBalancedMinHop::~KN_LLDPBalancedMinHop() = default;
 
 void KN_LLDPBalancedMinHop::initialize(int stage) {
     LLDPBalancedMinHop::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        knAgent = NULL;
+        knAgent = nullptr;
         appName = "KN_LLDPBalancedMinHop";
         //register signals
         kandooEventSignalId = registerSignal("KandooEvent");
@@ -106,7 +102,7 @@ void KN_LLDPBalancedMinHop::handlePacketIn(Packet *pktIn) {
 
             TcpSocket *socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if (socket != NULL) {
+            if (socket != nullptr) {
                 sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
@@ -121,11 +117,11 @@ void KN_LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObje
     LLDPBalancedMinHop::receiveSignal(src, id, obj, details);
     Enter_Method("KN_LLDPBalancedMinHop::receiveSignal %s", cComponent::getSignalName(id));
     //set knagent link
-    if (knAgent == NULL && controller != NULL) {
+    if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 knAgent = kn;
                 break;
             }

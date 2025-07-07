@@ -20,14 +20,10 @@ simsignal_t AbstractControllerApp::BootedSignalId = registerSignal("Booted");
 Define_Module(AbstractControllerApp);
 
 AbstractControllerApp::AbstractControllerApp()
-{
-
-}
+= default;
 
 AbstractControllerApp::~AbstractControllerApp()
-{
-
-}
+= default;
 
 void AbstractControllerApp::handleStartOperation(LifecycleOperation *operation)
 {

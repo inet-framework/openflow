@@ -9,19 +9,15 @@ namespace openflow {
 
 Define_Module(KN_LLDPForwarding);
 
-KN_LLDPForwarding::KN_LLDPForwarding() {
+KN_LLDPForwarding::KN_LLDPForwarding() = default;
 
-}
-
-KN_LLDPForwarding::~KN_LLDPForwarding() {
-
-}
+KN_LLDPForwarding::~KN_LLDPForwarding() = default;
 
 void KN_LLDPForwarding::initialize(int stage) {
     LLDPForwarding::initialize(stage);
 
     if (stage == INITSTAGE_LOCAL) {
-        knAgent = NULL;
+        knAgent = nullptr;
         appName = "KN_LLDPForwarding";
         //register signals
         kandooEventSignalId = registerSignal("KandooEvent");
@@ -123,7 +119,7 @@ void KN_LLDPForwarding::handlePacketIn(Packet *pktIn) {
 
             TcpSocket *socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if (socket != NULL) {
+            if (socket != nullptr) {
                 sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
@@ -138,11 +134,11 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
     LLDPForwarding::receiveSignal(src, id, obj, details);
     Enter_Method("KN_LLDPForwarding::receiveSignal %s", cComponent::getSignalName(id));
     //set knagent link
-    if (knAgent == NULL && controller != NULL) {
+    if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 knAgent = kn;
                 break;
             }

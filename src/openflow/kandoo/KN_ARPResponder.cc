@@ -2,24 +2,22 @@
 #include <algorithm>
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
-#define MSGKIND_ARPRESPONDERBOOTED    801
+enum {
+MSGKIND_ARPRESPONDERBOOTED =    801
+};
 
 namespace openflow {
 
 Define_Module(KN_ARPResponder);
 
-KN_ARPResponder::KN_ARPResponder() {
+KN_ARPResponder::KN_ARPResponder() = default;
 
-}
-
-KN_ARPResponder::~KN_ARPResponder() {
-
-}
+KN_ARPResponder::~KN_ARPResponder() = default;
 
 void KN_ARPResponder::initialize(int stage) {
     ARPResponder::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-        knAgent = NULL;
+        knAgent = nullptr;
         appName = "KN_ARPResponder";
         //register signals
         kandooEventSignalId = registerSignal("KandooEvent");
@@ -118,11 +116,11 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
     Enter_Method("KN_ARPResponder::receiveSignal %s", cComponent::getSignalName(id));
     //set knagent link
     ARPResponder::receiveSignal(src, id, obj, details);
-    if (knAgent == NULL && controller != NULL) {
+    if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 knAgent = kn;
                 break;
             }

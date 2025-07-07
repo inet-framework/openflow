@@ -19,13 +19,9 @@ struct comp {
 
 Define_Module(LLDPForwarding);
 
-LLDPForwarding::LLDPForwarding() {
+LLDPForwarding::LLDPForwarding() = default;
 
-}
-
-LLDPForwarding::~LLDPForwarding() {
-
-}
+LLDPForwarding::~LLDPForwarding() = default;
 
 void LLDPForwarding::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
@@ -33,7 +29,7 @@ void LLDPForwarding::initialize(int stage) {
         dropIfNoRouteFound = par("dropIfNoRouteFound");
         ignoreArpRequests = par("ignoreArpRequests");
         printMibGraph = par("printMibGraph");
-        lldpAgent = NULL;
+        lldpAgent = nullptr;
         version = -1;
         versionHit = 0;
         versionMiss = 0;
@@ -103,7 +99,7 @@ void LLDPForwarding::handlePacketIn(Packet *pktInt) {
 
             TcpSocket *socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if (socket != NULL) {
+            if (socket != nullptr) {
                 sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
@@ -119,11 +115,11 @@ void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj
 
     //set lldp link
     Enter_Method("LLDPForwarding::receiveSignal %s", cComponent::getSignalName(id));
-    if (lldpAgent == NULL && controller != NULL) {
+    if (lldpAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(iterApp)) {
                 lldpAgent = lldp;
                 break;
             }

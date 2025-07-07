@@ -5,10 +5,12 @@
 #include "algorithm"
 #include "string"
 
-#define MSGKIND_REPORTINEVERY      701
-#define MSGKIND_SYNCEVERY          702
-#define MSGKIND_CHECKALIVEEVERY    703
-#define MSGKIND_HFCONNECT          704
+enum {
+MSGKIND_REPORTINEVERY =      701,
+MSGKIND_SYNCEVERY =          702,
+MSGKIND_CHECKALIVEEVERY =    703,
+MSGKIND_HFCONNECT =          704
+};
 
 namespace openflow {
 
@@ -16,13 +18,9 @@ simsignal_t HyperFlowAgent::HyperFlowReFireSignalId = registerSignal("HyperFlowR
 
 Define_Module(HyperFlowAgent);
 
-HyperFlowAgent::HyperFlowAgent() {
+HyperFlowAgent::HyperFlowAgent() = default;
 
-}
-
-HyperFlowAgent::~HyperFlowAgent() {
-
-}
+HyperFlowAgent::~HyperFlowAgent() = default;
 
 void HyperFlowAgent::initialize(int stage) {
     AbstractTCPControllerApp::initialize(stage);
@@ -162,8 +160,8 @@ void HyperFlowAgent::sendReportIn() {
 
     //copy switches list
     auto tempList = controller->getSwitchesList();
-    for (auto iterSw = tempList->begin(); iterSw != tempList->end(); ++iterSw) {
-        reportIn->getSwitchInfoListForUpdate().push_front(&(*iterSw));
+    for (auto & iterSw : *tempList) {
+        reportIn->getSwitchInfoListForUpdate().push_front(&iterSw);
     }
 
     reportIn->setChunkLength(B(1 + sizeof(reportIn->getSwitchInfoList())));

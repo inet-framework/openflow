@@ -9,9 +9,7 @@ namespace openflow {
 using namespace std;
 
 AbstractTCPControllerApp::AbstractTCPControllerApp()
-{
-
-}
+= default;
 
 AbstractTCPControllerApp::~AbstractTCPControllerApp()
 {

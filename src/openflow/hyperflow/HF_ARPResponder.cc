@@ -5,7 +5,9 @@
 #include "inet/common/Protocol.h"
 #include "inet/common/ProtocolTag_m.h"
 
-#define MSGKIND_ARPRESPONDERBOOTED    801
+enum {
+MSGKIND_ARPRESPONDERBOOTED =    801
+};
 
 namespace openflow {
 
@@ -13,13 +15,9 @@ simsignal_t HF_ARPResponder::HyperFlowReFireSignalId = registerSignal("HyperFlow
 
 Define_Module(HF_ARPResponder);
 
-HF_ARPResponder::HF_ARPResponder() {
+HF_ARPResponder::HF_ARPResponder() = default;
 
-}
-
-HF_ARPResponder::~HF_ARPResponder() {
-
-}
+HF_ARPResponder::~HF_ARPResponder() = default;
 
 void HF_ARPResponder::initialize(int stage) {
 
@@ -159,8 +157,8 @@ bool HF_ARPResponder::searchHyperFlowAggent()
         return true;
     if (hfAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
-        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
-            if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(*iterApp)) {
+        for (auto & iterApp : *appList) {
+            if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(iterApp)) {
                 hfAgent = hf;
                 return true;
                 break;

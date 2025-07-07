@@ -12,9 +12,7 @@ namespace openflow {
 
 Define_Module(HyperFlowSynchronizer);
 
-HyperFlowSynchronizer::HyperFlowSynchronizer() {
-
-}
+HyperFlowSynchronizer::HyperFlowSynchronizer() = default;
 
 HyperFlowSynchronizer::~HyperFlowSynchronizer() {
     for (auto&& msg : msgList) {

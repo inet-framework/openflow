@@ -40,7 +40,7 @@ void LocalityPingAppRandom::initialize(int stage) {
                 group = (cStringTokenizer(line.c_str(), ";").asVector())[1];
 
                 //check if the node is me
-                if (strstr(getParentModule()->getFullPath().c_str(), node.c_str()) != NULL) {
+                if (strstr(getParentModule()->getFullPath().c_str(), node.c_str()) != nullptr) {
                     localId = group;
                 }
                 else {

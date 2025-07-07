@@ -50,7 +50,7 @@ void StaticSpanningTree::initialize(int stage) {
                     // for loop over all neighbors
                     for (int j = 0; j < topo_spanntree.getNode(i)->getNumOutLinks(); j++) {
                         //ignore control plane
-                        if (strstr(topo_spanntree.getNode(i)->getLinkOut(j)->getLocalGate()->getName(), "gateCPlane") != NULL) {
+                        if (strstr(topo_spanntree.getNode(i)->getLinkOut(j)->getLocalGate()->getName(), "gateCPlane") != nullptr) {
                             continue;
                         }
 

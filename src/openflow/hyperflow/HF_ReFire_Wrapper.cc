@@ -4,13 +4,9 @@ using namespace std;
 
 namespace openflow {
 
-HF_ReFire_Wrapper::HF_ReFire_Wrapper() {
+HF_ReFire_Wrapper::HF_ReFire_Wrapper() = default;
 
-}
-
-HF_ReFire_Wrapper::~HF_ReFire_Wrapper() {
-
-}
+HF_ReFire_Wrapper::~HF_ReFire_Wrapper() = default;
 
 const DataChannelEntry& HF_ReFire_Wrapper::getDataChannelEntry() const {
     return this->dataChannelEntry;

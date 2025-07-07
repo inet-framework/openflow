@@ -5,15 +5,15 @@
 #include "algorithm"
 #include "string"
 
-#define MSGKIND_KNCONNECT    1404
+enum {
+MSGKIND_KNCONNECT =    1404
+};
 
 namespace openflow {
 
 Define_Module(KandooAgent);
 
-KandooAgent::KandooAgent() {
-
-}
+KandooAgent::KandooAgent() = default;
 
 KandooAgent::~KandooAgent() {
     for (auto&& pair : socketMap) {
@@ -191,7 +191,7 @@ void KandooAgent::sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry
     pkt->setKind(TCP_C_SEND);
     pkt->insertAtFront(knrep);
 
-    TcpSocket *tempSocket = NULL;
+    TcpSocket *tempSocket = nullptr;
     std::list<SwitchControllerMapping>::iterator iter;
     for (iter = switchControllerMapping.begin(); iter != switchControllerMapping.end(); ++iter) {
         if (strcmp(iter->switchId.c_str(), switchId.c_str()) == 0) {
@@ -200,7 +200,7 @@ void KandooAgent::sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry
         }
     }
 
-    if (tempSocket != NULL) {
+    if (tempSocket != nullptr) {
         tempSocket->send(pkt);
     }
 }

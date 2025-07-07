@@ -4,13 +4,9 @@ using namespace std;
 
 namespace openflow {
 
-LLDP_Wrapper::LLDP_Wrapper() {
+LLDP_Wrapper::LLDP_Wrapper() = default;
 
-}
-
-LLDP_Wrapper::~LLDP_Wrapper() {
-
-}
+LLDP_Wrapper::~LLDP_Wrapper() = default;
 
 const string& LLDP_Wrapper::getDstId() const {
     return this->dstId;
