@@ -1,5 +1,5 @@
-#ifndef OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_H_
-#define OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_H_
+#ifndef __OPENFLOW_OPENFLOW_100_H
+#define __OPENFLOW_OPENFLOW_100_H
 
 #define OFP_VERSION              0x01
 #define OFP_MAX_PORT_NAME_LEN    16
@@ -160,5 +160,5 @@ enum ofp_port_features {
 
 } /*end namespace openflow*/
 
-#endif /* OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_H_ */
+#endif
 

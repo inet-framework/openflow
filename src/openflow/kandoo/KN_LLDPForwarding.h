@@ -1,5 +1,5 @@
-#ifndef KNLLDPAGENTFORWARDING_H_
-#define KNLLDPAGENTFORWARDING_H_
+#ifndef __OPENFLOW_KN_LLDPFORWARDING_H
+#define __OPENFLOW_KN_LLDPFORWARDING_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/LLDPForwarding.h"

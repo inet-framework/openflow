@@ -1,5 +1,5 @@
-#ifndef LLDPMIBGRAPH_H_
-#define LLDPMIBGRAPH_H_
+#ifndef __OPENFLOW_LLDPMIBGRAPH_H
+#define __OPENFLOW_LLDPMIBGRAPH_H
 
 #include "openflow/controllerApps/LLDPMib.h"
 #include <string>
@@ -33,5 +33,5 @@ class LLDPMibGraph
 
 } /*end namespace openflow*/
 
-#endif /* FLOW_TABLE_H_ */
+#endif
 

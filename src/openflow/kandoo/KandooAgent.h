@@ -1,5 +1,5 @@
-#ifndef KANDOO_AGENT_H_
-#define KANDOO_AGENT_H_
+#ifndef __OPENFLOW_KANDOOAGENT_H
+#define __OPENFLOW_KANDOOAGENT_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractTCPControllerApp.h"

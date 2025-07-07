@@ -1,5 +1,5 @@
-#ifndef HYPERFLOWSTRUCTS_H_
-#define HYPERFLOWSTRUCTS_H_
+#ifndef __OPENFLOW_HYPERFLOWSTRUCTS_H
+#define __OPENFLOW_HYPERFLOWSTRUCTS_H
 
 #include "openflow/openflow/controller/Switch_Info.h"
 
@@ -39,5 +39,5 @@ struct DataChannelEntry {
 
 } /*end namespace openflow*/
 
-#endif /* OF_CONTROLLER_H_ */
+#endif
 

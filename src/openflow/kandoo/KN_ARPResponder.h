@@ -1,5 +1,5 @@
-#ifndef KNARPRESPONDER_H_
-#define KNARPRESPONDER_H_
+#ifndef __OPENFLOW_KN_ARPRESPONDER_H
+#define __OPENFLOW_KN_ARPRESPONDER_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"

@@ -1,5 +1,5 @@
-#ifndef HFLLDPAGENT_H_
-#define HFLLDPAGENT_H_
+#ifndef __OPENFLOW_HF_LLDPAGENT_H
+#define __OPENFLOW_HF_LLDPAGENT_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/LLDPAgent.h"

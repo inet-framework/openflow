@@ -1,5 +1,5 @@
-#ifndef BUFFER_H_
-#define BUFFER_H_
+#ifndef __OPENFLOW_BUFFER_H
+#define __OPENFLOW_BUFFER_H
 
 #include <deque>
 #include <map>
@@ -32,5 +32,5 @@ class Buffer
 
 } /*end namespace openflow*/
 
-#endif /* BUFFER_H_ */
+#endif
 

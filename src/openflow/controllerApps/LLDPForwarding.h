@@ -1,5 +1,5 @@
-#ifndef LLDPAGENTFORWARDING_H_
-#define LLDPAGENTFORWARDING_H_
+#ifndef __OPENFLOW_LLDPFORWARDING_H
+#define __OPENFLOW_LLDPFORWARDING_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"

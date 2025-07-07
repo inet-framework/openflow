@@ -1,5 +1,5 @@
-#ifndef KANDOOSTRUCTS_H_
-#define KANDOOSTRUCTS_H_
+#ifndef __OPENFLOW_KANDOOSTRUCTS_H
+#define __OPENFLOW_KANDOOSTRUCTS_H
 
 #include "omnetpp.h"
 using namespace omnetpp;
@@ -29,5 +29,5 @@ struct KandooEntry {
 
 } /*end namespace openflow*/
 
-#endif /* OF_CONTROLLER_H_ */
+#endif
 

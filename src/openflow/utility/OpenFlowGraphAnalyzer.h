@@ -1,5 +1,5 @@
-#ifndef OPENFLOWGRAPHANALYZER_H_
-#define OPENFLOWGRAPHANALYZER_H_
+#ifndef __OPENFLOW_OPENFLOWGRAPHANALYZER_H
+#define __OPENFLOW_OPENFLOWGRAPHANALYZER_H
 
 #include "inet/common/lifecycle/OperationalBase.h"
 #include "inet/common/lifecycle/ModuleOperations.h"
@@ -53,5 +53,5 @@ class OpenFlowGraphAnalyzer : public OperationalBase
 
 } /*end namespace openflow*/
 
-#endif /* SPANNINGTREE_H_ */
+#endif
 

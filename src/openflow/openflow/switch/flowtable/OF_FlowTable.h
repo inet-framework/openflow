@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef __OPENFLOW_OF_FLOWTABLE_H_
-#define __OPENFLOW_OF_FLOWTABLE_H_
+#ifndef __OPENFLOW_OF_FLOWTABLE_H
+#define __OPENFLOW_OF_FLOWTABLE_H
 
 #include "OF_FlowTable.h"
 #include <omnetpp.h>

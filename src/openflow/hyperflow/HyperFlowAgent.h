@@ -1,5 +1,5 @@
-#ifndef HYPER_FLOW_AGENT_H_
-#define HYPER_FLOW_AGENT_H_
+#ifndef __OPENFLOW_HYPERFLOWAGENT_H
+#define __OPENFLOW_HYPERFLOWAGENT_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractTCPControllerApp.h"

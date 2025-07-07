@@ -1,3 +1,6 @@
+#ifndef __OPENFLOW_PINGAPPRANDOM_H
+#define __OPENFLOW_PINGAPPRANDOM_H
+
 #include "inet/common/INETDefs.h"
 #include "inet/applications/pingapp/PingApp.h"
 #include "inet/networklayer/common/L3Address.h"
@@ -28,4 +31,6 @@ class PingAppRandom : public inet::PingApp
 };
 
 } /*end namespace openflow*/
+
+#endif
 

@@ -1,5 +1,5 @@
-#ifndef HYPERFLOWSYNCHRONIZER_H_
-#define HYPERFLOWSYNCHRONIZER_H_
+#ifndef __OPENFLOW_HYPERFLOWSYNCHRONIZER_H
+#define __OPENFLOW_HYPERFLOWSYNCHRONIZER_H
 
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "inet/common/lifecycle/OperationalBase.h"
@@ -93,5 +93,5 @@ class HyperFlowSynchronizer : public OperationalBase, public TcpSocket::ReceiveQ
 
 } /*end namespace openflow*/
 
-#endif /* OF_CONTROLLER_H_ */
+#endif
 

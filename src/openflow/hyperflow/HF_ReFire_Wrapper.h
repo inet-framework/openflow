@@ -1,5 +1,5 @@
-#ifndef HF_REFIRE_WRAPPER_H_
-#define HF_REFIRE_WRAPPER_H_
+#ifndef __OPENFLOW_HF_REFIRE_WRAPPER_H
+#define __OPENFLOW_HF_REFIRE_WRAPPER_H
 
 #include <omnetpp.h>
 #include "inet/linklayer/common/MacAddress.h"
@@ -25,5 +25,5 @@ class HF_ReFire_Wrapper : public cObject
 
 } /*end namespace openflow*/
 
-#endif /* BUFFER_H_ */
+#endif
 

@@ -1,5 +1,5 @@
-#ifndef ARP_WRAPPER_H_
-#define ARP_WRAPPER_H_
+#ifndef __OPENFLOW_ARP_WRAPPER_H
+#define __OPENFLOW_ARP_WRAPPER_H
 
 #include <omnetpp.h>
 #include "inet/linklayer/common/MacAddress.h"
@@ -29,5 +29,5 @@ class ARP_Wrapper : public cObject
 
 } /*end namespace openflow*/
 
-#endif /* BUFFER_H_ */
+#endif
 

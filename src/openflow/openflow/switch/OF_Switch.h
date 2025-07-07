@@ -1,5 +1,5 @@
-#ifndef OF_SWITCH_H_
-#define OF_SWITCH_H_
+#ifndef __OPENFLOW_OF_SWITCH_H
+#define __OPENFLOW_OF_SWITCH_H
 
 #include "inet/common/lifecycle/OperationalBase.h"
 #include "inet/common/lifecycle/ModuleOperations.h"
@@ -117,5 +117,5 @@ class OF_Switch : public OperationalBase, public TcpSocket::ReceiveQueueBasedCal
 
 } /*end namespace openflow*/
 
-#endif /* OF_SWITCH_H_ */
+#endif
 

@@ -1,5 +1,5 @@
-#ifndef ABSTRACTTCPCONTROLLERAPP_H_
-#define ABSTRACTTCPCONTROLLERAPP_H_
+#ifndef __OPENFLOW_ABSTRACTTCPCONTROLLERAPP_H
+#define __OPENFLOW_ABSTRACTTCPCONTROLLERAPP_H
 
 #include "openflow/controllerApps/AbstractControllerApp.h"
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"

@@ -1,5 +1,5 @@
-#ifndef KNLLDPBALANCEDMINHOP_H_
-#define KNLLDPBALANCEDMINHOP_H_
+#ifndef __OPENFLOW_KN_LLDPBALANCEDMINHOP_H
+#define __OPENFLOW_KN_LLDPBALANCEDMINHOP_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/LLDPBalancedMinHop.h"

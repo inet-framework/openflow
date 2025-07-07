@@ -1,5 +1,5 @@
-#ifndef SWITCH_INFO_H_
-#define SWITCH_INFO_H_
+#ifndef __OPENFLOW_SWITCH_INFO_H
+#define __OPENFLOW_SWITCH_INFO_H
 
 #include "openflow/openflow/protocol/OpenFlow.h"
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
@@ -43,5 +43,5 @@ class Switch_Info
 
 } /*end namespace openflow*/
 
-#endif /* FLOW_TABLE_H_ */
+#endif
 

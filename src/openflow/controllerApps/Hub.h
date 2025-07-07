@@ -1,5 +1,5 @@
-#ifndef HUB_H_
-#define HUB_H_
+#ifndef __OPENFLOW_HUB_H
+#define __OPENFLOW_HUB_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"

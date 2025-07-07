@@ -1,5 +1,5 @@
-#ifndef STATICSPANNINGTREE_H_
-#define STATICSPANNINGTREE_H_
+#ifndef __OPENFLOW_STATICSPANNINGTREE_H
+#define __OPENFLOW_STATICSPANNINGTREE_H
 
 #include "inet/common/lifecycle/OperationalBase.h"
 #include "inet/common/lifecycle/ModuleOperations.h"
@@ -44,5 +44,5 @@ class StaticSpanningTree : public OperationalBase
 
 } /*end namespace openflow*/
 
-#endif /* SPANNINGTREE_H_ */
+#endif
 

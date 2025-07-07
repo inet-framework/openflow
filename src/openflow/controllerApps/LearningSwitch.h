@@ -1,5 +1,5 @@
-#ifndef LEARNINGSWITCH_H_
-#define LEARNINGSWITCH_H_
+#ifndef __OPENFLOW_LEARNINGSWITCH_H
+#define __OPENFLOW_LEARNINGSWITCH_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"

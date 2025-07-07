@@ -1,5 +1,5 @@
-#ifndef CONTROLLERINVOLVEMENTFILTER_H_
-#define CONTROLLERINVOLVEMENTFILTER_H_
+#ifndef __OPENFLOW_CONTROLLERINVOLVEMENTFILTER_H
+#define __OPENFLOW_CONTROLLERINVOLVEMENTFILTER_H
 
 #include "inet/common/lifecycle/OperationalBase.h"
 #include "inet/common/lifecycle/ModuleOperations.h"

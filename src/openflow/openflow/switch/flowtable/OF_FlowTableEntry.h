@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
-#define OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
+#ifndef __OPENFLOW_OF_FLOWTABLEENTRY_H
+#define __OPENFLOW_OF_FLOWTABLEENTRY_H
 
 #include <openflow/openflow/protocol/OpenFlow.h>
 #include <openflow/messages/OFP_Flow_Mod_m.h>
@@ -208,5 +208,5 @@ struct Compare_OF_FlowTableEntry {
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_ */
+#endif
 

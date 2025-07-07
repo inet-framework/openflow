@@ -34,8 +34,8 @@
 
 /* OpenFlow: protocol between controller and datapath. */
 
-#ifndef OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_135_H_
-#define OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_135_H_
+#ifndef __OPENFLOW_OPENFLOW_135_H
+#define __OPENFLOW_OPENFLOW_135_H
 
 #ifdef __KERNEL__
 #include <linux/types.h>
@@ -2334,5 +2334,5 @@ OFP_ASSERT(sizeof(struct ofp_async_config) == 32);
 
 } /*end namespace openflow*/
 
-#endif /*OPENFLOW__OPENFLOW_PROTOCOL_OPENFLOW_135_H_ openflow/openflow.h */
+#endif
 

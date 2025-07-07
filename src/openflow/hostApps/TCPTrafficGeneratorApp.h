@@ -1,5 +1,5 @@
-#ifndef TCP_TRAFFIC_GENERATOR_APP_H_
-#define TCP_TRAFFIC_GENERATOR_APP_H_
+#ifndef __OPENFLOW_TCPTRAFFICGENERATORAPP_H
+#define __OPENFLOW_TCPTRAFFICGENERATORAPP_H
 
 #include <iostream>
 #include <fstream>

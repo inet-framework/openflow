@@ -1,5 +1,5 @@
-#ifndef LLDPMIB_H_
-#define LLDPMIB_H_
+#ifndef __OPENFLOW_LLDPMIB_H
+#define __OPENFLOW_LLDPMIB_H
 #include <omnetpp.h>
 
 using namespace __gnu_cxx;
@@ -36,5 +36,5 @@ class LLDPMib
 
 } /*end namespace openflow*/
 
-#endif /* FLOW_TABLE_H_ */
+#endif
 

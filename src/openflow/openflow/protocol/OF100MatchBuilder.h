@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_PROTOCOL_OF100MATCHBUILDER_H_
-#define OPENFLOW_OPENFLOW_PROTOCOL_OF100MATCHBUILDER_H_
+#ifndef __OPENFLOW_OF100MATCHBUILDER_H
+#define __OPENFLOW_OF100MATCHBUILDER_H
 
 #include <openflow/openflow/protocol/OFMatchFactory.h>
 
@@ -34,5 +34,5 @@ class OF100MatchBuilder : public OFMatchBuilder
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_PROTOCOL_OF100MATCHBUILDER_H_ */
+#endif
 

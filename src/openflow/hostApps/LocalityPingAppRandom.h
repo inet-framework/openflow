@@ -1,3 +1,6 @@
+#ifndef __OPENFLOW_LOCALITYPINGAPPRANDOM_H
+#define __OPENFLOW_LOCALITYPINGAPPRANDOM_H
+
 #include "inet/common/INETDefs.h"
 #include "inet/applications/pingapp/PingApp.h"
 #include "inet/networklayer/common/L3Address.h"
@@ -31,4 +34,6 @@ class LocalityPingAppRandom : public PingApp
 };
 
 } /*end namespace openflow*/
+
+#endif
 

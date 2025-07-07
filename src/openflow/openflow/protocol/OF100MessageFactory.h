@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
-#define OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_
+#ifndef __OPENFLOW_OF100MESSAGEFACTORY_H
+#define __OPENFLOW_OF100MESSAGEFACTORY_H
 
 #include "openflow/openflow/protocol/OFMessageFactory.h"
 
@@ -46,5 +46,5 @@ class OF100MessageFactory : public OFMessageFactory
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_UTIL_OF100MESSAGEFACTORY_H_ */
+#endif
 

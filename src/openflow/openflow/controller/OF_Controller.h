@@ -1,5 +1,5 @@
-#ifndef OF_CONTROLLER_H_
-#define OF_CONTROLLER_H_
+#ifndef __OPENFLOW_OF_CONTROLLER_H
+#define __OPENFLOW_OF_CONTROLLER_H
 
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/messages/Open_Flow_Message_m.h"
@@ -133,5 +133,5 @@ class OF_Controller : public OperationalBase, public TcpSocket::ReceiveQueueBase
 
 } /*end namespace openflow*/
 
-#endif /* OF_CONTROLLER_H_ */
+#endif
 

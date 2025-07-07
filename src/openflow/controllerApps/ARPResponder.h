@@ -1,5 +1,5 @@
-#ifndef ARPRESPONDER_H_
-#define ARPRESPONDER_H_
+#ifndef __OPENFLOW_ARPRESPONDER_H
+#define __OPENFLOW_ARPRESPONDER_H
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"

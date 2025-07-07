@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_
-#define OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_
+#ifndef __OPENFLOW_OF100_FLOWTABLEENTRY_H
+#define __OPENFLOW_OF100_FLOWTABLEENTRY_H
 
 #include "openflow/openflow/switch/flowtable/OF_FlowTableEntry.h"
 
@@ -113,5 +113,5 @@ class OF100_FlowTableEntry : public OF_FlowTableEntry
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_ */
+#endif
 

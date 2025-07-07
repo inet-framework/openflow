@@ -15,8 +15,8 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-#ifndef OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_
-#define OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_
+#ifndef __OPENFLOW_OFMATCHFACTORY_H
+#define __OPENFLOW_OFMATCHFACTORY_H
 
 #include "openflow/openflow/protocol/OpenFlow.h"
 #include <memory>
@@ -70,5 +70,5 @@ class OFMatchBuilder
 
 } /* namespace openflow */
 
-#endif /* OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_ */
+#endif
 

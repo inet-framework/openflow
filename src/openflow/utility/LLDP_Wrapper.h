@@ -1,5 +1,5 @@
-#ifndef LLDP_WRAPPER_H_
-#define LLDP_WRAPPER_H_
+#ifndef __OPENFLOW_LLDP_WRAPPER_H
+#define __OPENFLOW_LLDP_WRAPPER_H
 
 #include <omnetpp.h>
 
@@ -34,5 +34,5 @@ class LLDP_Wrapper : public cObject
 
 } /*end namespace openflow*/
 
-#endif /* BUFFER_H_ */
+#endif
 
