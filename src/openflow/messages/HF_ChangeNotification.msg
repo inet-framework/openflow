@@ -8,6 +8,18 @@ cplusplus {{
 
 namespace openflow;
 
+class Switch_Info
+{
+    @existingClass;
+    @descriptor(readonly);
+    int connId;
+    int version;
+    //std::string macAddress;
+    int numOfPorts; //TODO idPort vector
+    // TcpSocket* socket;
+    int indexPort[] @sizeGetter(getNumOfPorts);
+}
+
 class ControlChannelEntry
 {
     @existingClass;
