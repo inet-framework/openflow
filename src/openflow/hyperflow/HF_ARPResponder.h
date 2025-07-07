@@ -1,4 +1,3 @@
-
 #ifndef HFARPRESPONDER_H_
 #define HFARPRESPONDER_H_
 
@@ -14,27 +13,26 @@
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 #include "openflow/utility/ARP_Wrapper.h"
 
-namespace openflow{
+namespace openflow {
 
-class HF_ARPResponder: public ARPResponder {
+class HF_ARPResponder : public ARPResponder
+{
 
-
-public:
+  public:
     HF_ARPResponder();
     ~HF_ARPResponder();
 
-
-protected:
+  protected:
     virtual bool searchHyperFlowAggent();
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
-    virtual void handlePacketIn(Packet*) override;
+    virtual void handlePacketIn(Packet *) override;
 
-    HyperFlowAgent * hfAgent = nullptr;
+    HyperFlowAgent *hfAgent = nullptr;
     static simsignal_t HyperFlowReFireSignalId;
 };
 
 } /*end namespace openflow*/
 
-
 #endif
+

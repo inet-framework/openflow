@@ -8,29 +8,27 @@
 
 using namespace std;
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(HyperFlowSynchronizer);
 
-
-
-HyperFlowSynchronizer::HyperFlowSynchronizer(){
+HyperFlowSynchronizer::HyperFlowSynchronizer() {
 
 }
 
-HyperFlowSynchronizer::~HyperFlowSynchronizer(){
-    for(auto&& msg : msgList) {
-      delete msg.msg;
+HyperFlowSynchronizer::~HyperFlowSynchronizer() {
+    for (auto&& msg : msgList) {
+        delete msg.msg;
     }
     msgList.clear();
 
-    for(auto&& pair : socketMap){
+    for (auto&& pair : socketMap) {
         delete pair.second;
     }
     socketMap.clear();
 }
 
-void HyperFlowSynchronizer::initialize(int stage){
+void HyperFlowSynchronizer::initialize(int stage) {
 
     //stats
     OperationalBase::initialize(stage);
@@ -43,16 +41,15 @@ void HyperFlowSynchronizer::initialize(int stage){
         socket.setCallback(this);
         socket.setOutputGate(gate("socketOut"));
         socket.bind(address[0] ? L3Address(address) : L3Address(), port);
-        dataChannelSizeCache =0;
+        dataChannelSizeCache = 0;
 
         serviceTime = par("serviceTime");
-        busy=false;
+        busy = false;
     }
     else if (stage == INITSTAGE_APPLICATION_LAYER) {
         socket.listen();
     }
 }
-
 
 void HyperFlowSynchronizer::startProcessingMsg(Action& action)
 {
@@ -62,15 +59,15 @@ void HyperFlowSynchronizer::startProcessingMsg(Action& action)
     event->setKind(action.kind);
     event->setContextPointer(msg);
     EV_DEBUG << "Start processing of message " << msg->getName() << endl;
-    scheduleAt(simTime()+serviceTime, event);
+    scheduleAt(simTime() + serviceTime, event);
 }
 
-void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg){
-    if(msg->isSelfMessage()){
+void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg) {
+    if (msg->isSelfMessage()) {
         //This is message which has been scheduled due to service time
         //Get the Original message
-        cMessage *data_msg = (cMessage *) msg->getContextPointer();
-        emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
+        cMessage *data_msg = (cMessage *)msg->getContextPointer();
+        emit(waitingTime, (simTime() - data_msg->getArrivalTime() - serviceTime));
         if (msg->getKind() == MSGKIND_EVENT)
             processQueuedMsg(data_msg);
         else if (msg->getKind() == MSGKIND_DATA)
@@ -79,9 +76,10 @@ void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg){
             throw cRuntimeError("model error");
 
         //Trigger next service time
-        if (msgList.empty()){
+        if (msgList.empty()) {
             busy = false;
-        } else {
+        }
+        else {
             Action msgfromlist = msgList.front();
             msgList.pop_front();
             startProcessingMsg(msgfromlist);
@@ -89,7 +87,8 @@ void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg){
 
         //delete the msg for efficiency
         delete msg;
-    } else {
+    }
+    else {
         if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA || msg->getKind() == TCP_I_AVAILABLE)
             processQueuedMsg(msg);
         else {
@@ -97,22 +96,23 @@ void HyperFlowSynchronizer::handleMessageWhenUp(cMessage *msg){
             //imlement service time
             if (busy) {
                 msgList.push_back(action);
-            }else{
+            }
+            else {
                 startProcessingMsg(action);
             }
         }
-        emit(queueSize,static_cast<unsigned long>(msgList.size()));
+        emit(queueSize, static_cast<unsigned long>(msgList.size()));
     }
 }
 
-void HyperFlowSynchronizer::handleChangeNotification(Packet * pkt){
+void HyperFlowSynchronizer::handleChangeNotification(Packet *pkt) {
     auto msg = pkt->peekAtFront<HF_ChangeNotification>();
 
     dataChannel.push_front(msg->getEntry());
     dataChannelSizeCache++;
 }
 
-void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
+void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt) {
     //return syncreply
 
     auto msg = pkt->peekAtFront<HF_SyncRequest>();
@@ -126,10 +126,11 @@ void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
     //create control channel
     SimTime lastValidTime = simTime() - par("aliveInterval");
 
-    for(auto iterControl=controlChannel.begin();iterControl!=controlChannel.end(); ) {
-        if((*iterControl).time >= lastValidTime){
-           ++iterControl;
-        } else {
+    for (auto iterControl = controlChannel.begin(); iterControl != controlChannel.end(); ) {
+        if ((*iterControl).time >= lastValidTime) {
+            ++iterControl;
+        }
+        else {
             iterControl = controlChannel.erase(iterControl);
         }
     }
@@ -143,39 +144,37 @@ void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt){
     //copy only the relevant parts of the datachannel
     ASSERT(dataChannel.size() == (size_t)dataChannelSizeCache);
     int lastSyncCounter = msg->getLastSyncCounter();
-    size_t counter = (lastSyncCounter < 0 || lastSyncCounter > dataChannelSizeCache) ? dataChannelSizeCache : dataChannelSizeCache - lastSyncCounter;
+    size_t counter = (lastSyncCounter<0 || lastSyncCounter> dataChannelSizeCache) ? dataChannelSizeCache : dataChannelSizeCache - lastSyncCounter;
     reply->setDataChannelArraySize(counter);
     size_t iter = 0;
-    for(auto iterData = dataChannel.begin(); iter < counter && iterData != dataChannel.end(); ++iterData, ++iter) {
+    for (auto iterData = dataChannel.begin(); iter < counter && iterData != dataChannel.end(); ++iterData, ++iter) {
         reply->setDataChannel(iter, *iterData);
     }
-    reply->setChunkLength(B(sizeof(controlChannel)+sizeof(dataChannel))); // TODO FIXME incorrect size calculation! correct value is length of list * itemsize, or sum of itemsizes when the items have variable length
+    reply->setChunkLength(B(sizeof(controlChannel) + sizeof(dataChannel))); // TODO FIXME incorrect size calculation! correct value is length of list * itemsize, or sum of itemsizes when the items have variable length
     //reply->setByteLength(sizeof(controlChannel)+sizeof(tempDataChannel));
     pktReply->insertAtFront(reply);
     pktReply->setKind(TCP_C_SEND);
     socket->send(pktReply);
 }
 
-
-void HyperFlowSynchronizer::handleReportIn(Packet * pkt){
+void HyperFlowSynchronizer::handleReportIn(Packet *pkt) {
     //store to datachannel
 
     auto msg = pkt->peekAtFront<HF_ReportIn>();
     ControlChannelEntry entry = ControlChannelEntry();
-    entry.switches= std::list<Switch_Info *>(msg->getSwitchInfoList());
+    entry.switches = std::list<Switch_Info *>(msg->getSwitchInfoList());
     entry.controllerId = msg->getControllerId();
     entry.time = simTime();
     controlChannel.push_front(entry);
 }
 
-
-TcpSocket * HyperFlowSynchronizer::findSocketFor(cMessage *msg){
+TcpSocket *HyperFlowSynchronizer::findSocketFor(cMessage *msg) {
 
     auto& tags = check_and_cast<ITaggedObject *>(msg)->getTags();
     int connId = tags.getTag<SocketInd>()->getSocketId();
     auto i = socketMap.find(connId);
-    ASSERT(i==socketMap.end() || i->first==i->second->getSocketId());
-    return (i==socketMap.end()) ? nullptr : i->second;
+    ASSERT(i == socketMap.end() || i->first == i->second->getSocketId());
+    return (i == socketMap.end()) ? nullptr : i->second;
 }
 
 void HyperFlowSynchronizer::socketEstablished(TcpSocket *socket)
@@ -243,16 +242,19 @@ void HyperFlowSynchronizer::processQueuedMsg(cMessage *msg)
     }
 }
 
-void HyperFlowSynchronizer::processPacketFromTcp(Packet * msg){
+void HyperFlowSynchronizer::processPacketFromTcp(Packet *msg) {
     auto chunk = msg->peekAtFront<HF_Packet>();
     if (dynamicPtrCast<const HF_ReportIn>(chunk) != nullptr) {
         handleReportIn(msg);
 
-    } else if(dynamicPtrCast<const HF_SyncRequest>(chunk) != nullptr){
+    }
+    else if (dynamicPtrCast<const HF_SyncRequest>(chunk) != nullptr) {
         handleSyncRequest(msg);
-    } else if(dynamicPtrCast<const HF_ChangeNotification>(chunk) != nullptr){
+    }
+    else if (dynamicPtrCast<const HF_ChangeNotification>(chunk) != nullptr) {
         handleChangeNotification(msg);
-    } else {
+    }
+    else {
         EV << "Packet dropped: " << EV_FIELD(msg) << endl;
     }
 }

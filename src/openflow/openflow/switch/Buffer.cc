@@ -6,68 +6,66 @@
 using namespace std;
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
-Buffer::Buffer(){
+Buffer::Buffer() {
 
 }
 
-Buffer::Buffer(int cap){
+Buffer::Buffer(int cap) {
     capacity = cap;
     next_buffer_id = 1;
 }
 
-Buffer::~Buffer(){
-    for(auto&& pair : pending_msgs) {
-      delete pair.second;
+Buffer::~Buffer() {
+    for (auto&& pair : pending_msgs) {
+        delete pair.second;
     }
     pending_msgs.clear();
 }
 
-int Buffer::size(){
+int Buffer::size() {
     return pending_msgs.size();
 }
 
-bool Buffer::isfull(){
+bool Buffer::isfull() {
     return pending_msgs.size() >= capacity;
 }
 
-
-
-
 // store message in buffer and return buffer_id.
-uint32_t Buffer::storeMessage(Packet *msg){
+uint32_t Buffer::storeMessage(Packet *msg) {
     auto header = msg->peekAtFront<EthernetMacHeader>();
-    pending_msgs.insert(pair<uint32_t, Packet *> (next_buffer_id, msg));
+    pending_msgs.insert(pair<uint32_t, Packet *>(next_buffer_id, msg));
 
     // OFP_NO_BUFFER = 0xffffffff;
-    if (next_buffer_id != OFP_NO_BUFFER){
+    if (next_buffer_id != OFP_NO_BUFFER) {
         uint32_t result = next_buffer_id;
         next_buffer_id++;
         return result;
-    }else{
+    }
+    else {
         next_buffer_id = 0;
         return next_buffer_id;
     }
 }
-bool Buffer::deleteMessage(Packet *msg){
+
+bool Buffer::deleteMessage(Packet *msg) {
     for (auto it = pending_msgs.begin(); it != pending_msgs.end(); ++it) {
-      if (it->second == msg) {
-          it = pending_msgs.erase(it);
-          return true;
-      }
+        if (it->second == msg) {
+            it = pending_msgs.erase(it);
+            return true;
+        }
     }
 
     return false;
 }
 
-
-uint32_t Buffer::getCapacity(){
+uint32_t Buffer::getCapacity() {
     return capacity;
 }
 
 // return message that is stored at the specified buffer_id
-Packet *Buffer::returnMessage(uint32_t buffer_id){
+Packet *Buffer::returnMessage(uint32_t buffer_id) {
     auto it = pending_msgs.find(buffer_id);
     Packet *frame = nullptr;
     if (it != pending_msgs.end()) {
@@ -78,3 +76,4 @@ Packet *Buffer::returnMessage(uint32_t buffer_id){
 }
 
 } /*end namespace openflow*/
+

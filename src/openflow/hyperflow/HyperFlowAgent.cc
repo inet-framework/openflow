@@ -5,32 +5,32 @@
 #include "algorithm"
 #include "string"
 
-#define MSGKIND_REPORTINEVERY 701
-#define MSGKIND_SYNCEVERY 702
-#define MSGKIND_CHECKALIVEEVERY 703
-#define MSGKIND_HFCONNECT 704
+#define MSGKIND_REPORTINEVERY      701
+#define MSGKIND_SYNCEVERY          702
+#define MSGKIND_CHECKALIVEEVERY    703
+#define MSGKIND_HFCONNECT          704
 
-namespace openflow{
+namespace openflow {
 
 simsignal_t HyperFlowAgent::HyperFlowReFireSignalId = registerSignal("HyperFlowReFire");
 
 Define_Module(HyperFlowAgent);
 
-HyperFlowAgent::HyperFlowAgent(){
+HyperFlowAgent::HyperFlowAgent() {
 
 }
 
-HyperFlowAgent::~HyperFlowAgent(){
+HyperFlowAgent::~HyperFlowAgent() {
 
 }
 
-void HyperFlowAgent::initialize(int stage){
+void HyperFlowAgent::initialize(int stage) {
     AbstractTCPControllerApp::initialize(stage);
 
     //init counters
     if (stage == INITSTAGE_LOCAL) {
         waitingForSyncResponse = false;
-        lastSyncCounter =0;
+        lastSyncCounter = 0;
 
         checkSyncEvery = par("checkSyncEvery");
         checkAliveEvery = par("checkAliveEvery");
@@ -57,33 +57,36 @@ void HyperFlowAgent::handleStartOperation(LifecycleOperation *operation)
 }
 
 void HyperFlowAgent::processSelfMessage(cMessage *msg) {
-    if (msg->getKind()==MSGKIND_REPORTINEVERY){
+    if (msg->getKind() == MSGKIND_REPORTINEVERY) {
         cMessage *reportIn = new cMessage("reportIn");
         reportIn->setKind(MSGKIND_REPORTINEVERY);
-        scheduleAt(simTime()+checkReportInEvery, reportIn);
+        scheduleAt(simTime() + checkReportInEvery, reportIn);
         sendReportIn();
         delete msg;
-    } else if (msg->getKind()== MSGKIND_SYNCEVERY){
+    }
+    else if (msg->getKind() == MSGKIND_SYNCEVERY) {
         cMessage *sync = new cMessage("sync");
         sync->setKind(MSGKIND_SYNCEVERY);
-        scheduleAt(simTime()+checkSyncEvery, sync);
+        scheduleAt(simTime() + checkSyncEvery, sync);
         sendSyncRequest();
         delete msg;
-    } else if (msg->getKind()== MSGKIND_CHECKALIVEEVERY){
+    }
+    else if (msg->getKind() == MSGKIND_CHECKALIVEEVERY) {
         //start checking alive
         cMessage *checkAlive = new cMessage("checkAlive");
         checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
-        scheduleAt(simTime()+checkAliveEvery, checkAlive);
+        scheduleAt(simTime() + checkAliveEvery, checkAlive);
         handleCheckAlive();
         delete msg;
-    } else if (msg->getKind()== MSGKIND_HFCONNECT){
+    }
+    else if (msg->getKind() == MSGKIND_HFCONNECT) {
         //init socket to synchronizer
         const char *connectAddressHyperFlowSynchronizer = par("connectAddressHyperFlowSynchronizer");
         int connectPort = par("connectPortHyperFlowSynchronizer");
         socket.connect(L3AddressResolver().resolve(connectAddressHyperFlowSynchronizer), connectPort);
         delete msg;
     }
-    else{
+    else {
         AbstractTCPControllerApp::processSelfMessage(msg);
     }
 }
@@ -93,17 +96,17 @@ void HyperFlowAgent::socketEstablished(TcpSocket *socket)
     //start sending ReportIn Messages
     cMessage *reportInEvery = new cMessage("reportIn");
     reportInEvery->setKind(MSGKIND_REPORTINEVERY);
-    scheduleAt(simTime()+par("reportInEvery"), reportInEvery);
+    scheduleAt(simTime() + par("reportInEvery"), reportInEvery);
 
     //start sending sync requests
     cMessage *sync = new cMessage("sync");
     sync->setKind(MSGKIND_SYNCEVERY);
-    scheduleAt(simTime()+par("checkSyncEvery"), sync);
+    scheduleAt(simTime() + par("checkSyncEvery"), sync);
 
     //start checking alive
     cMessage *checkAlive = new cMessage("checkAlive");
     checkAlive->setKind(MSGKIND_CHECKALIVEEVERY);
-    scheduleAt(simTime()+par("checkAliveEvery"), checkAlive);
+    scheduleAt(simTime() + par("checkAliveEvery"), checkAlive);
 }
 
 void HyperFlowAgent::socketDataArrived(TcpSocket *socket)
@@ -127,7 +130,7 @@ void HyperFlowAgent::socketDataArrived(TcpSocket *socket)
     }
 }
 
-void HyperFlowAgent::processPacketFromTcp(Packet *msg){
+void HyperFlowAgent::processPacketFromTcp(Packet *msg) {
     auto hfPacket = msg->peekAtFront<HF_Packet>();
     auto castMsg = dynamicPtrCast<const HF_SyncReply>(hfPacket);
     if (castMsg != nullptr) {
@@ -139,7 +142,7 @@ void HyperFlowAgent::processPacketFromTcp(Packet *msg){
     delete msg;
 }
 
-void HyperFlowAgent::processQueuedMsg(cMessage *msg){
+void HyperFlowAgent::processQueuedMsg(cMessage *msg) {
     if (socket.belongsToSocket(msg)) {
         socket.processMessage(msg);
     }
@@ -150,7 +153,7 @@ void HyperFlowAgent::processQueuedMsg(cMessage *msg){
     }
 }
 
-void HyperFlowAgent::sendReportIn(){
+void HyperFlowAgent::sendReportIn() {
 
     //HF_ReportIn * reportIn = new HF_ReportIn("ReportIn");
     auto reportIn = makeShared<HF_ReportIn>();
@@ -159,11 +162,11 @@ void HyperFlowAgent::sendReportIn(){
 
     //copy switches list
     auto tempList = controller->getSwitchesList();
-    for(auto iterSw=tempList->begin();iterSw!=tempList->end();++iterSw){
+    for (auto iterSw = tempList->begin(); iterSw != tempList->end(); ++iterSw) {
         reportIn->getSwitchInfoListForUpdate().push_front(&(*iterSw));
     }
 
-    reportIn->setChunkLength(B(1+sizeof(reportIn->getSwitchInfoList())));
+    reportIn->setChunkLength(B(1 + sizeof(reportIn->getSwitchInfoList())));
     auto pktReport = new Packet("ReportIn");
     pktReport->setKind(TCP_C_SEND);
     pktReport->insertAtFront(reportIn);
@@ -171,9 +174,8 @@ void HyperFlowAgent::sendReportIn(){
     socket.send(pktReport);
 }
 
-
-void HyperFlowAgent::sendSyncRequest(){
-    if(!waitingForSyncResponse){
+void HyperFlowAgent::sendSyncRequest() {
+    if (!waitingForSyncResponse) {
         waitingForSyncResponse = true;
         //HF_SyncRequest * syncRequest = new HF_SyncRequest("SyncRequest");
         auto syncRequest = makeShared<HF_SyncRequest>();
@@ -186,7 +188,7 @@ void HyperFlowAgent::sendSyncRequest(){
     }
 }
 
-void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
+void HyperFlowAgent::handleSyncReply(const HF_SyncReply *msg) {
     waitingForSyncResponse = false;
 
     //update control channel
@@ -194,14 +196,14 @@ void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
     size_t controlChannelCount = msg->getControlChannelArraySize();
 
     //update known hosts
-    for(size_t i = 0; i < controlChannelCount; i++) {
+    for (size_t i = 0; i < controlChannelCount; i++) {
         const auto& item = msg->getControlChannel(i);
-        if(std::find(knownControllers.begin(), knownControllers.end(), item.controllerId) == knownControllers.end()) {
+        if (std::find(knownControllers.begin(), knownControllers.end(), item.controllerId) == knownControllers.end()) {
             knownControllers.push_front(item.controllerId);
         }
 
         //check if a failed controller has become alive
-        if(std::find(failedControllers.begin(), failedControllers.end(), item.controllerId) != failedControllers.end()){
+        if (std::find(failedControllers.begin(), failedControllers.end(), item.controllerId) != failedControllers.end()) {
             handleRecover(item.controllerId);
         }
     }
@@ -213,36 +215,34 @@ void HyperFlowAgent::handleSyncReply(const HF_SyncReply * msg){
         lastSyncCounter++;
         //check if we have to refire
         if (strcmp(iterData.srcController.c_str(), controller->getFullPath().c_str()) != 0) {
-            HF_ReFire_Wrapper * rfWrapper = new HF_ReFire_Wrapper();
+            HF_ReFire_Wrapper *rfWrapper = new HF_ReFire_Wrapper();
             rfWrapper->setDataChannelEntry(iterData);
             emit(HyperFlowReFireSignalId, rfWrapper);
             delete rfWrapper;
         }
     }
-
 }
 
-
-void HyperFlowAgent::handleCheckAlive(){
+void HyperFlowAgent::handleCheckAlive() {
     //check if all known controllers have reported in
     std::list<std::string>::iterator iterKnownControllers;
     std::list<ControlChannelEntry>::iterator iterControl;
     bool found = false;
-    for(iterKnownControllers=knownControllers.begin();iterKnownControllers!=knownControllers.end(); ++iterKnownControllers){
+    for (iterKnownControllers = knownControllers.begin(); iterKnownControllers != knownControllers.end(); ++iterKnownControllers) {
         found = false;
-        for(iterControl=controlChannel.begin();iterControl!=controlChannel.end(); ++iterControl){
-            if(strcmp(iterKnownControllers->c_str(),(*iterControl).controllerId.c_str()) == 0){
-                found=true;
+        for (iterControl = controlChannel.begin(); iterControl != controlChannel.end(); ++iterControl) {
+            if (strcmp(iterKnownControllers->c_str(), (*iterControl).controllerId.c_str()) == 0) {
+                found = true;
                 break;
             }
         }
-        if(!found){
+        if (!found) {
             handleFailure(*iterKnownControllers);
         }
     }
 }
 
-void HyperFlowAgent::synchronizeDataChannelEntry(DataChannelEntry entry){
+void HyperFlowAgent::synchronizeDataChannelEntry(DataChannelEntry entry) {
     Enter_Method_Silent();
 
     EV_DEBUG << "HyperFlowAgent::Sent Change" << endl;
@@ -256,12 +256,13 @@ void HyperFlowAgent::synchronizeDataChannelEntry(DataChannelEntry entry){
     socket.send(pktChange);
 }
 
-void HyperFlowAgent::handleRecover(std::string controllerId){
+void HyperFlowAgent::handleRecover(std::string controllerId) {
     //TODO
 }
 
-void HyperFlowAgent::handleFailure(std::string controllerId){
+void HyperFlowAgent::handleFailure(std::string controllerId) {
     //TODO
 }
 
 } /*end namespace openflow*/
+

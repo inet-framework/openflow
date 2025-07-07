@@ -1,4 +1,3 @@
-
 #ifndef LLDPAGENTFORWARDING_H_
 #define LLDPAGENTFORWARDING_H_
 
@@ -11,28 +10,27 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
 
-namespace openflow{
+namespace openflow {
 
-struct LLDPPathSegment{
+struct LLDPPathSegment {
     std::string chassisId;
     int outport;
 };
 
-class LLDPForwarding:public AbstractControllerApp {
+class LLDPForwarding : public AbstractControllerApp
+{
 
-
-public:
+  public:
     LLDPForwarding();
     ~LLDPForwarding();
 
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
-    virtual void handlePacketIn(Packet * );
-    virtual void computePath(std::string srcId, std::string dstId, std::list<LLDPPathSegment> &list);
+    virtual void handlePacketIn(Packet *);
+    virtual void computePath(std::string srcId, std::string dstId, std::list<LLDPPathSegment>& list);
 
-
-    LLDPAgent * lldpAgent;
+    LLDPAgent *lldpAgent;
     long flooded;
     long forwarded;
     long dropped;
@@ -48,11 +46,11 @@ protected:
     int idleTimeout;
     int hardTimeout;
 
-    std::map<std::pair<std::string,std::string>, std::list<LLDPPathSegment> > routeCache;
-
+    std::map<std::pair<std::string, std::string>, std::list<LLDPPathSegment>> routeCache;
 
 };
 
 } /*end namespace openflow*/
 
 #endif
+

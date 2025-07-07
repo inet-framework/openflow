@@ -5,65 +5,59 @@
 #include "inet/linklayer/ethernet/common/Ethernet.h"
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(KN_LLDPForwarding);
 
-
-KN_LLDPForwarding::KN_LLDPForwarding(){
-
-}
-
-KN_LLDPForwarding::~KN_LLDPForwarding(){
+KN_LLDPForwarding::KN_LLDPForwarding() {
 
 }
 
-void KN_LLDPForwarding::initialize(int stage){
+KN_LLDPForwarding::~KN_LLDPForwarding() {
+
+}
+
+void KN_LLDPForwarding::initialize(int stage) {
     LLDPForwarding::initialize(stage);
-
 
     if (stage == INITSTAGE_LOCAL) {
         knAgent = NULL;
-        appName="KN_LLDPForwarding";
+        appName = "KN_LLDPForwarding";
         //register signals
-        kandooEventSignalId =registerSignal("KandooEvent");
-        getParentModule()->subscribe("KandooEvent",this);
+        kandooEventSignalId = registerSignal("KandooEvent");
+        getParentModule()->subscribe("KandooEvent", this);
         cpPingPacketHash = registerSignal("cpPingPacketHash");
     }
 }
 
-
-
-void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
+void KN_LLDPForwarding::handlePacketIn(Packet *pktIn) {
     //get some details
 
     auto packet_in_msg = pktIn->peekAtFront<OFP_Packet_In>();
     CommonHeaderFields headerFields = extractCommonHeaderFields(pktIn);
 
     //ignore lldp packets
-    if(headerFields.eth_type == ETHERTYPE_LLDP){
+    if (headerFields.eth_type == ETHERTYPE_LLDP) {
         return;
     }
 
     //ignore arp requests
-    if(ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST){
+    if (ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST) {
         return;
     }
 
-
     //compute path for non arps
     std::list<LLDPPathSegment> route;
-    computePath(headerFields.swInfo->getMacAddress(),headerFields.dst_mac.str(),route);
+    computePath(headerFields.swInfo->getMacAddress(), headerFields.dst_mac.str(), route);
 
-    unsigned long hash =0;
+    unsigned long hash = 0;
     int indetifier = 0;
     int seqNum = 0;
-
 
     //emit id of ping packet to indicate where it was processed
     // check ICMP
 
-    if(chekIcmpEchoRequest(pktIn,seqNum, indetifier)) {
+    if (chekIcmpEchoRequest(pktIn, seqNum, indetifier)) {
         //generate and emit hash
         std::stringstream hashString;
         hashString << "SeqNo-" << seqNum << "-Pid-" << indetifier;
@@ -71,8 +65,8 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
     }
 
     //if route empty flood
-    if(route.empty()){
-        if(!knAgent->getIsRootController()){
+    if (route.empty()) {
+        if (!knAgent->getIsRootController()) {
             //ask our root controller for instructions
             KandooEntry entry = KandooEntry();
             entry.trgApp = "KN_LLDPForwarding";
@@ -80,24 +74,25 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
             entry.trgController = "RootController";
             entry.trgSwitch = "";
             entry.srcSwitch = headerFields.swInfo->getMacAddress();
-            entry.type=1;
+            entry.type = 1;
             entry.srcController = controller->getFullPath();
             entry.payload = packet_in_msg->dup();
 
             knAgent->sendRequest(entry);
-            if(hash !=0){
-                emit(cpPingPacketHash,hash);
+            if (hash != 0) {
+                emit(cpPingPacketHash, hash);
             }
-
-        } else {
-            if(dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP){
+        }
+        else {
+            if (dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP) {
                 dropPacket(pktIn);
-            } else {
+            }
+            else {
                 floodPacket(pktIn);
             }
         }
-
-    }else {
+    }
+    else {
         std::string computedRoute = "";
         //send packet to next hop
         LLDPPathSegment seg = route.front();
@@ -109,14 +104,14 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
         builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
         oxm_basic_match match = builder->build();
 
-        TcpSocket * socket = controller->findSocketFor(pktIn);
-        sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
+        TcpSocket *socket = controller->findSocketFor(pktIn);
+        sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
 
         //concatenate route
-       computedRoute += seg.chassisId + " -> ";
+        computedRoute += seg.chassisId + " -> ";
 
         //iterate the rest of the route and set flow mods for switches under my control
-        while(!route.empty()){
+        while (!route.empty()) {
             seg = route.front();
             route.pop_front();
 
@@ -126,32 +121,28 @@ void KN_LLDPForwarding::handlePacketIn(Packet * pktIn){
 
             computedRoute += seg.chassisId + " -> ";
 
-            TcpSocket * socket = controller->findSocketForChassisId(seg.chassisId);
+            TcpSocket *socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if(socket != NULL){
-                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
+            if (socket != NULL) {
+                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
 
         //clean up route
-        computedRoute.erase(computedRoute.length()-4);
+        computedRoute.erase(computedRoute.length() - 4);
         EV << "Route:" << computedRoute << endl;
     }
-
 }
 
-
-
-
 void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    LLDPForwarding::receiveSignal(src,id,obj,details);
+    LLDPForwarding::receiveSignal(src, id, obj, details);
     Enter_Method("KN_LLDPForwarding::receiveSignal %s", cComponent::getSignalName(id));
     //set knagent link
-    if(knAgent == NULL && controller != NULL){
+    if (knAgent == NULL && controller != NULL) {
         auto appList = controller->getAppList();
 
-        for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
+        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
+            if (KandooAgent *kn = dynamic_cast<KandooAgent *>(*iterApp)) {
                 knAgent = kn;
                 break;
             }
@@ -160,20 +151,22 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
 
     //check kandoo events
     if (id == kandooEventSignalId) {
-        auto pkt = check_and_cast<Packet*>(obj);
+        auto pkt = check_and_cast<Packet *>(obj);
         auto chunk = pkt->peekAtFront<Chunk>();
         if (dynamicPtrCast<const KN_Packet>(chunk) != nullptr) {
             auto pktKnpck = pkt;
             auto knpck = pkt->removeAtFront<KN_Packet>();
             if (strcmp(knpck->getKnEntry().trgApp.c_str(), appName.c_str())
-                    == 0) {
+                == 0)
+            {
                 //this is a received inform
                 if (knpck->getKnEntry().type == 0) {
                     //not used by this app
-                } else if (knpck->getKnEntry().type == 1) {
+                }
+                else if (knpck->getKnEntry().type == 1) {
                     //this is a received request
 
-                    auto pktIn = dynamic_cast<Packet*>(knpck->getKnEntryForUpdate().payload);
+                    auto pktIn = dynamic_cast<Packet *>(knpck->getKnEntryForUpdate().payload);
                     if (pktIn != nullptr) {
                         auto chunk = pktIn->peekAtFront<Chunk>();
                         if (dynamicPtrCast<const OFP_Packet_In>(chunk) != nullptr) {
@@ -185,7 +178,7 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                                 return;
                             }
                             //ignore arp requests
-                            if (ignoreArpRequests  && headerFields.eth_type == ETHERTYPE_ARP && pckin->getMatch().OFB_ARP_OP == ARP_REQUEST) {
+                            if (ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && pckin->getMatch().OFB_ARP_OP == ARP_REQUEST) {
                                 return;
                             }
 
@@ -208,7 +201,8 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                                     entry2.payload = createDropPacketFromPacketIn(pktIn);
 
                                     knAgent->sendReply(pktKnpck, entry2);
-                                } else {
+                                }
+                                else {
                                     //respond with flood packet
                                     KandooEntry entry = KandooEntry();
                                     entry.trgApp = "KN_LLDPForwarding";
@@ -222,7 +216,8 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
 
                                     knAgent->sendReply(pktKnpck, entry);
                                 }
-                            } else {
+                            }
+                            else {
                                 //send packet to next hop
                                 LLDPPathSegment seg = route.front();
                                 route.pop_front();
@@ -288,10 +283,10 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                             }
                         }
                     }
-
-                } else if (knpck->getKnEntry().type == 2) {
+                }
+                else if (knpck->getKnEntry().type == 2) {
                     //this is a received reply
-                    auto pktOut = dynamic_cast<Packet*>(knpck->getKnEntryForUpdate().payload);
+                    auto pktOut = dynamic_cast<Packet *>(knpck->getKnEntryForUpdate().payload);
                     if (pktOut != nullptr) {
                         auto chunk = pktOut->peekAtFront<Chunk>();
                         if (dynamicPtrCast<const OFP_Packet_Out>(chunk) != nullptr) {
@@ -309,3 +304,4 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
 }
 
 } /*end namespace openflow*/
+

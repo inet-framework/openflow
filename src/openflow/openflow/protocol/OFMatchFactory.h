@@ -15,7 +15,6 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-
 #ifndef OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_
 #define OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_
 
@@ -23,8 +22,8 @@
 #include <memory>
 
 namespace openflow {
-    class OFMatchBuilder;
-}
+class OFMatchBuilder;
+} // namespace openflow
 
 namespace openflow {
 
@@ -34,20 +33,23 @@ namespace openflow {
  *
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OFMatchFactory {
-public:
+class OFMatchFactory
+{
+  public:
     /**
      * Creates a match builder for the current openflow version. Make sure to delete it!
      */
     static std::unique_ptr<OFMatchBuilder> getBuilder();
 };
 
-class OFMatchBuilder {
-public:
-    OFMatchBuilder(){
+class OFMatchBuilder
+{
+  public:
+    OFMatchBuilder() {
         match.wildcards = OFPFW_ALL;
     }
-    virtual ~OFMatchBuilder(){}
+
+    virtual ~OFMatchBuilder() {}
 
     /**
      * Set one field defined in the openflow protocol with the value.
@@ -56,15 +58,17 @@ public:
      *
      * @return this match builder
      */
-    virtual OFMatchBuilder* setField(oxm_ofb_match_fields field, void* value) = 0;
+    virtual OFMatchBuilder *setField(oxm_ofb_match_fields field, void *value) = 0;
 
-    oxm_basic_match build(){
+    oxm_basic_match build() {
         return match;
     }
-protected:
+
+  protected:
     oxm_basic_match match;
 };
 
 } /* namespace openflow */
 
 #endif /* OPENFLOW_OPENFLOW_UTIL_OFMATCHFACTORY_H_ */
+

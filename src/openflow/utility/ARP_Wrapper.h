@@ -1,5 +1,3 @@
-
-
 #ifndef ARP_WRAPPER_H_
 #define ARP_WRAPPER_H_
 
@@ -9,11 +7,12 @@
 using namespace std;
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
-class ARP_Wrapper: public cObject {
+class ARP_Wrapper : public cObject
+{
 
-public:
+  public:
     ARP_Wrapper();
     ~ARP_Wrapper();
 
@@ -23,14 +22,12 @@ public:
     const MacAddress& getSrcMacAddress() const;
     void setSrcMacAddress(const MacAddress& macAddress);
 
-
-
-protected:
+  protected:
     string srcIp;
     MacAddress srcMac;
 };
 
-
 } /*end namespace openflow*/
 
 #endif /* BUFFER_H_ */
+

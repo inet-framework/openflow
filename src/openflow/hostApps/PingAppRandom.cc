@@ -1,7 +1,3 @@
-
-
-
-
 #include "openflow/hostApps/PingAppRandom.h"
 
 #include "inet/networklayer/common/L3AddressResolver.h"
@@ -16,13 +12,12 @@
 
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(PingAppRandom);
 
-
-void PingAppRandom::initialize(int stage){
-    if (stage == INITSTAGE_LOCAL){
+void PingAppRandom::initialize(int stage) {
+    if (stage == INITSTAGE_LOCAL) {
         topo.extractByNedTypeName(cStringTokenizer(par("destinationNedType")).asVector());
         EV << "Number of extracted nodes: " << topo.getNumNodes() << endl;
     }
@@ -31,53 +26,53 @@ void PingAppRandom::initialize(int stage){
 
 }
 
-void PingAppRandom::handleSelfMessage(cMessage *msg){
+void PingAppRandom::handleSelfMessage(cMessage *msg) {
 
-        if (msg == timer){
-            // connect to random destination node
-            unsigned nodeNum = topo.getNumNodes();
-            if (nodeNum == 0)
-                throw cRuntimeError("No potential destination nodes found");
-            int random_num = intrand(nodeNum);
+    if (msg == timer) {
+        // connect to random destination node
+        unsigned nodeNum = topo.getNumNodes();
+        if (nodeNum == 0)
+            throw cRuntimeError("No potential destination nodes found");
+        int random_num = intrand(nodeNum);
 
-            std::string connectAddressAux =topo.getNode(random_num)->getModule()->getFullPath();
+        std::string connectAddressAux = topo.getNode(random_num)->getModule()->getFullPath();
 
-            if (connectAddressAux != connectAddress && currentSocket != nullptr) {
-                currentSocket->close();
-                currentSocket = nullptr;
-            }
-
-            if (currentSocket == nullptr) {
-                auto networkProtocol = &Protocol::ipv4;
-                const Protocol *icmp = l3Echo.at(networkProtocol);
-                currentSocket = new Ipv4Socket(gate("socketOut"));
-                currentSocket->bind(icmp, L3Address());
-                currentSocket->setCallback(this);
-                socketMap.addSocket(currentSocket);
-            }
-
-            connectAddress = connectAddressAux;
-            while (topo.getNode(random_num)->getModule() == getParentModule()) {
-
-                // avoid same source and destination
-                random_num = intrand(topo.getNumNodes());
-                connectAddress =topo.getNode(random_num)->getModule()->getFullPath();
-            }
-
-            destAddr = inet::L3AddressResolver().resolve(connectAddress.c_str());
-            ASSERT(!destAddr.isUnspecified());
-            srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
-            EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
-
-            sendPingRequest();
-            if (isEnabled())
-                scheduleNextPingRequest(simTime(), true);
+        if (connectAddressAux != connectAddress && currentSocket != nullptr) {
+            currentSocket->close();
+            currentSocket = nullptr;
         }
+
+        if (currentSocket == nullptr) {
+            auto networkProtocol = &Protocol::ipv4;
+            const Protocol *icmp = l3Echo.at(networkProtocol);
+            currentSocket = new Ipv4Socket(gate("socketOut"));
+            currentSocket->bind(icmp, L3Address());
+            currentSocket->setCallback(this);
+            socketMap.addSocket(currentSocket);
+        }
+
+        connectAddress = connectAddressAux;
+        while (topo.getNode(random_num)->getModule() == getParentModule()) {
+
+            // avoid same source and destination
+            random_num = intrand(topo.getNumNodes());
+            connectAddress = topo.getNode(random_num)->getModule()->getFullPath();
+        }
+
+        destAddr = inet::L3AddressResolver().resolve(connectAddress.c_str());
+        ASSERT(!destAddr.isUnspecified());
+        srcAddr = inet::L3AddressResolver().resolve(par("srcAddr"));
+        EV << "Starting up: dest=" << destAddr << "  src=" << srcAddr << "\n";
+
+        sendPingRequest();
+        if (isEnabled())
+            scheduleNextPingRequest(simTime(), true);
+    }
 }
 
-
-bool PingAppRandom::isEnabled(){
-    return (count == -1 || sentCount < count);
+bool PingAppRandom::isEnabled() {
+    return count == -1 || sentCount < count;
 }
 
 } /*end namespace openflow*/
+

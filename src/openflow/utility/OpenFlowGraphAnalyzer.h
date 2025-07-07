@@ -1,4 +1,3 @@
-
 #ifndef OPENFLOWGRAPHANALYZER_H_
 #define OPENFLOWGRAPHANALYZER_H_
 
@@ -8,52 +7,51 @@
 
 class Node;
 
-namespace openflow{
+namespace openflow {
 
 class OpenFlowGraphAnalyzer : public OperationalBase
 {
 
-public:
+  public:
     virtual void finish() override;
 
+  protected:
+    cTopology topo;
 
-protected:
-        cTopology topo;
+    std::list<std::list<cTopology::Node *>> computedPaths;
+    std::list<cTopology::Node *> getShortestPath(cTopology::Node *src, cTopology::Node *trg);
 
-        std::list<std::list<cTopology::Node *> > computedPaths;
-        std::list<cTopology::Node * > getShortestPath(cTopology::Node * src, cTopology::Node * trg);
+    int maxPathLength;
+    int minPathLength;
+    double avgPathLength;
+    int numClientNodes;
+    int numSwitchNodes;
+    double avgNumSwitchLinks;
+    bool considerOnlyEndToEnd;
 
-        int maxPathLength;
-        int minPathLength;
-        double avgPathLength;
-        int numClientNodes;
-        int numSwitchNodes;
-        double avgNumSwitchLinks;
-        bool considerOnlyEndToEnd;
+    std::map<std::string, int> swMap;
+    std::map<std::string, int> clMap;
 
-        std::map<std::string,int> swMap;
-        std::map<std::string,int> clMap;
+    virtual void initialize(int stage) override;
+    virtual void handleMessageWhenUp(cMessage *msg) override;
 
-
-        virtual void initialize(int stage) override;
-        virtual void handleMessageWhenUp(cMessage *msg) override;
-
-        // Lifecycle methods
-        virtual void handleStartOperation(LifecycleOperation *operation) override {};
-        virtual void handleStopOperation(LifecycleOperation *operation) override {};
-        virtual void handleCrashOperation(LifecycleOperation *operation) override {};
+    // Lifecycle methods
+    virtual void handleStartOperation(LifecycleOperation *operation) override {};
+    virtual void handleStopOperation(LifecycleOperation *operation) override {};
+    virtual void handleCrashOperation(LifecycleOperation *operation) override {};
 
 #if INET_VERSION >= 0x0404
-        virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
-        virtual bool isModuleStartStage(int stage) const override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
-        virtual bool isModuleStopStage(int stage) const override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) const override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) const override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
 #else
-        virtual bool isInitializeStage(int stage) override { return stage == INITSTAGE_APPLICATION_LAYER; }
-        virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
-        virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isInitializeStage(int stage) override { return stage == INITSTAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStartStage(int stage) override { return stage == ModuleStartOperation::STAGE_APPLICATION_LAYER; }
+    virtual bool isModuleStopStage(int stage) override { return stage == ModuleStopOperation::STAGE_APPLICATION_LAYER; }
 #endif
 };
 
 } /*end namespace openflow*/
 
 #endif /* SPANNINGTREE_H_ */
+

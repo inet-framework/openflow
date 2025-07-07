@@ -1,4 +1,3 @@
-
 #ifndef KNLLDPBALANCEDMINHOP_H_
 #define KNLLDPBALANCEDMINHOP_H_
 
@@ -6,28 +5,27 @@
 #include "openflow/controllerApps/LLDPBalancedMinHop.h"
 #include "openflow/kandoo/KandooAgent.h"
 
+namespace openflow {
 
-namespace openflow{
+class KN_LLDPBalancedMinHop : public LLDPBalancedMinHop
+{
 
-class KN_LLDPBalancedMinHop:public LLDPBalancedMinHop {
-
-
-public:
+  public:
     KN_LLDPBalancedMinHop();
     ~KN_LLDPBalancedMinHop();
 
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
     virtual void handlePacketIn(Packet *) override;
 
-    KandooAgent * knAgent;
+    KandooAgent *knAgent;
     simsignal_t kandooEventSignalId;
     std::string appName;
-
 
 };
 
 } /*end namespace openflow*/
 
 #endif
+

@@ -2,7 +2,7 @@
 #include "inet/common/socket/SocketTag_m.h"
 #include "inet/transportlayer/contract/tcp/TcpCommand_m.h"
 
-namespace openflow{
+namespace openflow {
 
 // Define_Module(AbstractTCPControllerApp);
 
@@ -15,22 +15,21 @@ AbstractTCPControllerApp::AbstractTCPControllerApp()
 
 AbstractTCPControllerApp::~AbstractTCPControllerApp()
 {
-    for(auto&& msg : msgList) {
-      delete msg.msg;
+    for (auto&& msg : msgList) {
+        delete msg.msg;
     }
     msgList.clear();
 }
 
-
-void AbstractTCPControllerApp::initialize(int stage){
+void AbstractTCPControllerApp::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         busy = false;
-        serviceTime =par("serviceTime");
+        serviceTime = par("serviceTime");
         queueSize = registerSignal("queueSize");
         waitingTime = registerSignal("waitingTime");
-        lastQueueSize =0;
-        lastChangeTime=0.0;
+        lastQueueSize = 0;
+        lastChangeTime = 0.0;
     }
 }
 
@@ -42,16 +41,16 @@ void AbstractTCPControllerApp::startProcessingMsg(Action& action)
     event->setKind(action.kind);
     event->setContextPointer(msg);
     EV_DEBUG << "Start processing of message " << msg->getName() << endl;
-    scheduleAt(simTime()+serviceTime, event);
+    scheduleAt(simTime() + serviceTime, event);
 }
 
 void AbstractTCPControllerApp::processSelfMessage(cMessage *msg) {
-    if(msg->getKind() == ACTION_EVENT || msg->getKind() == ACTION_DATA) {
+    if (msg->getKind() == ACTION_EVENT || msg->getKind() == ACTION_DATA) {
         //This is message which has been scheduled due to service time
         //Get the Original message
-        cMessage *data_msg = (cMessage *) msg->getContextPointer();
+        cMessage *data_msg = (cMessage *)msg->getContextPointer();
         EV_DEBUG << "End of processing message " << data_msg->getName() << endl;
-        emit(waitingTime,(simTime()-data_msg->getArrivalTime()-serviceTime));
+        emit(waitingTime, (simTime() - data_msg->getArrivalTime() - serviceTime));
 
         if (msg->getKind() == ACTION_EVENT)
             processQueuedMsg(data_msg);
@@ -61,9 +60,10 @@ void AbstractTCPControllerApp::processSelfMessage(cMessage *msg) {
             throw cRuntimeError("model error");
 
         //Trigger next service time
-        if (msgList.empty()){
+        if (msgList.empty()) {
             busy = false;
-        } else {
+        }
+        else {
             auto msgFromList = msgList.front();
             msgList.pop_front();
             startProcessingMsg(msgFromList);
@@ -74,14 +74,16 @@ void AbstractTCPControllerApp::processSelfMessage(cMessage *msg) {
     }
 }
 
-void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg){
-    if (msg->isSelfMessage()){
+void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg) {
+    if (msg->isSelfMessage()) {
         processSelfMessage(msg);
-    } else {
+    }
+    else {
         if (msg->isPacket()) {
-            if(packetsPerSecond.count(floor(simTime().dbl())) <=0){
-                packetsPerSecond.insert(pair<int,int>(floor(simTime().dbl()),1));
-            } else {
+            if (packetsPerSecond.count(floor(simTime().dbl())) <= 0) {
+                packetsPerSecond.insert(pair<int, int>(floor(simTime().dbl()), 1));
+            }
+            else {
                 packetsPerSecond[floor(simTime().dbl())]++;
             }
         }
@@ -92,56 +94,58 @@ void AbstractTCPControllerApp::handleMessageWhenUp(cMessage *msg){
             Action action(ACTION_EVENT, msg);
             if (busy) {
                 msgList.push_back(action);
-            } else {
+            }
+            else {
                 startProcessingMsg(action);
             }
         }
         calcAvgQueueSize(msgList.size());
-        emit(queueSize,msgList.size());
+        emit(queueSize, msgList.size());
     }
 }
 
-void AbstractTCPControllerApp::calcAvgQueueSize(int size){
-    if(lastQueueSize != size){
+void AbstractTCPControllerApp::calcAvgQueueSize(int size) {
+    if (lastQueueSize != size) {
         double timeDiff = simTime().dbl() - lastChangeTime;
-        if(avgQueueSize.count(floor(simTime().dbl())) <=0){
-            avgQueueSize.insert(pair<int,double>(floor(simTime().dbl()),lastQueueSize*timeDiff));
-        } else {
-            avgQueueSize[floor(simTime().dbl())] += lastQueueSize*timeDiff;
+        if (avgQueueSize.count(floor(simTime().dbl())) <= 0) {
+            avgQueueSize.insert(pair<int, double>(floor(simTime().dbl()), lastQueueSize * timeDiff));
         }
-            lastChangeTime = simTime().dbl();
-            lastQueueSize = size;
+        else {
+            avgQueueSize[floor(simTime().dbl())] += lastQueueSize * timeDiff;
         }
+        lastChangeTime = simTime().dbl();
+        lastQueueSize = size;
+    }
 }
 
-void AbstractTCPControllerApp::finish(){
+void AbstractTCPControllerApp::finish() {
     // record statistics
 
     //std::map<int,int>::iterator iterMap;
     /*
-    for(auto iterMap = packetsPerSecond.begin(); iterMap != packetsPerSecond.end(); ++iterMap){
+       for(auto iterMap = packetsPerSecond.begin(); iterMap != packetsPerSecond.end(); ++iterMap){
         stringstream name;
         name << "packetsPerSecondAt-" << iterMap->first;
         recordScalar(name.str().c_str(),iterMap->second);
-    }
+       }
 
-    //std::map<int,double>::iterator iterMap2;
-    for(auto iterMap2 = avgQueueSize.begin(); iterMap2 != avgQueueSize.end(); ++iterMap2){
+       //std::map<int,double>::iterator iterMap2;
+       for(auto iterMap2 = avgQueueSize.begin(); iterMap2 != avgQueueSize.end(); ++iterMap2){
         stringstream name;
         name << "avgQueueSizeAt-" << iterMap2->first;
         recordScalar(name.str().c_str(),(iterMap2->second/1.0));
-    }
-    */
-    for(auto elem : packetsPerSecond){
+       }
+     */
+    for (auto elem : packetsPerSecond) {
         stringstream name;
         name << "packetsPerSecondAt-" << elem.first;
-        recordScalar(name.str().c_str(),elem.second);
+        recordScalar(name.str().c_str(), elem.second);
     }
 
-    for(auto elem :avgQueueSize){
+    for (auto elem :avgQueueSize) {
         stringstream name;
         name << "avgQueueSizeAt-" << elem.first;
-        recordScalar(name.str().c_str(),(elem.second/1.0));
+        recordScalar(name.str().c_str(), (elem.second / 1.0));
     }
 }
 
@@ -167,5 +171,4 @@ void AbstractTCPControllerApp::socketFailure(TcpSocket *socket, int code)
 }
 
 } /*end namespace openflow*/
-
 

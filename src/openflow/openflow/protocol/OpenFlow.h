@@ -1,20 +1,19 @@
 #ifndef __OPENFLOW_OPENFLOW_H
 #define __OPENFLOW_OPENFLOW_H
 
-
 #include <inet/common/INETDefs.h>
 
-#define OFP_100 0x01
-#define OFP_135 0x04 //currently not supported.
-#define OFP_141 0x05 //currently not supported.
-#define OFP_151 0x06 //currently not supported.
+#define OFP_100    0x01
+#define OFP_135    0x04 //currently not supported.
+#define OFP_141    0x05 //currently not supported.
+#define OFP_151    0x06 //currently not supported.
 
 #if INET_VERSION < 0x0404 || INET_VERSION == 0x0404 && INET_PATCH_LEVEL < 0x02
 #error OpenFlow: Incompatible INET version. At least INET version v4.4.2 required.
 #endif
 
 #ifndef OFP_VERSION_IN_USE
-    #define OFP_VERSION_IN_USE OFP_100
+    #define OFP_VERSION_IN_USE    OFP_100
 #endif
 
 //#if OFP_VERSION_IN_USE == OFP_100
@@ -35,3 +34,4 @@
 //
 
 #endif // __OPENFLOW_OPENFLOW_H
+

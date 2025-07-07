@@ -8,8 +8,7 @@
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/common/ModuleAccess.h"
 
-
-namespace openflow{
+namespace openflow {
 
 simsignal_t AbstractControllerApp::PacketInSignalId = registerSignal("PacketIn");
 simsignal_t AbstractControllerApp::PacketOutSignalId = registerSignal("PacketOut");
@@ -52,7 +51,7 @@ int AbstractControllerApp::getIndexFromId(int id) {
     return it->second;
 }
 
-void AbstractControllerApp::initialize(int stage){
+void AbstractControllerApp::initialize(int stage) {
     //register signals
     OperationalBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
@@ -68,9 +67,9 @@ void AbstractControllerApp::initialize(int stage){
         auto myNode = getContainingNode(this);
         auto ifTable = L3AddressResolver().findInterfaceTableOf(myNode);
         int index = 0;
-        for (int i = 0 ; i < ifTable->getNumInterfaces(); i ++) {
+        for (int i = 0; i < ifTable->getNumInterfaces(); i++) {
             auto e = ifTable->getInterface(i);
-            if (strstr(e->getInterfaceName(),"eth") != nullptr){
+            if (strstr(e->getInterfaceName(), "eth") != nullptr) {
                 ifaceIndex[e->getId()] = index;
                 index++;
             }
@@ -78,8 +77,8 @@ void AbstractControllerApp::initialize(int stage){
     }
 }
 
-void AbstractControllerApp::handleParameterChange(const char *parname){
-    if(!parname || strcmp(parname, "priority")==0){
+void AbstractControllerApp::handleParameterChange(const char *parname) {
+    if (!parname || strcmp(parname, "priority") == 0) {
         this->priority = par("priority").intValue();
     }
 }
@@ -87,7 +86,7 @@ void AbstractControllerApp::handleParameterChange(const char *parname){
 void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
     Enter_Method_Silent();
     //register at controller
-    if(id == BootedSignalId){
+    if (id == BootedSignalId) {
         EV << "ARPResponder::Booted" << '\n';
         if (OF_Controller *cntrl = dynamic_cast<OF_Controller *>(obj)) {
             this->controller = cntrl;
@@ -96,7 +95,7 @@ void AbstractControllerApp::receiveSignal(cComponent *src, simsignal_t id, cObje
     }
 }
 
-void AbstractControllerApp::floodPacket(Packet *packet_in_msg){
+void AbstractControllerApp::floodPacket(Packet *packet_in_msg) {
 
     if (controller == nullptr)
         throw cRuntimeError("Controller module is not initialized");
@@ -108,7 +107,7 @@ void AbstractControllerApp::floodPacket(Packet *packet_in_msg){
     controller->sendPacketOut(createFloodPacketFromPacketIn(packet_in_msg), socket);
 }
 
-void AbstractControllerApp::dropPacket(Packet *packet_in_msg){
+void AbstractControllerApp::dropPacket(Packet *packet_in_msg) {
 
     if (controller == nullptr)
         throw cRuntimeError("Controller module is not initialized");
@@ -122,8 +121,7 @@ void AbstractControllerApp::dropPacket(Packet *packet_in_msg){
     controller->sendPacketOut(msgAux, socket);
 }
 
-
-void AbstractControllerApp::sendPacket(Packet *packet_in_msg, uint32_t outport){
+void AbstractControllerApp::sendPacket(Packet *packet_in_msg, uint32_t outport) {
 
     if (controller == nullptr)
         throw cRuntimeError("Controller module is not initialized");
@@ -134,21 +132,21 @@ void AbstractControllerApp::sendPacket(Packet *packet_in_msg, uint32_t outport){
     numPacketOut++;
 
     TcpSocket *socket = controller->findSocketFor(packet_in_msg);
-    auto msgAux = createPacketOutFromPacketIn(packet_in_msg,outport);
+    auto msgAux = createPacketOutFromPacketIn(packet_in_msg, outport);
     controller->sendPacket(socket, msgAux);
 }
 
-void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match &match, uint32_t outport, TcpSocket * socket, int idleTimeOut =1 , int hardTimeOut=0){
+void AbstractControllerApp::sendFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match& match, uint32_t outport, TcpSocket *socket, int idleTimeOut = 1, int hardTimeOut = 0) {
     if (controller == nullptr)
         throw cRuntimeError("Controller module is not initialized");
 
     EV << "sendFlowModMessage" << '\n';
     numFlowMod++;
-    auto msgAux = createFlowMod(mod_com,match,outport,idleTimeOut,hardTimeOut);
+    auto msgAux = createFlowMod(mod_com, match, outport, idleTimeOut, hardTimeOut);
     controller->sendPacket(socket, msgAux);
 }
 
-void AbstractControllerApp::finish(){
+void AbstractControllerApp::finish() {
     // record statistics
     recordScalar("numPacketOut", numPacketOut);
     recordScalar("numFlowMod", numFlowMod);
@@ -157,11 +155,11 @@ void AbstractControllerApp::finish(){
 
 }
 
-Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int idleTimeOut, int hardTimeOut){
+Packet *AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com, const oxm_basic_match& match, uint32_t outport, int idleTimeOut, int hardTimeOut) {
     return createFlowMod(mod_com, match, outport, this->priority, idleTimeOut, hardTimeOut);
 }
 
-Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const oxm_basic_match  &match, uint32_t outport, int priority, int idleTimeOut, int hardTimeOut){
+Packet *AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com, const oxm_basic_match& match, uint32_t outport, int priority, int idleTimeOut, int hardTimeOut) {
     auto flow_mod_msg = makeShared<OFP_Flow_Mod>();
     auto pkt = new Packet("flow_mod");
 
@@ -185,7 +183,7 @@ Packet * AbstractControllerApp::createFlowMod(ofp_flow_mod_command mod_com,const
     return pkt;
 }
 
-Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint32_t outport){
+Packet *AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint32_t outport) {
     auto packetOut = makeShared<OFP_Packet_Out>();
     Packet *pktOut = new Packet("packetOut");
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
@@ -195,7 +193,7 @@ Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint3
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setChunkLength(B(24));
 
-    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
+    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER) {
         pktIn->peekAtFront<EthernetMacHeader>();
         pktOut->insertAtFront(pktIn->peekData());
     }
@@ -215,7 +213,7 @@ Packet * AbstractControllerApp::createPacketOutFromPacketIn(Packet *pktIn, uint3
     return pktOut;
 }
 
-Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
+Packet *AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn) {
 
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
 
@@ -226,7 +224,7 @@ Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setChunkLength(B(24));
 
-    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
+    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER) {
         pktIn->peekAtFront<EthernetMacHeader>();
         pktOut->insertAtFront(pktIn->peekData());
     }
@@ -247,7 +245,7 @@ Packet * AbstractControllerApp::createFloodPacketFromPacketIn(Packet *pktIn){
     return pktOut;
 }
 
-Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
+Packet *AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn) {
 
     auto packet_in_msg = pktIn->removeAtFront<OFP_Packet_In>();
     auto packetOut = makeShared<OFP_Packet_Out>();
@@ -257,7 +255,7 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
     packetOut->setBuffer_id(packet_in_msg->getBuffer_id());
     packetOut->setChunkLength(B(24));
 
-    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER){
+    if (packet_in_msg->getBuffer_id() == OFP_NO_BUFFER) {
         auto frame = pktIn->peekAtFront<EthernetMacHeader>();
         pktOut->insertAtFront(pktIn->peekData());
     }
@@ -277,7 +275,7 @@ Packet * AbstractControllerApp::createDropPacketFromPacketIn(Packet *pktIn){
     return pktOut;
 }
 
-bool AbstractControllerApp::chekIcmpEchoRequest(Packet *pkt, int &seqNumber, int &identifier) {
+bool AbstractControllerApp::chekIcmpEchoRequest(Packet *pkt, int& seqNumber, int& identifier) {
     PacketDissector::PduTreeBuilder pduTreeBuilder;
     auto packetProtocolTag = pkt->findTag<PacketProtocolTag>();
     auto protocol = packetProtocolTag != nullptr ? packetProtocolTag->getProtocol() : nullptr;
@@ -317,8 +315,7 @@ bool AbstractControllerApp::chekIcmpEchoRequest(Packet *pkt, int &seqNumber, int
     return false;
 }
 
-
-CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktIn){
+CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktIn) {
     CommonHeaderFields headerFields = CommonHeaderFields();
 
     headerFields.swInfo = controller->findSwitchInfoFor(pktIn);
@@ -326,9 +323,8 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktI
 
     headerFields.buffer_id = packet_in_msg->getBuffer_id();
 
-
     // packet is encapsulated in packet-in message
-    if (headerFields.buffer_id == OFP_NO_BUFFER){
+    if (headerFields.buffer_id == OFP_NO_BUFFER) {
         auto frame = pktIn->peekAtFront<EthernetMacHeader>();
         headerFields.inport = packet_in_msg->getMatch().OFB_IN_PORT;
         headerFields.src_mac = frame->getSrc();
@@ -340,7 +336,7 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktI
         //headerFields.dst_mac = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getDest();
         //headerFields.eth_type = dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket())->getEtherType();
 
-        if(headerFields.eth_type ==ETHERTYPE_ARP){
+        if (headerFields.eth_type == ETHERTYPE_ARP) {
             auto frameAux = pktIn->removeAtFront<EthernetMacHeader>();
             auto arpPacket = pktIn->peekAtFront<ArpPacket>();
             headerFields.arp_src_adr = arpPacket->getSrcIpAddress();
@@ -348,7 +344,8 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktI
             headerFields.arp_op = arpPacket->getOpcode();
             pktIn->insertAtFront(frameAux);
         }
-    }else{
+    }
+    else {
         headerFields.inport = packet_in_msg->getMatch().OFB_IN_PORT;
         headerFields.src_mac = packet_in_msg->getMatch().OFB_ETH_SRC;
         headerFields.dst_mac = packet_in_msg->getMatch().OFB_ETH_DST;
@@ -364,3 +361,4 @@ CommonHeaderFields AbstractControllerApp::extractCommonHeaderFields(Packet *pktI
 }
 
 } /*end namespace openflow*/
+

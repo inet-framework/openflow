@@ -15,94 +15,91 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-
 #include "openflow/openflow/protocol/OF100MatchBuilder.h"
 
 namespace openflow {
 
-
-
-OFMatchBuilder* OF100MatchBuilder::setField(oxm_ofb_match_fields field, void* value){
+OFMatchBuilder *OF100MatchBuilder::setField(oxm_ofb_match_fields field, void *value) {
     //interpret the field, cast & set the value, update wildcard.
-    switch (field){
-    case OFPXMT_OFB_IN_PORT:
-        match.OFB_IN_PORT = *static_cast<int*>(value);
-        match.wildcards &= ~OFPFW_IN_PORT;
-        break;
-    case OFPXMT_OFB_ETH_SRC:
-        match.OFB_ETH_SRC = *static_cast<inet::MacAddress*>(value);
-        match.wildcards &= ~OFPFW_DL_SRC;
-        break;
-    case OFPXMT_OFB_ETH_DST:
-        match.OFB_ETH_DST = *static_cast<inet::MacAddress*>(value);
-        match.wildcards &= ~OFPFW_DL_DST;
-        break;
-    case OFPXMT_OFB_VLAN_VID:
-        match.OFB_VLAN_VID = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_DL_VLAN;
-        break;
-    case OFPXMT_OFB_VLAN_PCP:
-        match.OFB_VLAN_PCP = *static_cast<uint8_t*>(value);
-        match.wildcards &= ~OFPFW_DL_VLAN_PCP;
-        break;
-    case OFPXMT_OFB_ETH_TYPE:
-        match.OFB_ETH_TYPE = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_DL_TYPE;
-        break;
-    case OFPXMT_OFB_IP_DSCP:
-        match.OFB_IP_DSCP = *static_cast<uint8_t*>(value);
-        match.wildcards &= ~OFPFW_NW_TOS;
-        break;
-    case OFPXMT_OFB_IP_PROTO:
-        match.OFB_IP_PROTO = *static_cast<uint8_t*>(value);
-        match.wildcards &= ~OFPFW_NW_PROTO;
-        break;
-    case OFPXMT_OFB_IPV4_SRC:
-        match.OFB_IPV4_SRC = *static_cast<inet::Ipv4Address*>(value);
-        match.wildcards &= ~OFPFW_NW_SRC_ALL;
-        break;
-    case OFPXMT_OFB_IPV4_DST:
-        match.OFB_IPV4_DST = *static_cast<inet::Ipv4Address*>(value);
-        match.wildcards &= ~OFPFW_NW_DST_ALL;
-        break;
-    case OFPXMT_OFB_TCP_SRC:
-        match.OFB_TP_SRC = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_TP_SRC;
-        break;
-    case OFPXMT_OFB_TCP_DST:
-        match.OFB_TP_DST = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_TP_DST;
-        break;
-    case OFPXMT_OFB_UDP_SRC:
-        match.OFB_TP_SRC = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_TP_SRC;
-        break;
-    case OFPXMT_OFB_UDP_DST:
-        match.OFB_TP_DST = *static_cast<uint16_t*>(value);
-        match.wildcards &= ~OFPFW_TP_DST;
-        break;
-    case OFPXMT_OFB_ARP_OP:
-        match.OFB_ARP_OP = *static_cast<int*>(value);
-        break;
-    case OFPXMT_OFB_ARP_SPA:
-        match.OFB_ARP_SPA = *static_cast<inet::Ipv4Address*>(value);
-        break;
-    case OFPXMT_OFB_ARP_TPA:
-        match.OFB_ARP_TPA = *static_cast<inet::Ipv4Address*>(value);
-        break;
-    case OFPXMT_OFB_ARP_SHA:
-        match.OFB_ARP_SHA = *static_cast<inet::MacAddress*>(value);
-        break;
-    case OFPXMT_OFB_ARP_THA:
-        match.OFB_ARP_THA = *static_cast<inet::MacAddress*>(value);
-        break;
-    default:
-        throw cRuntimeError("This field is not supported by the current match implementation!");
-        break;
+    switch (field) {
+        case OFPXMT_OFB_IN_PORT:
+            match.OFB_IN_PORT = *static_cast<int *>(value);
+            match.wildcards &= ~OFPFW_IN_PORT;
+            break;
+        case OFPXMT_OFB_ETH_SRC:
+            match.OFB_ETH_SRC = *static_cast<inet::MacAddress *>(value);
+            match.wildcards &= ~OFPFW_DL_SRC;
+            break;
+        case OFPXMT_OFB_ETH_DST:
+            match.OFB_ETH_DST = *static_cast<inet::MacAddress *>(value);
+            match.wildcards &= ~OFPFW_DL_DST;
+            break;
+        case OFPXMT_OFB_VLAN_VID:
+            match.OFB_VLAN_VID = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_DL_VLAN;
+            break;
+        case OFPXMT_OFB_VLAN_PCP:
+            match.OFB_VLAN_PCP = *static_cast<uint8_t *>(value);
+            match.wildcards &= ~OFPFW_DL_VLAN_PCP;
+            break;
+        case OFPXMT_OFB_ETH_TYPE:
+            match.OFB_ETH_TYPE = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_DL_TYPE;
+            break;
+        case OFPXMT_OFB_IP_DSCP:
+            match.OFB_IP_DSCP = *static_cast<uint8_t *>(value);
+            match.wildcards &= ~OFPFW_NW_TOS;
+            break;
+        case OFPXMT_OFB_IP_PROTO:
+            match.OFB_IP_PROTO = *static_cast<uint8_t *>(value);
+            match.wildcards &= ~OFPFW_NW_PROTO;
+            break;
+        case OFPXMT_OFB_IPV4_SRC:
+            match.OFB_IPV4_SRC = *static_cast<inet::Ipv4Address *>(value);
+            match.wildcards &= ~OFPFW_NW_SRC_ALL;
+            break;
+        case OFPXMT_OFB_IPV4_DST:
+            match.OFB_IPV4_DST = *static_cast<inet::Ipv4Address *>(value);
+            match.wildcards &= ~OFPFW_NW_DST_ALL;
+            break;
+        case OFPXMT_OFB_TCP_SRC:
+            match.OFB_TP_SRC = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_TP_SRC;
+            break;
+        case OFPXMT_OFB_TCP_DST:
+            match.OFB_TP_DST = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_TP_DST;
+            break;
+        case OFPXMT_OFB_UDP_SRC:
+            match.OFB_TP_SRC = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_TP_SRC;
+            break;
+        case OFPXMT_OFB_UDP_DST:
+            match.OFB_TP_DST = *static_cast<uint16_t *>(value);
+            match.wildcards &= ~OFPFW_TP_DST;
+            break;
+        case OFPXMT_OFB_ARP_OP:
+            match.OFB_ARP_OP = *static_cast<int *>(value);
+            break;
+        case OFPXMT_OFB_ARP_SPA:
+            match.OFB_ARP_SPA = *static_cast<inet::Ipv4Address *>(value);
+            break;
+        case OFPXMT_OFB_ARP_TPA:
+            match.OFB_ARP_TPA = *static_cast<inet::Ipv4Address *>(value);
+            break;
+        case OFPXMT_OFB_ARP_SHA:
+            match.OFB_ARP_SHA = *static_cast<inet::MacAddress *>(value);
+            break;
+        case OFPXMT_OFB_ARP_THA:
+            match.OFB_ARP_THA = *static_cast<inet::MacAddress *>(value);
+            break;
+        default:
+            throw cRuntimeError("This field is not supported by the current match implementation!");
+            break;
     }
 
     return this;
 }
 
-
 } /* namespace openflow */
+

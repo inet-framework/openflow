@@ -1,4 +1,3 @@
-
 #ifndef OF_CONTROLLER_H_
 #define OF_CONTROLLER_H_
 
@@ -10,37 +9,35 @@
 #include "inet/common/lifecycle/OperationalBase.h"
 #include "inet/common/lifecycle/ModuleOperations.h"
 
-
-namespace openflow{
+namespace openflow {
 
 class AbstractControllerApp;
 
 #if (INET_VERSION > 0x405)
-class OF_Controller: public OperationalBase, public TcpSocket::BufferingCallback
+class OF_Controller : public OperationalBase, public TcpSocket::BufferingCallback
 #else
-class OF_Controller: public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
+class OF_Controller : public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
 #endif
 {
-public:
+  public:
     OF_Controller();
     ~OF_Controller();
     virtual void finish() override;
 
-    void sendPacketOut(Packet *of_msg, TcpSocket * socket);
+    void sendPacketOut(Packet *of_msg, TcpSocket *socket);
 
-    void registerApp(AbstractControllerApp * app);
+    void registerApp(AbstractControllerApp *app);
 
     TcpSocket *findSocketFor(cMessage *) const;
-    Switch_Info *findSwitchInfoFor(cMessage *msg) ;
+    Switch_Info *findSwitchInfoFor(cMessage *msg);
     TcpSocket *findSocketForChassisId(std::string chassisId) const;
 
-    std::vector<Switch_Info >* getSwitchesList() ;
-    std::vector<AbstractControllerApp *>* getAppList() ;
+    std::vector<Switch_Info> *getSwitchesList();
+    std::vector<AbstractControllerApp *> *getAppList();
 
     virtual void sendPacket(TcpSocket *tcp, Packet *msg);
 
-
-protected:
+  protected:
     /**
      * Observer Signals
      */
@@ -58,11 +55,11 @@ protected:
     simsignal_t queueSize;
     simsignal_t waitingTime;
     long numPacketIn;
-    std::map<int,int> packetsPerSecond;
+    std::map<int, int> packetsPerSecond;
 
     int lastQueueSize;
     double lastChangeTime;
-    std::map<int,double> avgQueueSize;
+    std::map<int, double> avgQueueSize;
 
     /**
      * Message Processing
@@ -76,14 +73,14 @@ protected:
         int kind;
         cMessage *msg;
         Action() : kind(0), msg(nullptr) {}
-        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+        Action(int kind, cMessage *msg) : kind(kind), msg(msg) {}
     };
     std::list<Action> msgList;
 
     /**
      * Network and Controller State
      */
-    std::vector<Switch_Info > switchesList;
+    std::vector<Switch_Info> switchesList;
     std::vector<AbstractControllerApp *> apps;
 
     /**
@@ -102,7 +99,7 @@ protected:
     void sendFeatureRequest(Packet *msg);
     virtual void handleFeaturesReply(Packet *of_msg);
     virtual void handlePacketIn(Packet *of_msg);
-    virtual void handleExperimenter(Packet* of_msg);
+    virtual void handleExperimenter(Packet *of_msg);
 
     /** @name TcpSocket::ICallback callback methods */
     //@{
@@ -137,3 +134,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif /* OF_CONTROLLER_H_ */
+

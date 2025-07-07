@@ -32,114 +32,100 @@ OF100_FlowTableEntry::OF100_FlowTableEntry() {
     //init counters
 }
 
-OF100_FlowTableEntry::OF100_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry(flow_mod){
+OF100_FlowTableEntry::OF100_FlowTableEntry(OFP_Flow_Mod *flow_mod) : OF_FlowTableEntry(flow_mod) {
     cookie = flow_mod->getCookie();
     flags = flow_mod->getFlags();
     match = flow_mod->getMatch();
-    for (size_t i = 0 ; i < flow_mod->getActionsArraySize(); i++){
+    for (size_t i = 0; i < flow_mod->getActionsArraySize(); i++) {
         instructions.push_back(flow_mod->getActions(i));
     }
 }
 
-OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_FlowTableEntry(xmlDoc){
+OF100_FlowTableEntry::OF100_FlowTableEntry(omnetpp::cXMLElement *xmlDoc) : OF_FlowTableEntry(xmlDoc) {
     //get attributes
-    if(const char* value = xmlDoc->getAttribute("cookie"))
-        cookie = atoi(value);//cookie
-    if(const char* value = xmlDoc->getAttribute("flags"))
-        flags = atoi(value);//flags
+    if (const char *value = xmlDoc->getAttribute("cookie"))
+        cookie = atoi(value); //cookie
+    if (const char *value = xmlDoc->getAttribute("flags"))
+        flags = atoi(value); //flags
 
     auto builder = OFMatchFactory::getBuilder();
-    if(cXMLElement* xmlMatch = xmlDoc->getFirstChildWithTag("match")){
-        if (const char* value = xmlMatch->getAttribute("in_port"))
-        {
-            int parsedValue =  atoi(value);
+    if (cXMLElement *xmlMatch = xmlDoc->getFirstChildWithTag("match")) {
+        if (const char *value = xmlMatch->getAttribute("in_port")) {
+            int parsedValue = atoi(value);
             builder->setField(OFPXMT_OFB_IN_PORT, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("dl_src"))
-        {
+        if (const char *value = xmlMatch->getAttribute("dl_src")) {
             MacAddress parsedValue = MacAddress(value);
             builder->setField(OFPXMT_OFB_ETH_SRC, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("dl_dst"))
-        {
+        if (const char *value = xmlMatch->getAttribute("dl_dst")) {
             MacAddress parsedValue = MacAddress(value);
             builder->setField(OFPXMT_OFB_ETH_DST, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("dl_vlan"))
-        {
+        if (const char *value = xmlMatch->getAttribute("dl_vlan")) {
             uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
             builder->setField(OFPXMT_OFB_VLAN_VID, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("dl_vlan_pcp"))
-        {
+        if (const char *value = xmlMatch->getAttribute("dl_vlan_pcp")) {
             uint8_t parsedValue = static_cast<uint8_t>(atoi(value));
             builder->setField(OFPXMT_OFB_VLAN_PCP, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("dl_type"))
-        {
+        if (const char *value = xmlMatch->getAttribute("dl_type")) {
             uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
             builder->setField(OFPXMT_OFB_ETH_TYPE, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("nw_proto"))
-        {
+        if (const char *value = xmlMatch->getAttribute("nw_proto")) {
             uint8_t parsedValue = static_cast<uint8_t>(atoi(value));
             builder->setField(OFPXMT_OFB_IP_PROTO, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("nw_src"))
-        {
+        if (const char *value = xmlMatch->getAttribute("nw_src")) {
             Ipv4Address parsedValue = Ipv4Address(value);
             builder->setField(OFPXMT_OFB_IPV4_SRC, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("nw_dst"))
-        {
+        if (const char *value = xmlMatch->getAttribute("nw_dst")) {
             Ipv4Address parsedValue = Ipv4Address(value);
             builder->setField(OFPXMT_OFB_IPV4_DST, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("tp_src"))
-        {
+        if (const char *value = xmlMatch->getAttribute("tp_src")) {
             uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
             builder->setField(OFPXMT_OFB_TCP_SRC, &parsedValue);
         }
-        if (const char* value = xmlMatch->getAttribute("tp_dst"))
-        {
+        if (const char *value = xmlMatch->getAttribute("tp_dst")) {
             uint16_t parsedValue = static_cast<uint16_t>(atoi(value));
             builder->setField(OFPXMT_OFB_TCP_DST, &parsedValue);
         }
 
         match = builder->build();
-        if (const char* value = xmlMatch->getAttribute("wildcards"))
-        {
+        if (const char *value = xmlMatch->getAttribute("wildcards")) {
             // overrides calcualted wildcard with a static value.
             match.wildcards = static_cast<uint32_t>(stoul(value));
         }
     }
 
     //get instructions
-    cXMLElement* xmlInstructions = xmlDoc->getFirstChildWithTag("instructions");
+    cXMLElement *xmlInstructions = xmlDoc->getFirstChildWithTag("instructions");
     cXMLElementList xmlInstructionList = xmlInstructions->getChildrenByTagName("action_output");
-    for (size_t i=0; i<xmlInstructionList.size(); i++){
+    for (size_t i = 0; i < xmlInstructionList.size(); i++) {
         ofp_action_output action;
         action.port = atoi(xmlInstructionList[i]->getAttribute("port"));
         instructions.push_back(action);
     }
-
 }
 
 OF100_FlowTableEntry::~OF100_FlowTableEntry() {
     instructions.clear();
 }
 
-bool OF100_FlowTableEntry::tryMatch(const OF_FlowTableEntry* other) {
-    const OF100_FlowTableEntry* casted = dynamic_cast<const OF100_FlowTableEntry*> (other);
-    if(casted->match.wildcards == this->match.wildcards) {
+bool OF100_FlowTableEntry::tryMatch(const OF_FlowTableEntry *other) {
+    const OF100_FlowTableEntry *casted = dynamic_cast<const OF100_FlowTableEntry *>(other);
+    if (casted->match.wildcards == this->match.wildcards) {
         return tryMatch(casted->match, casted->match.wildcards);
     }
     return false;
 }
 
 bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other, bool intersectWildcards) {
-    if(intersectWildcards)
-    {
+    if (intersectWildcards) {
         return tryMatch(other, intersectWildCards(match.wildcards, other.wildcards));
     }
     return tryMatch(other, match.wildcards);
@@ -147,17 +133,17 @@ bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other, bool intersect
 
 bool OF100_FlowTableEntry::tryMatch(const oxm_basic_match& other, uint32_t wildcards) {
     //debuggable
-    bool port = ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) ;
-    bool dl_type = ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) ;
-    bool dl_src = ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC)) ;
-    bool dl_dst = ((wildcards & OFPFW_DL_DST) || !match.OFB_ETH_DST.compareTo(other.OFB_ETH_DST)) ;
-    bool dl_vlan = ((wildcards & OFPFW_DL_VLAN) || match.OFB_VLAN_VID == other.OFB_VLAN_VID ) ;
-    bool dl_vlan_pcb = ((wildcards & OFPFW_DL_VLAN_PCP) || match.OFB_VLAN_PCP == other.OFB_VLAN_PCP ) ;
-    bool nw_proto = ((wildcards & OFPFW_NW_PROTO) || match.OFB_IP_PROTO == other.OFB_IP_PROTO ) ;
-    bool nw_src = ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC) ) ;
-    bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST) ) ;
-    bool tp_src = ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC ) ;
-    bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST ) ;
+    bool port = ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT);
+    bool dl_type = ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE);
+    bool dl_src = ((wildcards & OFPFW_DL_SRC) || !match.OFB_ETH_SRC.compareTo(other.OFB_ETH_SRC));
+    bool dl_dst = ((wildcards & OFPFW_DL_DST) || !match.OFB_ETH_DST.compareTo(other.OFB_ETH_DST));
+    bool dl_vlan = ((wildcards & OFPFW_DL_VLAN) || match.OFB_VLAN_VID == other.OFB_VLAN_VID);
+    bool dl_vlan_pcb = ((wildcards & OFPFW_DL_VLAN_PCP) || match.OFB_VLAN_PCP == other.OFB_VLAN_PCP);
+    bool nw_proto = ((wildcards & OFPFW_NW_PROTO) || match.OFB_IP_PROTO == other.OFB_IP_PROTO);
+    bool nw_src = ((wildcards & OFPFW_NW_SRC_ALL) || match.OFB_IPV4_SRC.equals(other.OFB_IPV4_SRC));
+    bool nw_dst = ((wildcards & OFPFW_NW_DST_ALL) || match.OFB_IPV4_DST.equals(other.OFB_IPV4_DST));
+    bool tp_src = ((wildcards & OFPFW_TP_SRC) || match.OFB_TP_SRC == other.OFB_TP_SRC);
+    bool tp_dst = ((wildcards & OFPFW_TP_DST) || match.OFB_TP_DST == other.OFB_TP_DST);
     return port && dl_type && dl_src && dl_dst && dl_vlan && dl_vlan_pcb && nw_proto && nw_src && nw_dst && tp_src && tp_dst;
 //    return ((wildcards & OFPFW_IN_PORT) || match.OFB_IN_PORT == other.OFB_IN_PORT) &&
 //        ((wildcards & OFPFW_DL_TYPE) || match.OFB_ETH_TYPE == other.OFB_ETH_TYPE ) &&
@@ -183,40 +169,39 @@ std::string OF100_FlowTableEntry::exportToXML() {
     oss << " flags=\"" << flags << "\"";
     oss << " >" << endl;//end flow entry
 
-
     // oxm_basic_match match;
     uint32_t w = match.wildcards;
     oss << tab << "<match ";
-    if(!(w & OFPFW_IN_PORT))
+    if (!(w & OFPFW_IN_PORT))
         oss << " in_port=\"" << (int)match.OFB_IN_PORT << "\""; //uint16_t in_port;
-    if(!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
+    if (!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
         oss << " dl_dst=\"" << match.OFB_ETH_DST.str() << "\""; //inet::MacAddress dl_src;
-    if(!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
+    if (!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
         oss << " dl_src=\"" << match.OFB_ETH_SRC.str() << "\""; //inet::MacAddress dl_dst;
-    if(!(w & OFPFW_DL_VLAN))
+    if (!(w & OFPFW_DL_VLAN))
         oss << " dl_vlan=\"" << (int)match.OFB_VLAN_VID << "\""; //uint16_t dl_vlan;
-    if(!(w & OFPFW_DL_VLAN_PCP))
+    if (!(w & OFPFW_DL_VLAN_PCP))
         oss << " dl_vlan_pcp=\"" << (int)match.OFB_VLAN_PCP << "\""; //uint8_t dl_vlan_pcp;
-    if(!(w & OFPFW_DL_TYPE))
+    if (!(w & OFPFW_DL_TYPE))
         oss << " dl_type=\"" << (int)match.OFB_ETH_TYPE << "\""; //uint16_t dl_type;
-    if(!(w & OFPFW_NW_PROTO))
+    if (!(w & OFPFW_NW_PROTO))
         oss << " nw_proto=\"" << (int)match.OFB_IP_PROTO << "\""; //uint8_t nw_proto;
-    if(!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
+    if (!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
         oss << " nw_src=\"" << match.OFB_IPV4_SRC.str(false) << "\""; //inet::Ipv4Address nw_src;
-    if(!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
+    if (!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
         oss << " nw_dst=\"" << match.OFB_IPV4_DST.str(false) << "\""; //inet::Ipv4Address nw_dst;
-    if(!(w & OFPFW_TP_SRC))
+    if (!(w & OFPFW_TP_SRC))
         oss << " tp_src=\"" << (int)match.OFB_TP_SRC << "\""; //uint16_t tp_src;
-    if(!(w & OFPFW_TP_DST))
+    if (!(w & OFPFW_TP_DST))
         oss << " tp_dst=\"" << (int)match.OFB_TP_DST << "\""; //uint16_t tp_dst;
 
     oss << " wildcards=\"" << match.wildcards << "\""; //uint32_t wildcards;
     oss << " />" << endl;
 
     // std::vector<ofp_action_output> instructions;
-    if(!instructions.empty()){
+    if (!instructions.empty()) {
         oss << tab << "<instructions>" << endl;
-        for (uint32_t i=0;i<instructions.size();i++){
+        for (uint32_t i = 0; i < instructions.size(); i++) {
             int port = instructions[i].port;
             oss << tab << tab << "<action_output port=\"" << port << "\"/>" << endl;
         }
@@ -227,7 +212,7 @@ std::string OF100_FlowTableEntry::exportToXML() {
     return oss.str();
 }
 
-std::string OF100_FlowTableEntry::print() const{
+std::string OF100_FlowTableEntry::print() const {
     ostringstream oss;
     string tab = "    ";
     oss << "OF100_FlowTableEntry{ ";
@@ -238,31 +223,31 @@ std::string OF100_FlowTableEntry::print() const{
     oss << "lastMatched(" << lastMatched.str() << ") ";
     oss << "hardTimeout(" << hardTimeout << ") ";
     oss << "idleTimeout(" << idleTimeout << ") ";
-    oss << "instructions[" ;
+    oss << "instructions[";
     // oxm_basic_match match;
     uint32_t w = match.wildcards;
     oss << tab << "match {";
-    if(!(w & OFPFW_IN_PORT))
+    if (!(w & OFPFW_IN_PORT))
         oss << " in_port(" << (int)match.OFB_IN_PORT << ")"; //uint16_t in_port;
-    if(!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
+    if (!match.OFB_ETH_DST.isUnspecified() && !(w & OFPFW_DL_DST))
         oss << " dl_dst(" << match.OFB_ETH_DST.str() << ")"; //inet::MacAddress dl_src;
-    if(!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
+    if (!match.OFB_ETH_SRC.isUnspecified() && !(w & OFPFW_DL_SRC))
         oss << " dl_src(" << match.OFB_ETH_SRC.str() << ")"; //inet::MacAddress dl_dst;
-    if(!(w & OFPFW_DL_VLAN))
+    if (!(w & OFPFW_DL_VLAN))
         oss << " dl_vlan(" << (int)match.OFB_VLAN_VID << ")"; //uint16_t dl_vlan;
-    if(!(w & OFPFW_DL_VLAN_PCP))
+    if (!(w & OFPFW_DL_VLAN_PCP))
         oss << " dl_vlan_pcp(" << (int)match.OFB_VLAN_PCP << ")"; //uint8_t dl_vlan_pcp;
-    if(!(w & OFPFW_DL_TYPE))
+    if (!(w & OFPFW_DL_TYPE))
         oss << " dl_type(" << (int)match.OFB_ETH_TYPE << ")"; //uint16_t dl_type;
-    if(!(w & OFPFW_NW_PROTO))
+    if (!(w & OFPFW_NW_PROTO))
         oss << " nw_proto(" << (int)match.OFB_IP_PROTO << ")"; //uint8_t nw_proto;
-    if(!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
+    if (!match.OFB_IPV4_SRC.isUnspecified() && !(w & OFPFW_NW_SRC_ALL))
         oss << " nw_src(" << match.OFB_IPV4_SRC.str(false) << ")"; //inet::Ipv4Address nw_src;
-    if(!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
+    if (!match.OFB_IPV4_DST.isUnspecified() && !(w & OFPFW_NW_DST_ALL))
         oss << " nw_dst(" << match.OFB_IPV4_DST.str(false) << ")"; //inet::Ipv4Address nw_dst;
-    if(!(w & OFPFW_TP_SRC))
+    if (!(w & OFPFW_TP_SRC))
         oss << " tp_src(" << (int)match.OFB_TP_SRC << ")"; //uint16_t tp_src;
-    if(!(w & OFPFW_TP_DST))
+    if (!(w & OFPFW_TP_DST))
         oss << " tp_dst(" << (int)match.OFB_TP_DST << ")"; //uint16_t tp_dst;
 
     oss << " wildcards(" << match.wildcards << ")"; //uint32_t wildcards;
@@ -276,3 +261,4 @@ std::string OF100_FlowTableEntry::print() const{
 }
 
 } /* namespace openflow */
+

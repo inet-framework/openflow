@@ -1,4 +1,3 @@
-
 #ifndef KNLLDPAGENTFORWARDING_H_
 #define KNLLDPAGENTFORWARDING_H_
 
@@ -6,29 +5,28 @@
 #include "openflow/controllerApps/LLDPForwarding.h"
 #include "openflow/kandoo/KandooAgent.h"
 
+namespace openflow {
 
-namespace openflow{
+class KN_LLDPForwarding : public LLDPForwarding
+{
 
-class KN_LLDPForwarding:public LLDPForwarding {
-
-
-public:
+  public:
     KN_LLDPForwarding();
     ~KN_LLDPForwarding();
 
-protected:
+  protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize(int stage) override;
-    virtual void handlePacketIn(Packet * packet_in_msg) override;
+    virtual void handlePacketIn(Packet *packet_in_msg) override;
 
-    KandooAgent * knAgent;
+    KandooAgent *knAgent;
     simsignal_t kandooEventSignalId;
     simsignal_t cpPingPacketHash;
     std::string appName;
-
 
 };
 
 } /*end namespace openflow*/
 
 #endif
+

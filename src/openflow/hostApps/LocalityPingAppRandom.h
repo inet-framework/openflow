@@ -1,5 +1,3 @@
-
-
 #include "inet/common/INETDefs.h"
 #include "inet/applications/pingapp/PingApp.h"
 #include "inet/networklayer/common/L3Address.h"
@@ -9,7 +7,7 @@
 
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
 /**
  * Generates ping requests and calculates the packet loss and round trip
@@ -18,7 +16,8 @@ namespace openflow{
  *
  * See NED file for detailed description of operation.
  */
-class LocalityPingAppRandom : public PingApp {
+class LocalityPingAppRandom : public PingApp
+{
   protected:
     virtual void initialize(int stage) override;
     virtual void handleSelfMessage(omnetpp::cMessage *msg) override;
@@ -28,7 +27,8 @@ class LocalityPingAppRandom : public PingApp {
     std::string connectAddress;
     double localityRelation;
     std::string localId;
-    std::map<std::string,std::vector<std::string> > groupToNodes;
+    std::map<std::string, std::vector<std::string>> groupToNodes;
 };
 
 } /*end namespace openflow*/
+

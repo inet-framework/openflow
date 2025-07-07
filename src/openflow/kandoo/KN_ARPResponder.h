@@ -1,4 +1,3 @@
-
 #ifndef KNARPRESPONDER_H_
 #define KNARPRESPONDER_H_
 
@@ -13,22 +12,21 @@
 #include "openflow/kandoo/KandooAgent.h"
 #include "openflow/utility/ARP_Wrapper.h"
 
-namespace openflow{
+namespace openflow {
 
-class KN_ARPResponder:public ARPResponder {
+class KN_ARPResponder : public ARPResponder
+{
 
-
-public:
+  public:
     KN_ARPResponder();
     ~KN_ARPResponder();
 
-
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
-    virtual void handlePacketIn(Packet * packet_in_msg) override;
+    virtual void handlePacketIn(Packet *packet_in_msg) override;
 
-    KandooAgent * knAgent;
+    KandooAgent *knAgent;
     simsignal_t kandooEventSignalId;
     std::string appName;
 };
@@ -36,3 +34,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

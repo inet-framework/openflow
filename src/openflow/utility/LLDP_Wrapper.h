@@ -1,5 +1,3 @@
-
-
 #ifndef LLDP_WRAPPER_H_
 #define LLDP_WRAPPER_H_
 
@@ -8,11 +6,12 @@
 using namespace std;
 using namespace omnetpp;
 
-namespace openflow{
+namespace openflow {
 
-class LLDP_Wrapper: public cObject {
+class LLDP_Wrapper : public cObject
+{
 
-public:
+  public:
     LLDP_Wrapper();
     ~LLDP_Wrapper();
 
@@ -25,8 +24,7 @@ public:
     int getSrcPort() const;
     void setSrcPort(int srcPort);
 
-
-protected:
+  protected:
     string dstId;
     string srcId;
     int dstPort;
@@ -34,7 +32,7 @@ protected:
 
 };
 
-
 } /*end namespace openflow*/
 
 #endif /* BUFFER_H_ */
+

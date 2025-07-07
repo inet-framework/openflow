@@ -1,26 +1,25 @@
-
 #ifndef ABSTRACTTCPCONTROLLERAPP_H_
 #define ABSTRACTTCPCONTROLLERAPP_H_
 
 #include "openflow/controllerApps/AbstractControllerApp.h"
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 
-namespace openflow{
+namespace openflow {
 
 #if (INET_VERSION > 0x405)
-class AbstractTCPControllerApp: public AbstractControllerApp, public TcpSocket::BufferingCallback
+class AbstractTCPControllerApp : public AbstractControllerApp, public TcpSocket::BufferingCallback
 #else
-class AbstractTCPControllerApp: public AbstractControllerApp, public TcpSocket::ReceiveQueueBasedCallback
+class AbstractTCPControllerApp : public AbstractControllerApp, public TcpSocket::ReceiveQueueBasedCallback
 #endif
 {
-protected:
-    enum ActionKind {ACTION_EVENT=3098, ACTION_DATA};
+  protected:
+    enum ActionKind { ACTION_EVENT = 3098, ACTION_DATA };
     struct Action
     {
         int kind;
         cMessage *msg;
         Action() : kind(0), msg(nullptr) {}
-        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+        Action(int kind, cMessage *msg) : kind(kind), msg(msg) {}
     };
 
     virtual void initialize(int stage) override;
@@ -49,11 +48,11 @@ protected:
     simsignal_t queueSize;
     simsignal_t waitingTime;
 
-    std::map<int,int> packetsPerSecond;
+    std::map<int, int> packetsPerSecond;
 
     int lastQueueSize;
     double lastChangeTime;
-    std::map<int,double> avgQueueSize;
+    std::map<int, double> avgQueueSize;
 
     bool busy;
     std::list<Action> msgList;
@@ -61,7 +60,7 @@ protected:
 
     TcpSocket socket;
 
-public:
+  public:
     AbstractTCPControllerApp();
     ~AbstractTCPControllerApp();
 
@@ -70,3 +69,4 @@ public:
 } /*end namespace openflow*/
 
 #endif
+

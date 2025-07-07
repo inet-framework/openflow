@@ -1,4 +1,3 @@
-
 #ifndef KANDOO_AGENT_H_
 #define KANDOO_AGENT_H_
 
@@ -7,7 +6,7 @@
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "openflow/messages/KN_Packet_m.h"
 
-namespace openflow{
+namespace openflow {
 
 struct SwitchControllerMapping {
     std::string switchId;
@@ -15,24 +14,24 @@ struct SwitchControllerMapping {
     TcpSocket *socket;
 };
 
-class KandooAgent:public AbstractTCPControllerApp {
+class KandooAgent : public AbstractTCPControllerApp
+{
 
-
-public:
+  public:
     KandooAgent();
     ~KandooAgent();
 
     bool getIsRootController();
 
     void sendRequest(KandooEntry entry);
-    void sendReply(Packet * knpck,KandooEntry entry);
+    void sendReply(Packet *knpck, KandooEntry entry);
 
     virtual void processPacketFromTcp(Packet *pkt) override;
-    void handleKandooPacket(Packet * knpck);
+    void handleKandooPacket(Packet *knpck);
 
     void sendReplyToSwitchAuthoritive(std::string switchId, KandooEntry entry);
 
-protected:
+  protected:
     virtual void socketDataArrived(TcpSocket *socket) override;
     virtual void socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo *availableInfo) override;
 
@@ -49,10 +48,10 @@ protected:
     simsignal_t kandooEventSignalId;
 
     TcpSocket *findSocketFor(cMessage *msg);
-    std::map< int,TcpSocket * > socketMap;
+    std::map<int, TcpSocket *> socketMap;
 };
 
 } /*end namespace openflow*/
 
-
 #endif
+

@@ -1,4 +1,3 @@
-
 #ifndef HYPERFLOWSYNCHRONIZER_H_
 #define HYPERFLOWSYNCHRONIZER_H_
 
@@ -12,22 +11,19 @@
 #include "openflow/messages/HF_ChangeNotification_m.h"
 #include "openflow/hyperflow/HyperFlowStructs.h"
 
-
-namespace openflow{
+namespace openflow {
 
 #if (INET_VERSION > 0x405)
-class HyperFlowSynchronizer: public OperationalBase, public TcpSocket::BufferingCallback
+class HyperFlowSynchronizer : public OperationalBase, public TcpSocket::BufferingCallback
 #else
-class HyperFlowSynchronizer: public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
+class HyperFlowSynchronizer : public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
 #endif
 {
-public:
+  public:
     HyperFlowSynchronizer();
     ~HyperFlowSynchronizer();
 
-
-
-protected:
+  protected:
 
     //stats
     simsignal_t queueSize;
@@ -38,7 +34,7 @@ protected:
     virtual void initialize(int stage) override;
     virtual void handleMessageWhenUp(cMessage *msg) override;
 
-    std::map< int,TcpSocket * > socketMap;
+    std::map<int, TcpSocket *> socketMap;
 
     std::list<ControlChannelEntry> controlChannel;
     std::list<DataChannelEntry> dataChannel;
@@ -47,14 +43,14 @@ protected:
     double serviceTime;
     enum Kind {
         MSGKIND_EVENT = 101,
-        MSGKIND_DATA = 102
+        MSGKIND_DATA  = 102
     };
     struct Action
     {
         int kind;
         cMessage *msg;
         Action() : kind(0), msg(nullptr) {}
-        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+        Action(int kind, cMessage *msg) : kind(kind), msg(msg) {}
     };
     std::list<Action> msgList;
     bool busy;
@@ -98,3 +94,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif /* OF_CONTROLLER_H_ */
+

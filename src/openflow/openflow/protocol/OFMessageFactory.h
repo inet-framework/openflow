@@ -15,7 +15,6 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-
 #ifndef OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_
 #define OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_
 
@@ -44,20 +43,21 @@ namespace openflow {
  *
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OFMessageFactory {
+class OFMessageFactory
+{
 
-public:
+  public:
     /**
      * Provides an instance of OFMessageFactory for the currently used version.
      * @return Reference to the factory.
      */
-    static OFMessageFactory* instance();
+    static OFMessageFactory *instance();
 
-protected:
-    OFMessageFactory(){}
-    virtual ~OFMessageFactory(){}
+  protected:
+    OFMessageFactory() {}
+    virtual ~OFMessageFactory() {}
 
-public:
+  public:
     /**
      * Create an OFP_Features_Reply message.
      * @param dpid          The switche ID / MAC Address
@@ -67,13 +67,13 @@ public:
      * @param n_ports       Number of Ports.
      * @return              The created message.
      */
-    virtual Packet* createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0) = 0;
+    virtual Packet *createFeaturesReply(std::string dpid, uint32_t n_buffers, uint8_t n_tables, uint32_t capabilities, uint32_t n_ports = 0) = 0;
 
     /**
      * Create an OFP_Features_Request message.
      * @return              The created message.
      */
-    virtual Packet* createFeatureRequest() = 0;
+    virtual Packet *createFeatureRequest() = 0;
 
     /**
      * Create an OFP_Flow_Mod message.
@@ -86,13 +86,13 @@ public:
      * @param hardTimeOut   The hard Timeout for the flow entry.
      * @return              The created message.
      */
-    virtual Packet* createFlowModMessage(ofp_flow_mod_command mod_com,const oxm_basic_match& match, int pritority, uint32_t* outports, int n_outports, uint32_t idleTimeOut=1 , uint32_t hardTimeOut=0) = 0;
+    virtual Packet *createFlowModMessage(ofp_flow_mod_command mod_com, const oxm_basic_match& match, int pritority, uint32_t *outports, int n_outports, uint32_t idleTimeOut = 1, uint32_t hardTimeOut = 0) = 0;
 
     /**
      * Create an OFP_Hello message.
      * @return              The created message.
      */
-    virtual Packet* createHello() = 0;
+    virtual Packet *createHello() = 0;
 
     /**
      * Create an OFP_Packet_In message.
@@ -102,7 +102,7 @@ public:
      * @param sendFullFrame True if the full frame should be transmitted.
      * @return              The created message.
      */
-    virtual Packet* createPacketIn(ofp_packet_in_reason reason, inet::Packet *ethPk, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
+    virtual Packet *createPacketIn(ofp_packet_in_reason reason, inet::Packet *ethPk, uint32_t buffer_id = OFP_NO_BUFFER, bool sendFullFrame = true) = 0;
 
     /**
      * Create an OFP_Packet_Out message.
@@ -113,9 +113,10 @@ public:
      * @param ethPk         The frame to encapsulate if not buffered.
      * @return              The created message.
      */
-    virtual Packet* createPacketOut(uint32_t* outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::Packet *ethPk = nullptr) = 0;
+    virtual Packet *createPacketOut(uint32_t *outports, int n_outports, int in_port, uint32_t buffer_id = OFP_NO_BUFFER, inet::Packet *ethPk = nullptr) = 0;
 };
 
 } /* namespace openflow */
 
 #endif /* OPENFLOW_OPENFLOW_UTIL_OFMESSAGEFACTORY_H_ */
+

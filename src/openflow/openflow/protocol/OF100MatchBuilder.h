@@ -22,15 +22,17 @@
 
 namespace openflow {
 
-class OF100MatchBuilder : public OFMatchBuilder{
-public:
-    OF100MatchBuilder() : OFMatchBuilder(){}
-    virtual ~OF100MatchBuilder(){}
+class OF100MatchBuilder : public OFMatchBuilder
+{
+  public:
+    OF100MatchBuilder() : OFMatchBuilder() {}
+    virtual ~OF100MatchBuilder() {}
 
-    virtual OFMatchBuilder* setField(oxm_ofb_match_fields field, void* value);
+    virtual OFMatchBuilder *setField(oxm_ofb_match_fields field, void *value);
 
 };
 
 } /* namespace openflow */
 
 #endif /* OPENFLOW_OPENFLOW_PROTOCOL_OF100MATCHBUILDER_H_ */
+

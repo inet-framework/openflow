@@ -1,4 +1,3 @@
-
 #ifndef LLDPAGENT_H_
 #define LLDPAGENT_H_
 
@@ -11,22 +10,22 @@
 #include "openflow/messages/OFP_Features_Reply_m.h"
 #include "openflow/messages/OFP_Packet_In_m.h"
 
-namespace openflow{
+namespace openflow {
 
-class LLDPAgent:public AbstractControllerApp {
+class LLDPAgent : public AbstractControllerApp
+{
 
-
-public:
+  public:
     LLDPAgent();
     ~LLDPAgent();
-    LLDPMibGraph * getMibGraph();
+    LLDPMibGraph *getMibGraph();
 
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
     virtual void handleMessageWhenUp(cMessage *msg) override;
-    void triggerFlowMod(Switch_Info * swInfo);
-    virtual void handlePacketIn(Packet * packet_in_msg);
+    void triggerFlowMod(Switch_Info *swInfo);
+    virtual void handlePacketIn(Packet *packet_in_msg);
     void sendLLDP();
     double pollInterval;
     double timeOut;
@@ -39,3 +38,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

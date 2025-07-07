@@ -1,4 +1,3 @@
-
 #ifndef HFLLDPAGENT_H_
 #define HFLLDPAGENT_H_
 
@@ -15,25 +14,26 @@
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 #include "openflow/utility/LLDP_Wrapper.h"
 
-namespace openflow{
+namespace openflow {
 
-class HF_LLDPAgent:public LLDPAgent {
+class HF_LLDPAgent : public LLDPAgent
+{
 
-
-public:
+  public:
     HF_LLDPAgent();
     ~HF_LLDPAgent();
-    LLDPMibGraph * getMibGraph();
+    LLDPMibGraph *getMibGraph();
 
-protected:
+  protected:
     virtual bool searchHyperFlowAggent();
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
     virtual void handlePacketIn(Packet *) override;
-    HyperFlowAgent * hfAgent = nullptr;
+    HyperFlowAgent *hfAgent = nullptr;
     static simsignal_t HyperFlowReFireSignalId;
 };
 
 } /*end namespace openflow*/
 
 #endif
+

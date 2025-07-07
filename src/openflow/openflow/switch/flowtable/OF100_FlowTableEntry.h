@@ -26,10 +26,11 @@ namespace openflow {
  * Implements the behaviour of an OF_FlowTableEntry in Openflow Version 1.0.0
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OF100_FlowTableEntry: public OF_FlowTableEntry {
-public:
-    OF100_FlowTableEntry(omnetpp::cXMLElement* xmlDoc);
-    OF100_FlowTableEntry(OFP_Flow_Mod* flow_mod);
+class OF100_FlowTableEntry : public OF_FlowTableEntry
+{
+  public:
+    OF100_FlowTableEntry(omnetpp::cXMLElement *xmlDoc);
+    OF100_FlowTableEntry(OFP_Flow_Mod *flow_mod);
     OF100_FlowTableEntry();
     virtual ~OF100_FlowTableEntry();
 
@@ -51,7 +52,7 @@ public:
      * @param other flow table entry.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(const OF_FlowTableEntry* other) override;
+    virtual bool tryMatch(const OF_FlowTableEntry *other) override;
 
     /**
      * Checks if the flow matches the rules in this entry.
@@ -72,29 +73,36 @@ public:
     uint64_t getCookie() const {
         return cookie;
     }
+
     void setCookie(uint64_t cookie) {
         this->cookie = cookie;
     }
+
     const std::vector<ofp_action_output>& getInstructions() const override {
         return instructions;
     }
+
     void setInstructions(const std::vector<ofp_action_output>& instructions) {
         this->instructions = instructions;
     }
+
     const oxm_basic_match& getMatch() const {
         return match;
     }
+
     void setMatch(const oxm_basic_match& match) {
         this->match = match;
     }
+
     uint32_t getFlags() const {
         return flags;
     }
+
     void setFlags(uint32_t flags) {
         this->flags = flags;
     }
 
-protected:
+  protected:
     uint64_t cookie;
     uint32_t flags;
     oxm_basic_match match;
@@ -106,3 +114,4 @@ protected:
 } /* namespace openflow */
 
 #endif /* OPENFLOW_OPENFLOW_SWITCH_OF100_FLOWTABLEENTRY_H_ */
+

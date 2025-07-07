@@ -1,20 +1,19 @@
-
 #ifndef HUB_H_
 #define HUB_H_
 
 #include <omnetpp.h>
 #include "openflow/controllerApps/AbstractControllerApp.h"
 
-namespace openflow{
+namespace openflow {
 
-class Hub:public AbstractControllerApp {
+class Hub : public AbstractControllerApp
+{
 
-
-public:
+  public:
     Hub();
     ~Hub();
 
-protected:
+  protected:
     void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     void initialize(int stage) override;
 };
@@ -22,3 +21,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

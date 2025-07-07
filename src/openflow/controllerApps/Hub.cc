@@ -1,25 +1,25 @@
 #include "openflow/controllerApps/Hub.h"
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(Hub);
 
-Hub::Hub(){
+Hub::Hub() {
 
 }
 
-Hub::~Hub(){
+Hub::~Hub() {
 
 }
 
-void Hub::initialize(int stage){
+void Hub::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
 }
 
 void Hub::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    AbstractControllerApp::receiveSignal(src,id,obj,details);
+    AbstractControllerApp::receiveSignal(src, id, obj, details);
     Enter_Method("Hub::receiveSignal %s", cComponent::getSignalName(id));
-    if(id == PacketInSignalId){
+    if (id == PacketInSignalId) {
         EV << "Hub::PacketIn" << '\n';
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt != nullptr) {

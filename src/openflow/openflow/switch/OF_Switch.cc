@@ -1,5 +1,3 @@
-
-
 #include "inet/common/socket/SocketTag_m.h"
 #include "inet/linklayer/ethernet/base/EthernetMacBase.h"
 #include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
@@ -29,22 +27,21 @@
 //#include "inet/applications/pingapp/PingPayload_m.h"
 //#include "inet/networklayer/ipv4/ICMPMessage.h"
 
-namespace openflow{
-
+namespace openflow {
 
 Define_Module(OF_Switch);
 
-OF_Switch::OF_Switch(){
+OF_Switch::OF_Switch() {
     flowTable = nullptr;
 }
 
-OF_Switch::~OF_Switch(){
-    for(auto&& msg : msgList) {
-      delete msg.msg;
+OF_Switch::~OF_Switch() {
+    for (auto&& msg : msgList) {
+        delete msg.msg;
     }
     msgList.clear();
 
-    for(auto &elem : portVector){
+    for (auto& elem : portVector) {
         if (elem.mac != nullptr) {
             auto gateO = elem.mac->gate("phys$o");
             auto gateI = elem.mac->gate("phys$i");
@@ -62,11 +59,10 @@ int OF_Switch::getIndexFromId(int id) {
     return it->second;
 }
 
-
-void OF_Switch::initialize(int stage){
+void OF_Switch::initialize(int stage) {
     OperationalBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
-    //read ned file parameters
+        //read ned file parameters
         flowTimeoutPollInterval = par("flowTimeoutPollInterval");
         serviceTime = par("serviceTime");
         busy = false;
@@ -77,10 +73,10 @@ void OF_Switch::initialize(int stage){
         queueSize = registerSignal("queueSize");
         bufferSize = registerSignal("bufferSize");
         waitingTime = registerSignal("waitingTime");
-        dataPlanePacket=0l;
-        controlPlanePacket=0l;
-        flowTableHit=0l;
-        flowTableMiss=0l;
+        dataPlanePacket = 0l;
+        controlPlanePacket = 0l;
+        flowTableHit = 0l;
+        flowTableMiss = 0l;
         // Init all ports
 
         //init helper classes
@@ -94,7 +90,6 @@ void OF_Switch::initialize(int stage){
         //        }
         //    }
     }
-
     else if (stage == INITSTAGE_NETWORK_CONFIGURATION) {
         ModuleRefByPar<IInterfaceTable> inet_ift;
         inet_ift.reference(this, "interfaceTableModule", true);
@@ -102,18 +97,18 @@ void OF_Switch::initialize(int stage){
         parent = this->getParentModule();
 
         portVector.resize(parent->gateSize("gateDataPlane$i"));
-        for(unsigned int i=0;i<portVector.size();i++){
-            portVector[i].port_no = i+1;
-            auto iface = getContainingNicModule(parent->gate("gateDataPlane$i",i)->getNextGate()->getOwnerModule());
-            portVector[i].interfaceId =  iface->getInterfaceId();
-            cModule *ethernetMacModule = parent->gate("gateDataPlane$i",i)->getNextGate()->getOwnerModule()->getSubmodule("mac");
-            if(dynamic_cast<EthernetMacBase *>(ethernetMacModule) != nullptr) {
-                auto nic = (EthernetMacBase*)ethernetMacModule;
+        for (unsigned int i = 0; i < portVector.size(); i++) {
+            portVector[i].port_no = i + 1;
+            auto iface = getContainingNicModule(parent->gate("gateDataPlane$i", i)->getNextGate()->getOwnerModule());
+            portVector[i].interfaceId = iface->getInterfaceId();
+            cModule *ethernetMacModule = parent->gate("gateDataPlane$i", i)->getNextGate()->getOwnerModule()->getSubmodule("mac");
+            if (dynamic_cast<EthernetMacBase *>(ethernetMacModule) != nullptr) {
+                auto nic = (EthernetMacBase *)ethernetMacModule;
                 uint64_t tmpHw = nic->getMacAddress().getInt();
                 portVector[i].mac = nic;
-                memcpy(portVector[i].hw_addr,&tmpHw, sizeof tmpHw);
+                memcpy(portVector[i].hw_addr, &tmpHw, sizeof tmpHw);
             }
-            sprintf(portVector[i].name,"Port: %d",i);
+            sprintf(portVector[i].name, "Port: %d", i);
             portVector[i].config = 0;
             portVector[i].state = 0;
             portVector[i].curr = 0;
@@ -124,15 +119,14 @@ void OF_Switch::initialize(int stage){
             portVector[i].max_speed = 0;
         }
 
-
-        IInterfaceTable* interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
+        IInterfaceTable *interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 
         auto eth0Iface = interfaceTable->findInterfaceByName("eth0");
         if (eth0Iface == nullptr)
             throw cRuntimeError("OF_Switch::Interface eth0 doesn't exist");
 #if 0
         // In the original code, but in the original code this will be never executed due to that the table is checked before the interfaces are registered.
-        for(int i=0; i< interfaceTable->getNumInterfaces() ;i++){
+        for (int i = 0; i < interfaceTable->getNumInterfaces(); i++) {
             if (interfaceTable->getInterface(i) != eth0Iface) {
                 interfaceTable->getInterface(i)->setState(NetworkInterface::State::DOWN);
                 listInterfacesToDelete.push_back(interfaceTable->getInterface(i)); // The interfaces cannot be deleted in the initalization phase
@@ -151,9 +145,9 @@ void OF_Switch::initialize(int stage){
         //socket.setDataTransferMode(TCP_TRANSFER_OBJECT);
         //schedule connection setup
         WATCH_MAP(ifaceIndex);
-        
+
         // Initialize flowTable pointer to the external OF_FlowTable module
-        flowTable = check_and_cast<OF_FlowTable*>(getParentModule()->getSubmodule("flowTable"));
+        flowTable = check_and_cast<OF_FlowTable *>(getParentModule()->getSubmodule("flowTable"));
         if (flowTable == nullptr) {
             throw cRuntimeError("OF_FlowTable module not found. Please add flowTable submodule to the switch.");
         }
@@ -162,12 +156,11 @@ void OF_Switch::initialize(int stage){
 
 void OF_Switch::handleStartOperation(LifecycleOperation *operation)
 {
-    IInterfaceTable* interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-
+    IInterfaceTable *interfaceTable = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
 
     // search the interfaces in the data plane
     int gatePlaneSize = parent->gateSize("gateDataPlane$i");
-    for (int i = 0; i < gatePlaneSize;i++) {
+    for (int i = 0; i < gatePlaneSize; i++) {
         auto gateAux = parent->gate("gateDataPlane$i", i);
         auto mod = gateAux->getPathEndGate()->getOwnerModule();
         auto iface = getContainingNicModule(mod);
@@ -181,12 +174,12 @@ void OF_Switch::handleStartOperation(LifecycleOperation *operation)
         throw cRuntimeError("Check size of gateDataPlane == controlPlaneIndex.size()");
 
     int index = 0;
-    for (int i = 0 ; i < interfaceTable->getNumInterfaces(); i ++) {
+    for (int i = 0; i < interfaceTable->getNumInterfaces(); i++) {
         auto e = interfaceTable->getInterface(i);
         auto it = ifaceIndex.find(e->getInterfaceId());
         if (it == ifaceIndex.end()) {
             // if the interface is alredy in the list ignore it
-            if (strstr(e->getInterfaceName(),"eth") != nullptr){
+            if (strstr(e->getInterfaceName(), "eth") != nullptr) {
                 ifaceIndex[e->getInterfaceId()] = index;
                 index++;
             }
@@ -231,7 +224,8 @@ void OF_Switch::socketDataArrived(TcpSocket *)
             Action action(MSGKIND_TCP_DATA, msg);
             if (busy) {
                 msgList.push_back(action);
-            } else {
+            }
+            else {
                 startProcessingMsg(action);
             }
         }
@@ -239,8 +233,8 @@ void OF_Switch::socketDataArrived(TcpSocket *)
             break;
     }
     ASSERT(queue->getLength() < B(1000));
-    emit(queueSize,msgList.size());
-    emit(bufferSize,buffer.size());
+    emit(queueSize, msgList.size());
+    emit(bufferSize, buffer.size());
 }
 
 void OF_Switch::socketPeerClosed(TcpSocket *socket_)
@@ -265,7 +259,6 @@ void OF_Switch::socketFailure(TcpSocket *, int code)
     EV_WARN << "connection broken\n";
 }
 
-
 void OF_Switch::startProcessingMsg(Action& action)
 {
     busy = true;
@@ -274,24 +267,25 @@ void OF_Switch::startProcessingMsg(Action& action)
     event->setKind(action.kind);
     event->setContextPointer(msg);
     EV_DEBUG << "Start processing of message " << msg->getName() << endl;
-    scheduleAt(simTime()+serviceTime, event);
+    scheduleAt(simTime() + serviceTime, event);
 }
 
-void OF_Switch::handleMessageWhenUp(cMessage *msg){
+void OF_Switch::handleMessageWhenUp(cMessage *msg) {
 
-    if (msg->isSelfMessage()){
-        if (msg->getKind()==MSGKIND_CONNECT) {
+    if (msg->isSelfMessage()) {
+        if (msg->getKind() == MSGKIND_CONNECT) {
             EV << "starting session" << '\n';
             connect(""); // active OPEN
         }
-        else if (msg->getKind()==MSGKIND_ETH_DATA
-                || msg->getKind() == MSGKIND_TCP_COMMAND
-                || msg->getKind() == MSGKIND_TCP_DATA) {
+        else if (msg->getKind() == MSGKIND_ETH_DATA
+                 || msg->getKind() == MSGKIND_TCP_COMMAND
+                 || msg->getKind() == MSGKIND_TCP_DATA)
+        {
             //This is message which has been scheduled due to service time
 
             //Get the Original message
-            cMessage *data_msg = (cMessage *) msg->getContextPointer();
-            emit(waitingTime,(simTime() - data_msg->getArrivalTime() - serviceTime));
+            cMessage *data_msg = (cMessage *)msg->getContextPointer();
+            emit(waitingTime, (simTime() - data_msg->getArrivalTime() - serviceTime));
 
             if (msg->getKind() == MSGKIND_TCP_COMMAND)
                 socket.processMessage(data_msg);
@@ -306,9 +300,10 @@ void OF_Switch::handleMessageWhenUp(cMessage *msg){
             delete data_msg;
 
             //Trigger next service time
-            if (msgList.empty()){
+            if (msgList.empty()) {
                 busy = false;
-            } else {
+            }
+            else {
                 Action msgFromList = msgList.front();
                 msgList.pop_front();
                 startProcessingMsg(msgFromList);
@@ -316,7 +311,8 @@ void OF_Switch::handleMessageWhenUp(cMessage *msg){
         }
         //delete the msg for efficiency
         delete msg;
-    } else {
+    }
+    else {
         Action action(0, msg);
         if (msg->arrivedOn("dataPlaneIn")) {
             // ethernet frame arrived
@@ -324,7 +320,8 @@ void OF_Switch::handleMessageWhenUp(cMessage *msg){
         }
         else {
             if (msg->getKind() == TCP_I_DATA || msg->getKind() == TCP_I_URGENT_DATA
-                    || msg->getKind() == TCP_I_AVAILABLE || msg->getKind() == TCP_I_ESTABLISHED) {
+                || msg->getKind() == TCP_I_AVAILABLE || msg->getKind() == TCP_I_ESTABLISHED)
+            {
                 socket.processMessage(msg);
                 return;
             }
@@ -334,28 +331,29 @@ void OF_Switch::handleMessageWhenUp(cMessage *msg){
         if (busy) {
             EV_DEBUG << "pushed EVENT to queue\n";
             msgList.push_back(action);
-        } else {
+        }
+        else {
             startProcessingMsg(action);
         }
-        emit(queueSize,static_cast<unsigned long>(msgList.size()));
-        emit(bufferSize,buffer.size());
+        emit(queueSize, static_cast<unsigned long>(msgList.size()));
+        emit(bufferSize, buffer.size());
     }
 }
 
-void OF_Switch::connect(const char *addressToConnect){
+void OF_Switch::connect(const char *addressToConnect) {
     socket.renewSocket();
     const char *connectAddress;
 
     int connectPort = par("connectPort");
 
-    if(strlen(addressToConnect) == 0){
+    if (strlen(addressToConnect) == 0) {
         connectAddress = par("connectAddress");
-    } else {
+    }
+    else {
         connectAddress = addressToConnect;
     }
 
-
-    EV << "Sending Hello to" << connectAddress <<" \n";
+    EV << "Sending Hello to" << connectAddress << " \n";
 
     socket.setCallback(this);
     socket.connect(L3AddressResolver().resolve(connectAddress), connectPort);
@@ -374,14 +372,14 @@ void OF_Switch::connect(const char *addressToConnect){
 void OF_Switch::processPacketFromEth(Packet *data_msg)
 {
     dataPlanePacket++;
-    if(socket.getState() != TcpSocket::CONNECTED){
+    if (socket.getState() != TcpSocket::CONNECTED) {
         //no yet connected to controller
         //drop packet by returning
         return;
     }
 
     auto chunk = data_msg->peekAtFront<Chunk>();
-    if (dynamicPtrCast<const EthernetMacHeader>(chunk) != nullptr){ //msg from dataplane
+    if (dynamicPtrCast<const EthernetMacHeader>(chunk) != nullptr) { //msg from dataplane
         //EthernetIIFrame *frame = (EthernetIIFrame *)data_msg;
         //copy the frame as the original will be deleted
         auto copy = data_msg->dup();
@@ -396,7 +394,7 @@ void OF_Switch::processPacketFromTcp(Packet *data_msg)
     if (dynamicPtrCast<const Open_Flow_Message>(chunk) != nullptr) { //msg from controller
         auto of_msg = dynamicPtrCast<const Open_Flow_Message>(chunk);
         ofp_type type = (ofp_type)of_msg->getHeader().type;
-        switch ((int)type){
+        switch ((int)type) {
             case OFPT_FEATURES_REQUEST:
                 handleFeaturesRequestMessage(data_msg);
                 break;
@@ -413,11 +411,11 @@ void OF_Switch::processPacketFromTcp(Packet *data_msg)
     }
 }
 
-static bool iteratePacketDissector(const Ptr<const PacketDissector::ProtocolDataUnit> &unit, int &seqNumber, int &identifier) {
+static bool iteratePacketDissector(const Ptr<const PacketDissector::ProtocolDataUnit>& unit, int& seqNumber, int& identifier) {
     for (const auto& chunkAux : unit->getChunks()) {
         const auto c = dynamicPtrCast<const PacketDissector::ProtocolDataUnit>(chunkAux);
         if (c != nullptr) {
-            if(iteratePacketDissector(c, seqNumber, identifier))
+            if (iteratePacketDissector(c, seqNumber, identifier))
                 return true;
         }
         else if (chunkAux->getChunkType() == Chunk::CT_SEQUENCE) {
@@ -441,7 +439,7 @@ static bool iteratePacketDissector(const Ptr<const PacketDissector::ProtocolData
     return false;
 }
 
-static bool chekIcmpEchoRequest(Packet *pkt, int &seqNumber, int &identifier) {
+static bool chekIcmpEchoRequest(Packet *pkt, int& seqNumber, int& identifier) {
     PacketDissector::PduTreeBuilder pduTreeBuilder;
     auto packetProtocolTag = pkt->findTag<PacketProtocolTag>();
     auto protocol = packetProtocolTag != nullptr ? packetProtocolTag->getProtocol() : nullptr;
@@ -502,7 +500,7 @@ static bool chekIcmpEchoRequest(Packet *pkt, int &seqNumber, int &identifier) {
     return false;
 }
 
-void OF_Switch::processFrame(Packet *pkt){
+void OF_Switch::processFrame(Packet *pkt) {
     oxm_basic_match match = oxm_basic_match();
 
     //EthernetIIFrame *frame
@@ -516,7 +514,7 @@ void OF_Switch::processFrame(Packet *pkt){
     match.OFB_ETH_TYPE = frame->getTypeOrLength();
 
     //extract ARP specific match fields if present
-    if(frame->getTypeOrLength()==ETHERTYPE_ARP){
+    if (frame->getTypeOrLength() == ETHERTYPE_ARP) {
         auto arpPacket = pkt->peekAtFront<ArpPacket>();
 //        ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
         match.OFB_ARP_OP = arpPacket->getOpcode();
@@ -528,13 +526,13 @@ void OF_Switch::processFrame(Packet *pkt){
 
     pkt->insertAtFront(frame);
 
-    unsigned long hash =0;
+    unsigned long hash = 0;
     int seqNumber = 0;
     int identifier;
 
     //emit id of ping packet to indicate where it was processed
 
-    if(chekIcmpEchoRequest(pkt, seqNumber, identifier)){
+    if (chekIcmpEchoRequest(pkt, seqNumber, identifier)) {
         //generate and emit hash
         std::stringstream hashString;
         hashString << "SeqNo-" << seqNumber << "-Pid-" << identifier;
@@ -551,22 +549,21 @@ void OF_Switch::processFrame(Packet *pkt){
 //        hash = std::hash<std::string>()(hashString.str().c_str());
 //    }
 
-
-   OF_FlowTableEntry *lookup = flowTable->lookup(match);
-   if (lookup != nullptr){
-       //lookup successful
-       flowTableHit++;
-       EV << "Found entry in flow table." << '\n';
-       // Get the first instruction (action) from the new flowtable entry
-       auto instructions = dynamic_cast<OF100_FlowTableEntry*>(lookup)->getInstructions();
-       if (instructions.empty()) {
-           EV << "No instructions found in flow entry" << '\n';
-           handleMissMatchedPacket(pkt);
-           return;
-       }
-       uint32_t outport = instructions[0].port;
-       if(outport == OFPP_CONTROLLER){
-           //send it to the controller
+    OF_FlowTableEntry *lookup = flowTable->lookup(match);
+    if (lookup != nullptr) {
+        //lookup successful
+        flowTableHit++;
+        EV << "Found entry in flow table." << '\n';
+        // Get the first instruction (action) from the new flowtable entry
+        auto instructions = dynamic_cast<OF100_FlowTableEntry *>(lookup)->getInstructions();
+        if (instructions.empty()) {
+            EV << "No instructions found in flow entry" << '\n';
+            handleMissMatchedPacket(pkt);
+            return;
+        }
+        uint32_t outport = instructions[0].port;
+        if (outport == OFPP_CONTROLLER) {
+            //send it to the controller
 //           OFP_Packet_In *packetIn = new OFP_Packet_In("packetIn");
 //           packetIn->getHeader().version = OFP_VERSION;
 //           packetIn->getHeader().type = OFPT_PACKET_IN;
@@ -575,46 +572,48 @@ void OF_Switch::processFrame(Packet *pkt){
 //           packetIn->encapsulate(frame);
 //           packetIn->setBuffer_id(OFP_NO_BUFFER);
 //           socket.send(packetIn);
-           auto packetIn = makeShared<OFP_Packet_In>();
-           packetIn->getHeaderForUpdate().version = OFP_VERSION;
-           packetIn->getHeaderForUpdate().type = OFPT_PACKET_IN;
-           packetIn->setMatch(match);
-           packetIn->setReason(OFPR_ACTION);
-           packetIn->setChunkLength(B(32));
-           packetIn->setBuffer_id(OFP_NO_BUFFER);
-           packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pkt->getByteLength();
-           pkt->insertAtFront(packetIn);
-           socket.send(pkt);
-           if(hash !=0){
-               emit(cpPingPacketHash,hash);
-           }
-       } else {
-           if(hash !=0){
-               emit(dpPingPacketHash,hash);
-           }
-           //send it out the dataplane on the specific port
-           auto indexPort = getIndexFromId(outport);
-           if (indexPort == -1)
-               throw cRuntimeError("Unknown dataPlaneOut sending port/gate");
-           pkt->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
-           pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(outport);
-           pkt->removeTagIfPresent<DispatchProtocolReq>();
-           send(pkt, "dataPlaneOut");
-           //send(pkt, "dataPlaneOut", indexPort);
-       }
-   } else {
-       if(hash !=0){
-           emit(cpPingPacketHash,hash);
-       }
-       // lookup failed
-       flowTableMiss++;
-       EV << "No Entry Found contacting controller" << '\n';
-       handleMissMatchedPacket(pkt);
-   }
+            auto packetIn = makeShared<OFP_Packet_In>();
+            packetIn->getHeaderForUpdate().version = OFP_VERSION;
+            packetIn->getHeaderForUpdate().type = OFPT_PACKET_IN;
+            packetIn->setMatch(match);
+            packetIn->setReason(OFPR_ACTION);
+            packetIn->setChunkLength(B(32));
+            packetIn->setBuffer_id(OFP_NO_BUFFER);
+            packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pkt->getByteLength();
+            pkt->insertAtFront(packetIn);
+            socket.send(pkt);
+            if (hash != 0) {
+                emit(cpPingPacketHash, hash);
+            }
+        }
+        else {
+            if (hash != 0) {
+                emit(dpPingPacketHash, hash);
+            }
+            //send it out the dataplane on the specific port
+            auto indexPort = getIndexFromId(outport);
+            if (indexPort == -1)
+                throw cRuntimeError("Unknown dataPlaneOut sending port/gate");
+            pkt->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
+            pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(outport);
+            pkt->removeTagIfPresent<DispatchProtocolReq>();
+            send(pkt, "dataPlaneOut");
+            //send(pkt, "dataPlaneOut", indexPort);
+        }
+    }
+    else {
+        if (hash != 0) {
+            emit(cpPingPacketHash, hash);
+        }
+        // lookup failed
+        flowTableMiss++;
+        EV << "No Entry Found contacting controller" << '\n';
+        handleMissMatchedPacket(pkt);
+    }
 }
 
 //void OF_Switch::handleFeaturesRequestMessage(Open_Flow_Message *of_msg){
-void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf){
+void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf) {
     auto of_msg = pktOf->peekAtFront<Open_Flow_Message>();
 
     auto featuresReply = makeShared<OFP_Features_Reply>();// new OFP_Features_Reply("FeaturesReply");
@@ -625,10 +624,8 @@ void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf){
 
     MacAddress mac = inet_ift->getInterface(0)->getMacAddress();
 
-
     //output address
-    EV <<"SwitchID:" << mac.str().c_str() << " SwitchPath:" << this->getFullPath() << '\n';
-
+    EV << "SwitchID:" << mac.str().c_str() << " SwitchPath:" << this->getFullPath() << '\n';
 
     featuresReply->setDatapath_id(mac.str().c_str());
     featuresReply->setN_buffers(buffer.getCapacity());
@@ -637,7 +634,7 @@ void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf){
     if (featuresReply->getPortsArraySize() != controlPlaneIndex.size())
         throw cRuntimeError("Check port size gateSize(gateDataPlane$o) !=  controlPlaneIndex.size()");
     for (auto elem : controlPlaneIndex) {
-        if (elem.second < 0 || elem.second >=  featuresReply->getPortsArraySize())
+        if (elem.second < 0 || elem.second >= featuresReply->getPortsArraySize())
             throw cRuntimeError("Index is incorrect");
         featuresReply->setPorts(elem.second, elem.first);
     }
@@ -653,20 +650,17 @@ void OF_Switch::handleFeaturesRequestMessage(Packet *pktOf){
 }
 
 //void OF_Switch::handleFlowModMessage(Open_Flow_Message *of_msg){
-void OF_Switch::handleFlowModMessage(Packet *pktOf){
+void OF_Switch::handleFlowModMessage(Packet *pktOf) {
     auto of_msg = pktOf->peekAtFront<Open_Flow_Message>();
     EV << "OFA_switch::handleFlowModMessage" << '\n';
     auto flowModMsg = staticPtrCast<const OFP_Flow_Mod>(of_msg);//(OFP_Flow_Mod *) of_msg;
 
     // Use the new OF_FlowTable's handleFlowMod method
-    flowTable->handleFlowMod(const_cast<OFP_Flow_Mod*>(flowModMsg.get()));
+    flowTable->handleFlowMod(const_cast<OFP_Flow_Mod *>(flowModMsg.get()));
 }
 
-
-
-
 //void OF_Switch::handleMissMatchedPacket(EthernetIIFrame *frame){
-void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
+void OF_Switch::handleMissMatchedPacket(Packet *pktFrame) {
     //OFP_Packet_In *packetIn = new OFP_Packet_In("packetIn");
     auto packetIn = makeShared<OFP_Packet_In>();//("packetIn");
     packetIn->getHeaderForUpdate().version = OFP_VERSION;
@@ -675,7 +669,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
     packetIn->setChunkLength(B(32));
     Packet *pktIn = nullptr;
 
-    if (sendCompletePacket || buffer.isfull()){
+    if (sendCompletePacket || buffer.isfull()) {
         // send full packet with packet-in message
 //        packetIn->encapsulate(frame);
         packetIn->setBuffer_id(OFP_NO_BUFFER);
@@ -688,9 +682,10 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         packetIn->setMatch(match);
         pktFrame->insertAtFront(packetIn);
         pktIn = pktFrame;
-    } else{
+    }
+    else {
         // store packet in buffer and only send header fields
-        auto etherHeader =  pktFrame->removeAtFront<EthernetMacHeader>();
+        auto etherHeader = pktFrame->removeAtFront<EthernetMacHeader>();
 
         oxm_basic_match match = oxm_basic_match();
         match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
@@ -699,7 +694,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
         match.OFB_ETH_DST = etherHeader->getDest();
         match.OFB_ETH_TYPE = etherHeader->getTypeOrLength();
         //extract ARP specific match fields if present
-        if(etherHeader->getTypeOrLength() == ETHERTYPE_ARP){
+        if (etherHeader->getTypeOrLength() == ETHERTYPE_ARP) {
             //ARPPacket *arpPacket = check_and_cast<ARPPacket *>(frame->getEncapsulatedPacket());
             auto arpPacket = pktFrame->peekAtFront<ArpPacket>();
             match.OFB_ARP_OP = arpPacket->getOpcode();
@@ -718,9 +713,8 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame){
     socket.send(pktIn);
 }
 
-
 //void OF_Switch::handlePacketOutMessage(Open_Flow_Message *of_msg){
-void OF_Switch::handlePacketOutMessage(Packet *pkt){
+void OF_Switch::handlePacketOutMessage(Packet *pkt) {
     //cast message
     //OFP_Packet_Out *packet_out_msg = (OFP_Packet_Out *) of_msg;
     auto packet_out_msg = pkt->removeAtFront<OFP_Packet_Out>();
@@ -733,15 +727,16 @@ void OF_Switch::handlePacketOutMessage(Packet *pkt){
     //get the frame
     //EthernetIIFrame *frame;
     Packet *frame = nullptr;
-    if(bufferId != OFP_NO_BUFFER){
+    if (bufferId != OFP_NO_BUFFER) {
         frame = buffer.returnMessage(bufferId);
-    } else {
+    }
+    else {
         auto etherHeader = pkt->peekAtFront<EthernetMacHeader>();
         //frame = dynamic_cast<EthernetIIFrame *>(packet_out_msg->getEncapsulatedPacket());
         frame = pkt->dup();
     }
     //execute
-    for (unsigned int i = 0; i < actions_size; ++i){
+    for (unsigned int i = 0; i < actions_size; ++i) {
         auto action = packet_out_msg->getActions(i);
         executePacketOutAction(&(action), frame, inPort);
     }
@@ -749,33 +744,34 @@ void OF_Switch::handlePacketOutMessage(Packet *pkt){
     pkt->insertAtFront(packet_out_msg);
 }
 
-
 // packet encapsulated and not stored in buffer
 //void OF_Switch::executePacketOutAction(ofp_action_header *action, EthernetIIFrame *frame, uint32_t inport){
-void OF_Switch::executePacketOutAction(const ofp_action_header *action, Packet *pktFrame, uint32_t inport){
-    const ofp_action_output *action_output = (const ofp_action_output *) action;
+void OF_Switch::executePacketOutAction(const ofp_action_header *action, Packet *pktFrame, uint32_t inport) {
+    const ofp_action_output *action_output = (const ofp_action_output *)action;
     uint32_t outport = action_output->port;
     //take(pktFrame);
 
     auto header = pktFrame->peekAtFront<EthernetMacHeader>();
-    if(outport == OFPP_ANY){
-           EV << "Dropping packet" << '\n';
-    } else if (outport == OFPP_FLOOD){
+    if (outport == OFPP_ANY) {
+        EV << "Dropping packet" << '\n';
+    }
+    else if (outport == OFPP_FLOOD) {
         EV << "Flood Packet\n" << '\n';
         unsigned int n = parent->gateSize("gateDataPlane$o");
-        for (unsigned int i=0; i<n; ++i) {
-            if(portVector[i].interfaceId != inport && !(portVector[i].state & OFPPS_BLOCKED)){
+        for (unsigned int i = 0; i < n; ++i) {
+            if (portVector[i].interfaceId != inport && !(portVector[i].state & OFPPS_BLOCKED)) {
                 auto pkt = pktFrame->dup();
                 pkt->clearTags();
                 pkt->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
-                pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(portVector[i].interfaceId );
+                pkt->addTagIfAbsent<InterfaceReq>()->setInterfaceId(portVector[i].interfaceId);
                 send(pkt, "dataPlaneOut");
             }
         }
-    }else {
+    }
+    else {
         auto indexPort = getIndexFromId(outport);
         if (indexPort == -1)
-            throw cRuntimeError("Unknown dataPlaneOut sending port/gate %s",action_output->creationModule.c_str());
+            throw cRuntimeError("Unknown dataPlaneOut sending port/gate %s", action_output->creationModule.c_str());
         EV << "Send Packet\n" << '\n';
         auto pkt = pktFrame->dup();
         pkt->clearTags();
@@ -787,23 +783,22 @@ void OF_Switch::executePacketOutAction(const ofp_action_header *action, Packet *
     //delete pktFrame;
 }
 
-
 // invoked by Spanning Tree module disable ports for broadcast packets
 void OF_Switch::disablePorts(vector<int> ports) {
     EV << "disablePorts method at " << parent->getFullPath() << '\n';
 
-    for (unsigned int i = 0; i<ports.size(); ++i){
+    for (unsigned int i = 0; i < ports.size(); ++i) {
         portVector[ports[i]].state |= OFPPS_BLOCKED;
     }
 
-    for(unsigned int i=0;i<portVector.size();++i){
+    for (unsigned int i = 0; i < portVector.size(); ++i) {
         EV << "Port: " << i << " Value: " << portVector[i].state << '\n';
     }
 
-    if(par("highlightActivePorts")){
+    if (par("highlightActivePorts")) {
         // Highlight links that belong to spanning tree
-        for (unsigned int i = 0; i < portVector.size(); ++i){
-            if (!(portVector[i].state & OFPPS_BLOCKED)){
+        for (unsigned int i = 0; i < portVector.size(); ++i) {
+            if (!(portVector[i].state & OFPPS_BLOCKED)) {
                 for (cGate *gateOut = parent->gate("gateDataPlane$o", i); gateOut->getNextGate() != nullptr; gateOut = gateOut->getNextGate()) {
                     cDisplayString& connDispStrOut = gateOut->getDisplayString();
                     connDispStrOut.parse("ls=green,3,dashed");
@@ -818,11 +813,9 @@ void OF_Switch::disablePorts(vector<int> ports) {
             }
         }
     }
-
 }
 
-
-void OF_Switch::finish(){
+void OF_Switch::finish() {
     // record statistics
     recordScalar("packetsDataPlane", dataPlanePacket);
     recordScalar("packetsControlPlane", controlPlanePacket);
@@ -831,3 +824,4 @@ void OF_Switch::finish(){
 }
 
 } /*end namespace openflow*/
+

@@ -1,4 +1,3 @@
-
 #ifndef LLDPBALANCEDMINHOP_H_
 #define LLDPBALANCEDMINHOP_H_
 
@@ -11,27 +10,27 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
 
-namespace openflow{
+namespace openflow {
 
-struct LLDPPathSegment{
+struct LLDPPathSegment {
     std::string chassisId;
     int outport;
 };
 
-class LLDPBalancedMinHop:public AbstractControllerApp {
+class LLDPBalancedMinHop : public AbstractControllerApp
+{
 
-
-public:
+  public:
     LLDPBalancedMinHop();
     ~LLDPBalancedMinHop();
 
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
     virtual void handlePacketIn(Packet *);
     virtual std::list<LLDPPathSegment> computeBalancedMinHopPath(std::string srcId, std::string dstId);
 
-    LLDPAgent * lldpAgent;
+    LLDPAgent *lldpAgent;
     bool dropIfNoRouteFound;
     bool ignoreArpRequests;
     bool printMibGraph;
@@ -45,9 +44,10 @@ protected:
     int idleTimeout;
     int hardTimeout;
 
-    std::map<std::pair<std::string,std::string>, std::list<LLDPPathSegment> > routeCache;
+    std::map<std::pair<std::string, std::string>, std::list<LLDPPathSegment>> routeCache;
 };
 
 } /*end namespace openflow*/
 
 #endif
+

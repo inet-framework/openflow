@@ -2,19 +2,19 @@
 #include "openflow/openflow/controller/Switch_Info.h"
 #include "openflow/openflow/protocol/OFMatchFactory.h"
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(LearningSwitch);
 
-LearningSwitch::LearningSwitch(){
+LearningSwitch::LearningSwitch() {
 
 }
 
-LearningSwitch::~LearningSwitch(){
+LearningSwitch::~LearningSwitch() {
 
 }
 
-void LearningSwitch::initialize(int stage){
+void LearningSwitch::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         idleTimeout = par("flowModIdleTimeOut");
@@ -23,9 +23,9 @@ void LearningSwitch::initialize(int stage){
 }
 
 void LearningSwitch::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    AbstractControllerApp::receiveSignal(src,id,obj,details);
+    AbstractControllerApp::receiveSignal(src, id, obj, details);
     Enter_Method("LearningSwitch::receiveSignal %s", cComponent::getSignalName(id));
-    if(id == PacketInSignalId){
+    if (id == PacketInSignalId) {
         EV << "Hub::PacketIn" << '\n';
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt != nullptr) {
@@ -44,28 +44,29 @@ void LearningSwitch::receiveSignal(cComponent *src, simsignal_t id, cObject *obj
 //    }
 }
 
-
-void LearningSwitch::doSwitching(Packet *packet_in_msg){
+void LearningSwitch::doSwitching(Packet *packet_in_msg) {
 
     CommonHeaderFields headerFields = extractCommonHeaderFields(packet_in_msg);
 
     //search map for source mac address and enter
-    if(lookupTable.count(headerFields.swInfo)<=0){
-        lookupTable[headerFields.swInfo]= std::map<MacAddress,uint32_t>();
+    if (lookupTable.count(headerFields.swInfo) <= 0) {
+        lookupTable[headerFields.swInfo] = std::map<MacAddress, uint32_t>();
         lookupTable[headerFields.swInfo][headerFields.src_mac] = headerFields.inport;
-    } else {
-        if(lookupTable[headerFields.swInfo].count(headerFields.src_mac)<=0){
+    }
+    else {
+        if (lookupTable[headerFields.swInfo].count(headerFields.src_mac) <= 0) {
             lookupTable[headerFields.swInfo][headerFields.src_mac] = headerFields.inport;
         }
     }
 
-
-    if(lookupTable.count(headerFields.swInfo)<=0){
+    if (lookupTable.count(headerFields.swInfo) <= 0) {
         floodPacket(packet_in_msg);
-    } else {
-        if(lookupTable[headerFields.swInfo].count(headerFields.dst_mac)<=0){
+    }
+    else {
+        if (lookupTable[headerFields.swInfo].count(headerFields.dst_mac) <= 0) {
             floodPacket(packet_in_msg);
-        } else {
+        }
+        else {
             uint32_t outport = lookupTable[headerFields.swInfo][headerFields.dst_mac];
 
             auto builder = OFMatchFactory::getBuilder();
@@ -75,8 +76,8 @@ void LearningSwitch::doSwitching(Packet *packet_in_msg){
             builder->setField(OFPXMT_OFB_IN_PORT, &headerFields.inport);
             oxm_basic_match match = builder->build();
 
-            TcpSocket * socket = controller->findSocketFor(packet_in_msg);
-            sendFlowModMessage(OFPFC_ADD, match, outport, socket,idleTimeout,hardTimeout);
+            TcpSocket *socket = controller->findSocketFor(packet_in_msg);
+            sendFlowModMessage(OFPFC_ADD, match, outport, socket, idleTimeout, hardTimeout);
             sendPacket(packet_in_msg, outport);
         }
     }

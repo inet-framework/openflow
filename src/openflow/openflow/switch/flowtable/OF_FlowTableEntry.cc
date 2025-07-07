@@ -28,13 +28,15 @@ namespace openflow {
 
 bool OF_FlowTableEntry::operator>(const OF_FlowTableEntry& other) const
 {
-    if(this->priority > other.priority){
+    if (this->priority > other.priority) {
         return true;
-    } else if (this->priority == other.priority){
-        if(this->creationTime > other.creationTime){
+    }
+    else if (this->priority == other.priority) {
+        if (this->creationTime > other.creationTime) {
             return true;
-        } else if (this->creationTime == other.creationTime) {
-            if(this->lastMatched > other.lastMatched) {
+        }
+        else if (this->creationTime == other.creationTime) {
+            if (this->lastMatched > other.lastMatched) {
                 return true;
             }
         }
@@ -43,16 +45,16 @@ bool OF_FlowTableEntry::operator>(const OF_FlowTableEntry& other) const
     return false;
 }
 
-OF_FlowTableEntry::OF_FlowTableEntry(omnetpp::cXMLElement* xmlDoc) : OF_FlowTableEntry(){
-    if(const char* value = xmlDoc->getAttribute("idleTimeout"))
-        idleTimeout = atoi(value);//idle timeout
-    if(const char* value = xmlDoc->getAttribute("hardTimeout"))
-        hardTimeout = atoi(value);//hard timeout
-    if(const char* value = xmlDoc->getAttribute("priority"))
-        priority = atoi(value);//priority
+OF_FlowTableEntry::OF_FlowTableEntry(omnetpp::cXMLElement *xmlDoc) : OF_FlowTableEntry() {
+    if (const char *value = xmlDoc->getAttribute("idleTimeout"))
+        idleTimeout = atoi(value); //idle timeout
+    if (const char *value = xmlDoc->getAttribute("hardTimeout"))
+        hardTimeout = atoi(value); //hard timeout
+    if (const char *value = xmlDoc->getAttribute("priority"))
+        priority = atoi(value); //priority
 }
 
-OF_FlowTableEntry::OF_FlowTableEntry(OFP_Flow_Mod* flow_mod) : OF_FlowTableEntry(){
+OF_FlowTableEntry::OF_FlowTableEntry(OFP_Flow_Mod *flow_mod) : OF_FlowTableEntry() {
     hardTimeout = flow_mod->getHard_timeout();
     idleTimeout = flow_mod->getIdle_timeout();
     priority = flow_mod->getPriority();
@@ -64,7 +66,7 @@ OF_FlowTableEntry::OF_FlowTableEntry() {
     lastMatched = now;
 }
 
-OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion(OFP_Flow_Mod* flow_mod) {
+OF_FlowTableEntry *OF_FlowTableEntry::createEntryForOFVersion(OFP_Flow_Mod *flow_mod) {
 #if OFP_VERSION_IN_USE == OFP_100
     return new OF100_FlowTableEntry(flow_mod);
 #elif OFP_VERSION_IN_USE == OFP_135
@@ -76,7 +78,7 @@ OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion(OFP_Flow_Mod* flow
 #endif
 }
 
-OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion() {
+OF_FlowTableEntry *OF_FlowTableEntry::createEntryForOFVersion() {
 #if OFP_VERSION_IN_USE == OFP_100
     return new OF100_FlowTableEntry();
 #elif OFP_VERSION_IN_USE == OFP_135
@@ -88,7 +90,7 @@ OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion() {
 #endif
 }
 
-OF_FlowTableEntry* OF_FlowTableEntry::createEntryForOFVersion(omnetpp::cXMLElement* xmlDoc) {
+OF_FlowTableEntry *OF_FlowTableEntry::createEntryForOFVersion(omnetpp::cXMLElement *xmlDoc) {
 #if OFP_VERSION_IN_USE == OFP_100
     return new OF100_FlowTableEntry(xmlDoc);
 #elif OFP_VERSION_IN_USE == OFP_135
@@ -104,21 +106,20 @@ simtime_t OF_FlowTableEntry::getTimeOut() {
     simtime_t timeout = simtime_t::getMaxTime();//never timeout.
 
     //check if hard timeout or idle timeOut are earlier.
-    if(this->idleTimeout > 0) {
-        simtime_t idleTimeout =  this->lastMatched + this->idleTimeout;
-        if(timeout > idleTimeout) {
+    if (this->idleTimeout > 0) {
+        simtime_t idleTimeout = this->lastMatched + this->idleTimeout;
+        if (timeout > idleTimeout) {
             timeout = idleTimeout;
         }
     }
-    if(this->hardTimeout > 0) {
-        simtime_t hardTimeout =  this->creationTime + this->hardTimeout;
-        if(timeout > hardTimeout) {
+    if (this->hardTimeout > 0) {
+        simtime_t hardTimeout = this->creationTime + this->hardTimeout;
+        if (timeout > hardTimeout) {
             timeout = hardTimeout;
         }
     }
     return timeout;
 }
-
 
 std::string OF_FlowTableEntry::print() const {
     ostringstream oss;
@@ -143,4 +144,6 @@ std::string OF_FlowTableEntry::exportToXML() {
     oss << " />" << endl;//end flow entry
     return oss.str();
 }
+
 } /* namespace openflow */
+

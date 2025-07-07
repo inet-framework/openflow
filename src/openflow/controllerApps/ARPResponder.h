@@ -1,4 +1,3 @@
-
 #ifndef ARPRESPONDER_H_
 #define ARPRESPONDER_H_
 
@@ -10,19 +9,19 @@
 #include "openflow/messages/OFP_Packet_In_m.h"
 #include "inet/networklayer/arp/ipv4/ArpPacket_m.h"
 
-namespace openflow{
+namespace openflow {
 
-class ARPResponder:public AbstractControllerApp {
+class ARPResponder : public AbstractControllerApp
+{
 
-
-public:
+  public:
     ARPResponder();
     ~ARPResponder();
     virtual void finish() override;
 
     bool addEntry(std::string srcIp, MacAddress srcMac);
 
-protected:
+  protected:
 
     virtual void handleStartOperation(LifecycleOperation *operation) override {}
 
@@ -34,12 +33,12 @@ protected:
     void initialize(int stage) override;
     virtual void handleMessageWhenUp(cMessage *msg) override;
     //virtual void handlePacketIn(OFP_Packet_In * packet_in_msg);
-    virtual void handlePacketIn(Packet * pkt);
+    virtual void handlePacketIn(Packet *pkt);
 
-    virtual Packet * createArpReply(Ipv4Address srcIp, Ipv4Address dstIp, MacAddress srcMac,MacAddress dstMac);
+    virtual Packet *createArpReply(Ipv4Address srcIp, Ipv4Address dstIp, MacAddress srcMac, MacAddress dstMac);
 
-    std::map<MacAddress,std::string> macToIp;
-    std::map<std::string,MacAddress> ipToMac;
+    std::map<MacAddress, std::string> macToIp;
+    std::map<std::string, MacAddress> ipToMac;
 
     long answeredArp;
     long floodedArp;
@@ -48,3 +47,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

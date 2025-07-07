@@ -1,5 +1,3 @@
-
-
 #ifndef CONTROLLERINVOLVEMENTFILTER_H_
 #define CONTROLLERINVOLVEMENTFILTER_H_
 
@@ -7,28 +5,28 @@
 #include "inet/common/lifecycle/ModuleOperations.h"
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
-class ControllerInvolvementFilter : public OperationalBase,  public cListener
+class ControllerInvolvementFilter : public OperationalBase, public cListener
 {
-protected:
+  protected:
 
-        //stats
-        simsignal_t cpPingPacketHash;
+    //stats
+    simsignal_t cpPingPacketHash;
 
-        virtual void initialize(int stage) override;
-        virtual void finish() override;
-        virtual void finish(cComponent *component, simsignal_t signalID) override {cListener::finish(component, signalID);}
-        virtual void handleMessageWhenUp(cMessage *msg) override;
+    virtual void initialize(int stage) override;
+    virtual void finish() override;
+    virtual void finish(cComponent *component, simsignal_t signalID) override { cListener::finish(component, signalID); }
+    virtual void handleMessageWhenUp(cMessage *msg) override;
 
-        virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) override;
+    virtual void receiveSignal(cComponent *source, simsignal_t signalID, unsigned long l, cObject *details) override;
 
-        std::map<long,int> controllerInvolvements;
+    std::map<long, int> controllerInvolvements;
 
-        // Lifecycle methods
-        virtual void handleStartOperation(LifecycleOperation *operation) override {};
-        virtual void handleStopOperation(LifecycleOperation *operation) override {};
-        virtual void handleCrashOperation(LifecycleOperation *operation) override {};
+    // Lifecycle methods
+    virtual void handleStartOperation(LifecycleOperation *operation) override {};
+    virtual void handleStopOperation(LifecycleOperation *operation) override {};
+    virtual void handleCrashOperation(LifecycleOperation *operation) override {};
 
 #if INET_VERSION >= 0x0404
     virtual bool isInitializeStage(int stage) const override { return stage == INITSTAGE_APPLICATION_LAYER; }
@@ -44,3 +42,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

@@ -1,4 +1,3 @@
-
 #include "openflow/controllerApps/LLDPForwarding.h"
 #include "openflow/openflow/protocol/OFMatchFactory.h"
 #include <algorithm>
@@ -9,26 +8,26 @@
 
 using namespace std;
 
-namespace openflow{
+namespace openflow {
 
 struct comp {
-    bool operator() (const pair<string,int> &a, const pair<string,int> &b) {
+    bool operator()(const pair<string, int>& a, const pair<string, int>& b) {
         return a.second > b.second;
     }
+
 };
 
 Define_Module(LLDPForwarding);
 
-
-LLDPForwarding::LLDPForwarding(){
-
-}
-
-LLDPForwarding::~LLDPForwarding(){
+LLDPForwarding::LLDPForwarding() {
 
 }
 
-void LLDPForwarding::initialize(int stage){
+LLDPForwarding::~LLDPForwarding() {
+
+}
+
+void LLDPForwarding::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         dropIfNoRouteFound = par("dropIfNoRouteFound");
@@ -41,40 +40,39 @@ void LLDPForwarding::initialize(int stage){
         cacheHit = 0;
         cacheMiss = 0;
         idleTimeout = par("flowModIdleTimeOut");
-        hardTimeout= par("flowModHardTimeOut");
+        hardTimeout = par("flowModHardTimeOut");
     }
 }
 
-
-
-void LLDPForwarding::handlePacketIn(Packet *pktInt){
+void LLDPForwarding::handlePacketIn(Packet *pktInt) {
     //get some details
     CommonHeaderFields headerFields = extractCommonHeaderFields(pktInt);
 
     auto packet_in_msg = pktInt->peekAtFront<OFP_Packet_In>();
     //ignore lldp packets
-    if(headerFields.eth_type == 0x88CC){
+    if (headerFields.eth_type == 0x88CC) {
         return;
     }
 
     //ignore arp requests
-    if(ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST){
+    if (ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST) {
         return;
     }
 
-
     //compute path for non arps
     std::list<LLDPPathSegment> route;
-    computePath(headerFields.swInfo->getMacAddress(),headerFields.dst_mac.str(),route);
+    computePath(headerFields.swInfo->getMacAddress(), headerFields.dst_mac.str(), route);
 
     //if route empty flood
-    if(route.empty()){
-        if(dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP){
+    if (route.empty()) {
+        if (dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP) {
             dropPacket(pktInt);
-        } else {
+        }
+        else {
             floodPacket(pktInt);
         }
-    }else {
+    }
+    else {
         std::string computedRoute = "";
         //send packet to next hop
         LLDPPathSegment seg = route.front();
@@ -86,14 +84,14 @@ void LLDPForwarding::handlePacketIn(Packet *pktInt){
         builder->setField(OFPXMT_OFB_ETH_DST, &headerFields.dst_mac);
         oxm_basic_match match = builder->build();
 
-        TcpSocket * socket = controller->findSocketFor(pktInt);
-        sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
+        TcpSocket *socket = controller->findSocketFor(pktInt);
+        sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
 
         //concatenate route
-       computedRoute += seg.chassisId + " -> ";
+        computedRoute += seg.chassisId + " -> ";
 
         //iterate the rest of the route and set flow mods for switches under my control
-        while(!route.empty()){
+        while (!route.empty()) {
             seg = route.front();
             route.pop_front();
 
@@ -103,40 +101,36 @@ void LLDPForwarding::handlePacketIn(Packet *pktInt){
 
             computedRoute += seg.chassisId + " -> ";
 
-            TcpSocket * socket = controller->findSocketForChassisId(seg.chassisId);
+            TcpSocket *socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if(socket != NULL){
-                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
+            if (socket != NULL) {
+                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
 
         //clean up route
-        computedRoute.erase(computedRoute.length()-4);
+        computedRoute.erase(computedRoute.length() - 4);
         EV << "Route:" << computedRoute << '\n';
     }
-
 }
 
-
-
-
 void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    AbstractControllerApp::receiveSignal(src,id,obj,details);
+    AbstractControllerApp::receiveSignal(src, id, obj, details);
 
     //set lldp link
     Enter_Method("LLDPForwarding::receiveSignal %s", cComponent::getSignalName(id));
-    if(lldpAgent == NULL && controller != NULL){
+    if (lldpAgent == NULL && controller != NULL) {
         auto appList = controller->getAppList();
 
-        for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
+        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
+            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
                 lldpAgent = lldp;
                 break;
             }
         }
     }
 
-    if(id == PacketInSignalId){
+    if (id == PacketInSignalId) {
         EV << "LLDPForwarding::PacketIn" << '\n';
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt == nullptr)
@@ -150,94 +144,89 @@ void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj
     }
 }
 
-
-
-
-void LLDPForwarding::computePath(std::string srcId, std::string dstId,std::list<LLDPPathSegment> &list){
+void LLDPForwarding::computePath(std::string srcId, std::string dstId, std::list<LLDPPathSegment>& list) {
     LLDPMibGraph *mibGraph = lldpAgent->getMibGraph();
     mibGraph->removeExpiredEntries();
-    std::map<std::string, std::vector<LLDPMib> > verticies = mibGraph->getVerticies();
+    std::map<std::string, std::vector<LLDPMib>> verticies = mibGraph->getVerticies();
 
     EV << "Finding Route in " << mibGraph->getNumOfVerticies() << " Verticies and " << mibGraph->getNumOfEdges() << " Edges" << '\n';
-    if(printMibGraph){
+    if (printMibGraph) {
         EV << mibGraph->getStringGraph() << '\n';
     }
 
     EV << "Version Hit: " << versionHit << " Version Miss: " << versionMiss << " Cache Hit: " << cacheHit << " Cache Miss: " << cacheMiss << '\n';
 
     //check for route in cache
-    if(lldpAgent->getMibGraph()->getVersion() == version){
+    if (lldpAgent->getMibGraph()->getVersion() == version) {
         versionHit++;
-        if(routeCache.count(std::pair<std::string,std::string>(srcId,dstId))>0){
+        if (routeCache.count(std::pair<std::string, std::string>(srcId, dstId)) > 0) {
             cacheHit++;
-            std::list<LLDPPathSegment> tmp = routeCache[std::pair<std::string,std::string>(srcId,dstId)];
-            std::copy(tmp.begin(),tmp.end(), std::back_inserter(list));
+            std::list<LLDPPathSegment> tmp = routeCache[std::pair<std::string, std::string>(srcId, dstId)];
+            std::copy(tmp.begin(), tmp.end(), std::back_inserter(list));
             return;
-        }else {
+        }
+        else {
             cacheMiss++;
         }
-    } else {
+    }
+    else {
         //update version miss and clear local cache
         versionMiss++;
         routeCache.clear();
         version = mibGraph->getVersion();
     }
 
-
-
-
     std::list<LLDPPathSegment> result = std::list<LLDPPathSegment>();
 
-
     //quick check if we have src and target in our graph
-    if(verticies.count(srcId)<=0 || verticies.count(dstId)<=0){
+    if (verticies.count(srcId) <= 0 || verticies.count(dstId) <= 0) {
         return;
     }
 
     //dijkstra
-    std::map<std::string,int> dist =  std::map<std::string,int>();
-    std::map<std::string,LLDPPathSegment> prev = std::map<std::string,LLDPPathSegment >();
-    std::map<std::string,bool> visited = std::map<std::string,bool>();
+    std::map<std::string, int> dist = std::map<std::string, int>();
+    std::map<std::string, LLDPPathSegment> prev = std::map<std::string, LLDPPathSegment>();
+    std::map<std::string, bool> visited = std::map<std::string, bool>();
 
     //extract all vertexes
-    priority_queue< pair<string,int>, vector< pair<string,int> >, comp > q;
+    priority_queue<pair<string, int>, vector<pair<string, int>>, comp> q;
 
     LLDPPathSegment seg;
-    std::map<std::string,std::vector<LLDPMib> >::iterator iterKey = verticies.begin();
+    std::map<std::string, std::vector<LLDPMib>>::iterator iterKey = verticies.begin();
     while (iterKey != verticies.end()) {
-        if(strcmp(iterKey->first.c_str(),srcId.c_str())!=0){
-            q.push(pair<string,int>(iterKey->first,std::numeric_limits<int>::max()));
+        if (strcmp(iterKey->first.c_str(), srcId.c_str()) != 0) {
+            q.push(pair<string, int>(iterKey->first, std::numeric_limits<int>::max()));
 
             dist[iterKey->first] = std::numeric_limits<int>::max();
 
             seg = LLDPPathSegment();
-            seg.chassisId ="";
-            seg.outport=-1;
-            prev[iterKey->first]=seg;
+            seg.chassisId = "";
+            seg.outport = -1;
+            prev[iterKey->first] = seg;
         }
         iterKey++;
     }
 
     //set start vertex
-    q.push(pair<string,int>(srcId,0));
+    q.push(pair<string, int>(srcId, 0));
     seg = LLDPPathSegment();
-    seg.chassisId ="";
-    seg.outport=-1;
-    prev[srcId]=seg;
+    seg.chassisId = "";
+    seg.outport = -1;
+    prev[srcId] = seg;
 
     std::string u;
-    while(!q.empty()){
+    while (!q.empty()) {
 
         u = q.top().first;
         q.pop();
 
-        if(visited.count(u)>0){
+        if (visited.count(u) > 0) {
             continue;
         }
 
         int alt;
         /*std::vector<LLDPMib>::iterator iterList;
-        for(iterList = verticies[u].begin();iterList!=verticies[u].end();iterList++){
+           for(iterList = verticies[u].begin();iterList!=verticies[u].end();iterList++){
             if(visited.count(iterList->getDstId())<=0){
                 alt = dist[u]+1;
                 if(alt < dist[iterList->getDstId()]){
@@ -249,18 +238,18 @@ void LLDPForwarding::computePath(std::string srcId, std::string dstId,std::list<
                     q.push(pair<string,int>(iterList->getDstId(),alt));
                 }
             }
-        }*/
+           }*/
 
-        for(const auto &elem : verticies[u]) {
-            if(visited.count(elem.getDstId())<=0) {
-                alt = dist[u]+1;
-                if(alt < dist[elem.getDstId()]) {
+        for (const auto& elem : verticies[u]) {
+            if (visited.count(elem.getDstId()) <= 0) {
+                alt = dist[u] + 1;
+                if (alt < dist[elem.getDstId()]) {
                     dist[elem.getDstId()] = alt;
                     seg = LLDPPathSegment();
                     seg.chassisId = u;
-                    seg.outport= elem.getSrcPort();
-                    prev[elem.getDstId()]=seg;
-                    q.push(pair<string,int>(elem.getDstId(),alt));
+                    seg.outport = elem.getSrcPort();
+                    prev[elem.getDstId()] = seg;
+                    q.push(pair<string, int>(elem.getDstId(), alt));
                 }
             }
         }
@@ -271,7 +260,7 @@ void LLDPForwarding::computePath(std::string srcId, std::string dstId,std::list<
     //back track and insert into list
     std::string trg = dstId;
     LLDPPathSegment segP;
-    while(strcmp(prev[trg].chassisId.c_str(),"") != 0){
+    while (strcmp(prev[trg].chassisId.c_str(), "") != 0) {
         segP = LLDPPathSegment();
         segP.chassisId = prev[trg].chassisId;
         segP.outport = prev[trg].outport;
@@ -280,14 +269,16 @@ void LLDPForwarding::computePath(std::string srcId, std::string dstId,std::list<
     }
 
     //check if there was route from src to dst
-    if(strcmp(srcId.c_str(),trg.c_str()) != 0){
+    if (strcmp(srcId.c_str(), trg.c_str()) != 0) {
         result.clear();
-    }else{
-        //add to cache
-        routeCache[std::pair<std::string,std::string>(srcId,dstId)]=result;
     }
-    std::copy(result.begin(),result.end(), std::back_inserter(list));
+    else {
+        //add to cache
+        routeCache[std::pair<std::string, std::string>(srcId, dstId)] = result;
+    }
+    std::copy(result.begin(), result.end(), std::back_inserter(list));
     return;
 }
 
 } /*end namespace openflow*/
+

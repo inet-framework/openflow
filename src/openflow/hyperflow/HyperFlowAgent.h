@@ -1,4 +1,3 @@
-
 #ifndef HYPER_FLOW_AGENT_H_
 #define HYPER_FLOW_AGENT_H_
 
@@ -11,17 +10,17 @@
 #include "openflow/messages/HF_ChangeNotification_m.h"
 #include "openflow/hyperflow/HF_ReFire_Wrapper.h"
 
-namespace openflow{
+namespace openflow {
 
-class HyperFlowAgent:public AbstractTCPControllerApp {
+class HyperFlowAgent : public AbstractTCPControllerApp
+{
 
-
-public:
+  public:
     HyperFlowAgent();
     ~HyperFlowAgent();
     void synchronizeDataChannelEntry(DataChannelEntry entry);
 
-protected:
+  protected:
 
     virtual void initialize(int stage) override;
     virtual void processSelfMessage(cMessage *msg) override;
@@ -37,11 +36,10 @@ protected:
 
     void sendReportIn();
     void sendSyncRequest();
-    void handleSyncReply(const HF_SyncReply * msg);
+    void handleSyncReply(const HF_SyncReply *msg);
     void handleCheckAlive();
     void handleRecover(std::string controllerId);
     void handleFailure(std::string controllerId);
-
 
     bool waitingForSyncResponse;
     int lastSyncCounter;
@@ -60,10 +58,9 @@ protected:
 
     virtual void handleStartOperation(LifecycleOperation *operation) override;
 
-
 };
-
 
 } /*end namespace openflow*/
 
 #endif
+

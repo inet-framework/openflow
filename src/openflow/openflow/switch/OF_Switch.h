@@ -1,5 +1,3 @@
-
-
 #ifndef OF_SWITCH_H_
 #define OF_SWITCH_H_
 
@@ -14,12 +12,12 @@
 #include "inet/networklayer/common/NetworkInterface.h"
 #include <vector>
 
-namespace openflow{
+namespace openflow {
 
 #if (INET_VERSION > 0x405)
-class OF_Switch: public OperationalBase, public TcpSocket::BufferingCallback
+class OF_Switch : public OperationalBase, public TcpSocket::BufferingCallback
 #else
-class OF_Switch: public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
+class OF_Switch : public OperationalBase, public TcpSocket::ReceiveQueueBasedCallback
 #endif
 {
     enum ActionKind {
@@ -34,7 +32,7 @@ class OF_Switch: public OperationalBase, public TcpSocket::ReceiveQueueBasedCall
         int kind;
         cMessage *msg;
         Action() : kind(0), msg(nullptr) {}
-        Action(int kind, cMessage* msg) : kind(kind), msg(msg) {}
+        Action(int kind, cMessage *msg) : kind(kind), msg(msg) {}
     };
 
     std::map<int, int> ifaceIndex;
@@ -42,14 +40,14 @@ class OF_Switch: public OperationalBase, public TcpSocket::ReceiveQueueBasedCall
 
     cModule *parent = nullptr;
 
-public:
+  public:
     OF_Switch();
     ~OF_Switch();
     void disablePorts(std::vector<int> ports);
     virtual void finish() override;
     virtual int getIndexFromId(int id);
 
-protected:
+  protected:
     double flowTimeoutPollInterval;
     double serviceTime;
     bool busy;
@@ -70,10 +68,8 @@ protected:
     std::list<Action> msgList;
     std::vector<ofp_port> portVector;
 
-
-
     Buffer buffer;
-    OF_FlowTable* flowTable;
+    OF_FlowTable *flowTable;
     TcpSocket socket;
     std::vector<NetworkInterface *> listInterfacesToDelete;
 
@@ -108,18 +104,18 @@ protected:
 #endif
 
     /* TcpSocket::ICallback callback methods */
-     virtual void socketDataArrived(TcpSocket *socket) override;
-     virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override { socket->accept(availableInfo->getNewSocketId()); }
-     virtual void socketEstablished(TcpSocket *socket) override;
-     virtual void socketPeerClosed(TcpSocket *socket) override;
-     virtual void socketClosed(TcpSocket *socket) override;
-     virtual void socketFailure(TcpSocket *socket, int code) override;
-     virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
-     virtual void socketDeleted(TcpSocket *socket) override {}
-
+    virtual void socketDataArrived(TcpSocket *socket) override;
+    virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override { socket->accept(availableInfo->getNewSocketId()); }
+    virtual void socketEstablished(TcpSocket *socket) override;
+    virtual void socketPeerClosed(TcpSocket *socket) override;
+    virtual void socketClosed(TcpSocket *socket) override;
+    virtual void socketFailure(TcpSocket *socket, int code) override;
+    virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override {}
+    virtual void socketDeleted(TcpSocket *socket) override {}
 
 };
 
 } /*end namespace openflow*/
 
 #endif /* OF_SWITCH_H_ */
+

@@ -15,7 +15,6 @@
 // c Timo Haeckel, for HAW Hamburg
 //
 
-
 #ifndef OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
 #define OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_
 
@@ -30,14 +29,15 @@ namespace openflow {
  * And interface functions for protocol specific behavior.
  * @author Timo Haeckel, for HAW Hamburg
  */
-class OF_FlowTableEntry {
+class OF_FlowTableEntry
+{
 
-public:
+  public:
     //constructor, forces subclasses to implement them aswell.
-    OF_FlowTableEntry(omnetpp::cXMLElement* xmlDoc);
-    OF_FlowTableEntry(OFP_Flow_Mod* flow_mod);
+    OF_FlowTableEntry(omnetpp::cXMLElement *xmlDoc);
+    OF_FlowTableEntry(OFP_Flow_Mod *flow_mod);
     OF_FlowTableEntry();
-    virtual ~OF_FlowTableEntry(){}
+    virtual ~OF_FlowTableEntry() {}
 
     /**
      * Allows to sort flow table entries.
@@ -55,7 +55,7 @@ public:
      * Creates an OF_FlowTableEntry for the currently used Openflow protocol version.
      * @return              A new Entry.
      */
-    static OF_FlowTableEntry* createEntryForOFVersion();
+    static OF_FlowTableEntry *createEntryForOFVersion();
 
     /**
      * Creates an OF_FlowTableEntry for the currently used Openflow protocol version.
@@ -63,14 +63,14 @@ public:
      * @param flow_mod      The Flow mod message
      * @return              A new Entry.
      */
-    static OF_FlowTableEntry* createEntryForOFVersion(OFP_Flow_Mod* flow_mod);
+    static OF_FlowTableEntry *createEntryForOFVersion(OFP_Flow_Mod *flow_mod);
     /**
      * Creates an OF_FlowTableEntry for the currently used Openflow protocol version.
      * According to an xmldocument containing a falid <flowTableEntry> tag with all specified paramenters.
      * @param xmlDoc        The xmlElement of the <flowTableEntry>.
      * @return              A new Entry.
      */
-    static OF_FlowTableEntry* createEntryForOFVersion(omnetpp::cXMLElement* xmlDoc);
+    static OF_FlowTableEntry *createEntryForOFVersion(omnetpp::cXMLElement *xmlDoc);
 
     //interface methods.
     /**
@@ -90,7 +90,7 @@ public:
      * @param other flow table entry.
      * @return true if the rules match.
      */
-    virtual bool tryMatch(const OF_FlowTableEntry* other) = 0;
+    virtual bool tryMatch(const OF_FlowTableEntry *other) = 0;
 
     /**
      * TODO maybe introduce an abstract type that is not protocol dependent.
@@ -127,35 +127,44 @@ public:
     int getPriority() const {
         return priority;
     }
+
     void setPriority(int priority) {
         this->priority = priority;
     }
+
     const simtime_t& getCreationTime() const {
         return creationTime;
     }
+
     void setCreationTime(const simtime_t& creationTime) {
         this->creationTime = creationTime;
     }
+
     double getHardTimeout() const {
         return hardTimeout;
     }
+
     void setHardTimeout(double hardTimeout) {
         this->hardTimeout = hardTimeout;
     }
+
     double getIdleTimeout() const {
         return idleTimeout;
     }
+
     void setIdleTimeout(double idleTimeout) {
         this->idleTimeout = idleTimeout;
     }
+
     const simtime_t& getLastMatched() const {
         return lastMatched;
     }
+
     void setLastMatched(const simtime_t& lastMatched) {
         this->lastMatched = lastMatched;
     }
 
-protected:
+  protected:
     /**
      * Intersects two wild cards only keeping those wildcards that are set in both left and right.
      * @param leftWildcards wildcards of the first openflow match
@@ -166,7 +175,7 @@ protected:
         return leftWildcards & rightWildcards;
     }
 
-protected:
+  protected:
     /**
      * The priority of the flow entry.
      */
@@ -191,11 +200,13 @@ protected:
 };
 
 struct Compare_OF_FlowTableEntry {
-    bool operator() (const OF_FlowTableEntry* a, const OF_FlowTableEntry* b) {
+    bool operator()(const OF_FlowTableEntry *a, const OF_FlowTableEntry *b) {
         return *a > *b;
     }
+
 };
 
 } /* namespace openflow */
 
 #endif /* OPENFLOW_OPENFLOW_SWITCH_OF_FLOWTABLEENTRY_H_ */
+

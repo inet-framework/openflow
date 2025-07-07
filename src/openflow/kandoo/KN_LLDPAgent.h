@@ -1,4 +1,3 @@
-
 #ifndef KNLLDPAGENT_H_
 #define KNLLDPAGENT_H_
 
@@ -14,21 +13,21 @@
 #include "openflow/kandoo/KandooAgent.h"
 #include "openflow/utility/LLDP_Wrapper.h"
 
-namespace openflow{
+namespace openflow {
 
-class KN_LLDPAgent:public LLDPAgent {
+class KN_LLDPAgent : public LLDPAgent
+{
 
-
-public:
+  public:
     KN_LLDPAgent();
     ~KN_LLDPAgent();
-    LLDPMibGraph * getMibGraph();
+    LLDPMibGraph *getMibGraph();
 
-protected:
+  protected:
     virtual void receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) override;
     virtual void initialize(int stage) override;
     virtual void handlePacketIn(Packet *) override;
-    KandooAgent * kandooAgent;
+    KandooAgent *kandooAgent;
     simsignal_t kandooEventSignalId;
     std::string appName;
 };
@@ -36,3 +35,4 @@ protected:
 } /*end namespace openflow*/
 
 #endif
+

@@ -1,5 +1,3 @@
-
-
 #ifndef HF_REFIRE_WRAPPER_H_
 #define HF_REFIRE_WRAPPER_H_
 
@@ -9,24 +7,23 @@
 
 using namespace std;
 
-namespace openflow{
+namespace openflow {
 
-class HF_ReFire_Wrapper: public cObject {
+class HF_ReFire_Wrapper : public cObject
+{
 
-public:
+  public:
     HF_ReFire_Wrapper();
     ~HF_ReFire_Wrapper();
-
 
     const DataChannelEntry& getDataChannelEntry() const;
     void setDataChannelEntry(const DataChannelEntry& dataEntry);
 
-
-protected:
+  protected:
     DataChannelEntry dataChannelEntry;
 };
 
 } /*end namespace openflow*/
 
-
 #endif /* BUFFER_H_ */
+

@@ -7,22 +7,22 @@
 #include "inet/linklayer/ethernet/common/Ethernet.h"
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 
-#define MSGKIND_TRIGGERLLDP 101
-#define MSGKIND_LLDPAGENTBOOTED 201
+#define MSGKIND_TRIGGERLLDP        101
+#define MSGKIND_LLDPAGENTBOOTED    201
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(LLDPAgent);
 
-LLDPAgent::LLDPAgent(){
+LLDPAgent::LLDPAgent() {
 
 }
 
-LLDPAgent::~LLDPAgent(){
+LLDPAgent::~LLDPAgent() {
 
 }
 
-void LLDPAgent::initialize(int stage){
+void LLDPAgent::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         pollInterval = par("pollInterval");
@@ -33,35 +33,32 @@ void LLDPAgent::initialize(int stage){
     }
 }
 
-
-void LLDPAgent::handleMessageWhenUp(cMessage *msg){
-    if (msg->isSelfMessage()){
-        if (msg->getKind()==MSGKIND_TRIGGERLLDP){
+void LLDPAgent::handleMessageWhenUp(cMessage *msg) {
+    if (msg->isSelfMessage()) {
+        if (msg->getKind() == MSGKIND_TRIGGERLLDP) {
             sendLLDP();
             cMessage *triggerLLDP = new cMessage("triggerLLDP");
             triggerLLDP->setKind(MSGKIND_TRIGGERLLDP);
-            scheduleAt(simTime()+pollInterval, triggerLLDP);
+            scheduleAt(simTime() + pollInterval, triggerLLDP);
         }
     }
     delete msg;
 }
 
+void LLDPAgent::sendLLDP() {
 
-
-void LLDPAgent::sendLLDP(){
-
-    int j=0;
+    int j = 0;
     //iterate over all switches controlled by the controller
     auto list = controller->getSwitchesList();
-    for(auto i=list->begin(); i != list->end(); ++i) {
-        if(strcmp((*i).getMacAddress().c_str(),"")==0){
+    for (auto i = list->begin(); i != list->end(); ++i) {
+        if (strcmp((*i).getMacAddress().c_str(), "") == 0) {
             //only use full connections
             continue;
         }
 
         TcpSocket *socket = (*i).getSocket();
         //iterate over all ports
-        for(j=0;j<(*i).getNumOfPorts();++j){
+        for (j = 0; j < (*i).getNumOfPorts(); ++j) {
             auto outPort = (*i).getIndexPort(j);
             auto frame = new Packet("LLDP");
 
@@ -107,66 +104,63 @@ void LLDPAgent::sendLLDP(){
             frame->insertAtFront(packetOut);
 
             //send the packet
-            controller->sendPacketOut(frame,socket);
+            controller->sendPacketOut(frame, socket);
         }
     }
 }
 
 //void LLDPAgent::handlePacketIn(OFP_Packet_In * packet_in_msg){
-void LLDPAgent::handlePacketIn(Packet * packetIn){
+void LLDPAgent::handlePacketIn(Packet *packetIn) {
     //check if it is a received lldp
     CommonHeaderFields headerFields = extractCommonHeaderFields(packetIn);
 
-
     //check if it is an lldp packet
-    if(headerFields.eth_type == 0x88CC){
+    if (headerFields.eth_type == 0x88CC) {
         auto fragmentTag = packetIn->findTag<FragmentTag>();
         if (fragmentTag != nullptr)
             throw cRuntimeError("Fragment handling not implemented yet");
         //EthernetIIFrame *frame =  dynamic_cast<EthernetIIFrame *>(packet_in_msg->getEncapsulatedPacket());
         //check if we have received the entire frame, if not the flow mods have not been sent yet
 //        if(fragmentTag->getLastFragment()){
-            auto packet_in_msg = packetIn->removeAtFront<OFP_Packet_In>();
-            auto header = packetIn->removeAtFront<EthernetMacHeader>();
-            auto lldp = packetIn->peekAtFront<LLDP>();
-            mibGraph.addEntry(lldp->getChassisID(),lldp->getPortID(),headerFields.swInfo->getMacAddress(),headerFields.inport,timeOut);
-            if(printMibGraph){
-                EV << mibGraph.getStringGraph() << '\n';
-            }
-            packetIn->insertAtFront(header);
-            packetIn->insertAtFront(packet_in_msg);
+        auto packet_in_msg = packetIn->removeAtFront<OFP_Packet_In>();
+        auto header = packetIn->removeAtFront<EthernetMacHeader>();
+        auto lldp = packetIn->peekAtFront<LLDP>();
+        mibGraph.addEntry(lldp->getChassisID(), lldp->getPortID(), headerFields.swInfo->getMacAddress(), headerFields.inport, timeOut);
+        if (printMibGraph) {
+            EV << mibGraph.getStringGraph() << '\n';
+        }
+        packetIn->insertAtFront(header);
+        packetIn->insertAtFront(packet_in_msg);
 //        }
 //        else {
 //            //resend flow mod
 //            triggerFlowMod(headerFields.swInfo);
 //        }
-
     }
     else {
         //this could be a packet originating from an end device, check if the port is associated with an lldp entry
-        mibGraph.addEntry(headerFields.src_mac.str(),-1,headerFields.swInfo->getMacAddress(),headerFields.inport,timeOut);
-        if(printMibGraph){
+        mibGraph.addEntry(headerFields.src_mac.str(), -1, headerFields.swInfo->getMacAddress(), headerFields.inport, timeOut);
+        if (printMibGraph) {
             EV << mibGraph.getStringGraph() << '\n';
         }
     }
-
 }
 
-void LLDPAgent::triggerFlowMod(Switch_Info * swInfo) {
+void LLDPAgent::triggerFlowMod(Switch_Info *swInfo) {
     uint32_t outport = OFPP_CONTROLLER;
     auto builder = OFMatchFactory::getBuilder();
     uint16_t lldp_type = 0x88CC;
     builder->setField(OFPXMT_OFB_ETH_TYPE, &lldp_type);
     oxm_basic_match match = builder->build();
 
-    sendFlowModMessage(OFPFC_ADD, match, outport, swInfo->getSocket(),idleTimeout,hardTimeout);
+    sendFlowModMessage(OFPFC_ADD, match, outport, swInfo->getSocket(), idleTimeout, hardTimeout);
 }
 
 void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    AbstractControllerApp::receiveSignal(src,id,obj,details);
+    AbstractControllerApp::receiveSignal(src, id, obj, details);
     Enter_Method("LLDPAgent::receiveSignal %s", cComponent::getSignalName(id));
 
-    if(id == PacketInSignalId){
+    if (id == PacketInSignalId) {
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt == nullptr)
             return;
@@ -176,26 +170,28 @@ void LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cOb
         auto packet_in_msg = dynamicPtrCast<const OFP_Packet_In>(chunk);
         if (packet_in_msg != nullptr)
             handlePacketIn(pkt);
-    } else if(id == BootedSignalId){
+    }
+    else if (id == BootedSignalId) {
         //schedule first lldp messages to be sent
         cMessage *triggerLLDP = new cMessage("triggerLLDP");
         triggerLLDP->setKind(MSGKIND_TRIGGERLLDP);
-        scheduleAt(simTime()+pollInterval, triggerLLDP);
-    }else if(id == PacketFeatureReplySignalId){
+        scheduleAt(simTime() + pollInterval, triggerLLDP);
+    }
+    else if (id == PacketFeatureReplySignalId) {
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt == nullptr)
             return;
         auto chunk = pkt->peekAtFront<Chunk>();
         auto castMsg = dynamicPtrCast<const OFP_Features_Reply>(chunk);
         //a new switch is available schedule flow mod and trigger lldp creation
-        if(castMsg != nullptr){
-            Switch_Info * swInfo = controller->findSwitchInfoFor(pkt);
+        if (castMsg != nullptr) {
+            Switch_Info *swInfo = controller->findSwitchInfoFor(pkt);
             triggerFlowMod(swInfo);
         }
     }
 }
 
-LLDPMibGraph * LLDPAgent::getMibGraph(){
+LLDPMibGraph *LLDPAgent::getMibGraph() {
     return &mibGraph;
 }
 

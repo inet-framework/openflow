@@ -1,5 +1,3 @@
-
-
 #ifndef TCP_TRAFFIC_GENERATOR_APP_H_
 #define TCP_TRAFFIC_GENERATOR_APP_H_
 
@@ -16,13 +14,13 @@
 using namespace std;
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
 /**
  * Single-connection TCP application.
  */
 
-struct Stats{
+struct Stats {
     SimTime connectionStarted;
     SimTime connectionEstablished;
     SimTime connectionFinished;
@@ -34,12 +32,12 @@ class INET_API TCPTrafficGeneratorApp : public ApplicationBase, public TcpSocket
 
   protected:
     cTopology topo;
-    int  lineNumbers;
+    int lineNumbers;
     std::set<cMessage *> timerSet;
     virtual void initialize(int stage) override;
     virtual void handleMessageWhenUp(omnetpp::cMessage *msg) override;
-    unsigned int FileRead( istream & is, vector <char> & buff );
-    unsigned int CountLines( const vector <char> & buff, int sz );
+    unsigned int FileRead(istream& is, vector<char>& buff);
+    unsigned int CountLines(const vector<char>& buff, int sz);
 
     virtual void socketDataArrived(TcpSocket *socket, Packet *packet, bool urgent) override;
     virtual void socketAvailable(TcpSocket *socket, TcpAvailableInfo *availableInfo) override { socket->accept(availableInfo->getNewSocketId()); }
@@ -50,8 +48,7 @@ class INET_API TCPTrafficGeneratorApp : public ApplicationBase, public TcpSocket
     virtual void socketStatusArrived(TcpSocket *socket, TcpStatusInfo *status) override;
     virtual void socketDeleted(TcpSocket *socket) override {};
 
-    std::map<TcpSocket *,Stats> statistics;
-
+    std::map<TcpSocket *, Stats> statistics;
 
     //stats
     simsignal_t connectionFinished;
@@ -63,7 +60,6 @@ class INET_API TCPTrafficGeneratorApp : public ApplicationBase, public TcpSocket
     virtual void handleStartOperation(LifecycleOperation *operation) override;
     virtual void handleStopOperation(LifecycleOperation *operation) override;
     virtual void handleCrashOperation(LifecycleOperation *operation) override;
-
 
 };
 

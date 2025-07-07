@@ -8,26 +8,26 @@
 
 using namespace std;
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(LLDPBalancedMinHop);
 
 struct comp {
-    bool operator() (const pair<string,int> &a, const pair<string,int> &b) {
+    bool operator()(const pair<string, int>& a, const pair<string, int>& b) {
         return a.second > b.second;
     }
+
 };
 
-
-LLDPBalancedMinHop::LLDPBalancedMinHop(){
-
-}
-
-LLDPBalancedMinHop::~LLDPBalancedMinHop(){
+LLDPBalancedMinHop::LLDPBalancedMinHop() {
 
 }
 
-void LLDPBalancedMinHop::initialize(int stage){
+LLDPBalancedMinHop::~LLDPBalancedMinHop() {
+
+}
+
+void LLDPBalancedMinHop::initialize(int stage) {
     AbstractControllerApp::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         dropIfNoRouteFound = par("dropIfNoRouteFound");
@@ -44,38 +44,35 @@ void LLDPBalancedMinHop::initialize(int stage){
     }
 }
 
-
-
 //void LLDPBalancedMinHop::handlePacketIn(OFP_Packet_In * packet_in_msg){
-void LLDPBalancedMinHop::handlePacketIn(Packet *pkt){
-
+void LLDPBalancedMinHop::handlePacketIn(Packet *pkt) {
 
     CommonHeaderFields headerFields = extractCommonHeaderFields(pkt);
 
     //ignore lldp packets
-    if(headerFields.eth_type == 0x88CC){
+    if (headerFields.eth_type == 0x88CC) {
         return;
     }
     auto packet_in_msg = pkt->peekAtFront<OFP_Packet_In>();
 
-
     //ignore arp requests
-    if(ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST){
+    if (ignoreArpRequests && headerFields.eth_type == ETHERTYPE_ARP && packet_in_msg->getMatch().OFB_ARP_OP == ARP_REQUEST) {
         return;
     }
 
-
     //compute path for non arps
-    auto route = computeBalancedMinHopPath(headerFields.swInfo->getMacAddress(),headerFields.dst_mac.str());
+    auto route = computeBalancedMinHopPath(headerFields.swInfo->getMacAddress(), headerFields.dst_mac.str());
 
     //if route empty flood
-    if(route.empty()){
-        if(dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP){
+    if (route.empty()) {
+        if (dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP) {
             dropPacket(pkt);
-        } else {
+        }
+        else {
             floodPacket(pkt);
         }
-    }else {
+    }
+    else {
         //send packet to next hop
         LLDPPathSegment seg = route.front();
         route.pop_front();
@@ -87,10 +84,10 @@ void LLDPBalancedMinHop::handlePacketIn(Packet *pkt){
         builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
         oxm_basic_match match = builder->build();
 
-        sendFlowModMessage(OFPFC_ADD, match, seg.outport, controller->findSocketFor(pkt),idleTimeout,hardTimeout);
+        sendFlowModMessage(OFPFC_ADD, match, seg.outport, controller->findSocketFor(pkt), idleTimeout, hardTimeout);
 
         //iterate the rest of the route and set flow mods for switches under my control
-        while(!route.empty()){
+        while (!route.empty()) {
             seg = route.front();
             route.pop_front();
 
@@ -99,36 +96,32 @@ void LLDPBalancedMinHop::handlePacketIn(Packet *pkt){
             builder->setField(OFPXMT_OFB_ETH_SRC, &headerFields.src_mac);
             oxm_basic_match match = builder->build();
 
-
             auto socket = controller->findSocketForChassisId(seg.chassisId);
             //is switch under our control
-            if(socket != NULL){
-                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket,idleTimeout,hardTimeout);
+            if (socket != NULL) {
+                sendFlowModMessage(OFPFC_ADD, match, seg.outport, socket, idleTimeout, hardTimeout);
             }
         }
     }
 }
 
-
-
-
 void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    AbstractControllerApp::receiveSignal(src,id,obj,details);
+    AbstractControllerApp::receiveSignal(src, id, obj, details);
     Enter_Method("LLDPBalancedMinHop::receiveSignal %s", cComponent::getSignalName(id));
 
     //set lldp link
-    if(lldpAgent == NULL && controller != NULL){
+    if (lldpAgent == NULL && controller != NULL) {
         auto appList = controller->getAppList();
 
-        for(auto iterApp=appList->begin();iterApp!=appList->end();++iterApp){
-            if(LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
+        for (auto iterApp = appList->begin(); iterApp != appList->end(); ++iterApp) {
+            if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(*iterApp)) {
                 lldpAgent = lldp;
                 break;
             }
         }
     }
 
-    if(id == PacketInSignalId){
+    if (id == PacketInSignalId) {
         EV << "LLDPBalancedMinHop::PacketIn" << endl;
         auto pkt = dynamic_cast<Packet *>(obj);
         if (pkt == nullptr)
@@ -141,33 +134,33 @@ void LLDPBalancedMinHop::receiveSignal(cComponent *src, simsignal_t id, cObject 
     }
 }
 
-
-
-std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::string srcId, std::string dstId){
+std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::string srcId, std::string dstId) {
     LLDPMibGraph *mibGraph = lldpAgent->getMibGraph();
     mibGraph->removeExpiredEntries();
-    std::map<std::string, std::vector<LLDPMib> > verticies = mibGraph->getVerticies();
+    std::map<std::string, std::vector<LLDPMib>> verticies = mibGraph->getVerticies();
 
     EV << "Finding Route in " << mibGraph->getNumOfVerticies() << " Verticies and " << mibGraph->getNumOfEdges() << " Edges" << endl;
-    if(printMibGraph){
+    if (printMibGraph) {
         EV << mibGraph->getStringGraph() << endl;
     }
 
     EV << "Version Hit: " << versionHit << " Version Miss: " << versionMiss << " Cache Hit: " << cacheHit << " Cache Miss: " << cacheMiss << endl;
 
     //check for route in cache
-    if(lldpAgent->getMibGraph()->getVersion() == version){
+    if (lldpAgent->getMibGraph()->getVersion() == version) {
         versionHit++;
-        if(routeCache.count(std::pair<std::string,std::string>(srcId,dstId))>0){
+        if (routeCache.count(std::pair<std::string, std::string>(srcId, dstId)) > 0) {
             cacheHit++;
-            std::list<LLDPPathSegment> tmp = routeCache[std::pair<std::string,std::string>(srcId,dstId)];
+            std::list<LLDPPathSegment> tmp = routeCache[std::pair<std::string, std::string>(srcId, dstId)];
             std::list<LLDPPathSegment> res = std::list<LLDPPathSegment>();
-            std::copy(tmp.begin(),tmp.end(), std::back_inserter(res));
+            std::copy(tmp.begin(), tmp.end(), std::back_inserter(res));
             return res;
-        }else {
+        }
+        else {
             cacheMiss++;
         }
-    } else {
+    }
+    else {
         //update version miss and clear local cache
         versionMiss++;
         routeCache.clear();
@@ -177,77 +170,77 @@ std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::st
     std::list<LLDPPathSegment> result = std::list<LLDPPathSegment>();
 
     //quick check if we have src and target in our graph
-    if(verticies.count(srcId)<=0 || verticies.count(dstId)<=0){
+    if (verticies.count(srcId) <= 0 || verticies.count(dstId) <= 0) {
         return result;
     }
 
     //dijkstra
-    std::map<std::string,int> dist =  std::map<std::string,int>();
-    std::map<std::string,LLDPPathSegment> prev = std::map<std::string,LLDPPathSegment >();
-    std::vector<std::pair<std::string,LLDPPathSegment> > tempPath = std::vector<pair<std::string,LLDPPathSegment> >();
+    std::map<std::string, int> dist = std::map<std::string, int>();
+    std::map<std::string, LLDPPathSegment> prev = std::map<std::string, LLDPPathSegment>();
+    std::vector<std::pair<std::string, LLDPPathSegment>> tempPath = std::vector<pair<std::string, LLDPPathSegment>>();
 
     //extract all vertexes
-    priority_queue< pair<string,int>, vector< pair<string,int> >, comp > q;
+    priority_queue<pair<string, int>, vector<pair<string, int>>, comp> q;
 
     LLDPPathSegment seg;
-    std::map<std::string,std::vector<LLDPMib> >::iterator iterKey = verticies.begin();
+    std::map<std::string, std::vector<LLDPMib>>::iterator iterKey = verticies.begin();
     while (iterKey != verticies.end()) {
-        if(strcmp(iterKey->first.c_str(),srcId.c_str())!=0){
-            q.push(pair<string,int>(iterKey->first,std::numeric_limits<int>::max()));
+        if (strcmp(iterKey->first.c_str(), srcId.c_str()) != 0) {
+            q.push(pair<string, int>(iterKey->first, std::numeric_limits<int>::max()));
 
             dist[iterKey->first] = std::numeric_limits<int>::max();
 
             seg = LLDPPathSegment();
-            seg.chassisId ="";
-            seg.outport=-1;
-            prev[iterKey->first]=seg;
+            seg.chassisId = "";
+            seg.outport = -1;
+            prev[iterKey->first] = seg;
         }
         iterKey++;
     }
 
     //set start vertex
-    q.push(pair<string,int>(srcId,0));
+    q.push(pair<string, int>(srcId, 0));
     seg = LLDPPathSegment();
-    seg.chassisId ="";
-    seg.outport=-1;
-    prev[srcId]=seg;
+    seg.chassisId = "";
+    seg.outport = -1;
+    prev[srcId] = seg;
 
     std::string u;
-    while(!q.empty()){
+    while (!q.empty()) {
         u = q.top().first;
         q.pop();
 
         tempPath.clear();
         int alt;
         //std::vector<LLDPMib>::iterator iterList;
-        for(auto iterList = verticies[u].begin();iterList!=verticies[u].end(); ++iterList){
-            alt = dist[u]+1;
-            if(alt < dist[iterList->getDstId()]){
+        for (auto iterList = verticies[u].begin(); iterList != verticies[u].end(); ++iterList) {
+            alt = dist[u] + 1;
+            if (alt < dist[iterList->getDstId()]) {
                 tempPath.clear();
                 dist[iterList->getDstId()] = alt;
                 seg = LLDPPathSegment();
                 seg.chassisId = u;
-                seg.outport= (iterList)->getSrcPort();
-                prev[(iterList)->getDstId()]=seg;
-                q.push(pair<string,int>(iterList->getDstId(),alt));
+                seg.outport = (iterList)->getSrcPort();
+                prev[(iterList)->getDstId()] = seg;
+                q.push(pair<string, int>(iterList->getDstId(), alt));
             }
             else if (alt == dist[iterList->getDstId()]) {
                 seg = LLDPPathSegment();
                 seg.chassisId = u;
-                seg.outport= (iterList)->getSrcPort();
-                tempPath.push_back(pair<std::string,LLDPPathSegment>(iterList->getDstId(),seg));
+                seg.outport = (iterList)->getSrcPort();
+                tempPath.push_back(pair<std::string, LLDPPathSegment>(iterList->getDstId(), seg));
             }
         }
 
-        if (!tempPath.empty()){
+        if (!tempPath.empty()) {
             //random list entry or do nothing
             int size = tempPath.size();
-            int rand = floor(uniform(0,size+1));
+            int rand = floor(uniform(0, size + 1));
 
-            if(rand < size){
+            if (rand < size) {
                 dist[tempPath[rand].first] = alt;
-                prev[tempPath[rand].first]= tempPath[rand].second;
-                q.push(pair<string,int>(tempPath[rand].first,alt));
+                prev[tempPath[rand].first] = tempPath[rand].second;
+                q.push(pair<string, int>(tempPath[rand].first, alt));
             }
         }
     }
@@ -255,7 +248,7 @@ std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::st
     //back track and insert into list
     std::string trg = dstId;
     LLDPPathSegment segP;
-    while(strcmp(prev[trg].chassisId.c_str(),"") != 0){
+    while (strcmp(prev[trg].chassisId.c_str(), "") != 0) {
         segP = LLDPPathSegment();
         segP.chassisId = prev[trg].chassisId;
         segP.outport = prev[trg].outport;
@@ -264,16 +257,17 @@ std::list<LLDPPathSegment> LLDPBalancedMinHop::computeBalancedMinHopPath(std::st
     }
 
     //check if there was route from src to dst
-    if(strcmp(srcId.c_str(),trg.c_str()) != 0){
+    if (strcmp(srcId.c_str(), trg.c_str()) != 0) {
         result.clear();
     }
-    else{
+    else {
         //add to cache
-        routeCache[std::pair<std::string,std::string>(srcId,dstId)]=result;
+        routeCache[std::pair<std::string, std::string>(srcId, dstId)] = result;
     }
     std::list<LLDPPathSegment> res2 = std::list<LLDPPathSegment>();
-    std::copy(result.begin(),result.end(), std::back_inserter(res2));
+    std::copy(result.begin(), result.end(), std::back_inserter(res2));
     return res2;
 }
 
 } /*end namespace openflow*/
+

@@ -3,17 +3,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 // c Timo Haeckel, for HAW Hamburg
-// 
+//
 
 #include "openflow/openflow/switch/flowtable/OF_FlowTable.h"
 
@@ -23,7 +23,7 @@
 
 using namespace std;
 
-namespace openflow{
+namespace openflow {
 
 Define_Module(OF_FlowTable);
 
@@ -34,23 +34,23 @@ std::ostream& operator<<(std::ostream& os, const OF_FlowTableEntry& entry)
 }
 
 OF_FlowTable::OF_FlowTable() {
-    for(auto&& entry : _entries) {
-      delete entry;
+    for (auto&& entry : _entries) {
+        delete entry;
     }
     _entries.clear();
 }
 
-OF_FlowTableEntry* OF_FlowTable::lookup(oxm_basic_match& match) {
+OF_FlowTableEntry *OF_FlowTable::lookup(oxm_basic_match& match) {
     Enter_Method("lookup()");
     removeAgedEntriesIfNeeded();
 
     EV << "Looking through " << _entries.size() << " Flow Entries!" << '\n';
 
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
+    for (auto iter = _entries.begin(); iter != _entries.end(); ++iter) {
 
-        if ((*iter)->tryMatch(match)){
+        if ((*iter)->tryMatch(match)) {
             (*iter)->setLastMatched(simTime());
-            return (*iter);
+            return *iter;
         }
     }
     return nullptr;
@@ -63,35 +63,33 @@ OF_FlowTable::~OF_FlowTable() {
 void OF_FlowTable::initialize()
 {
     handleParameterChange(nullptr);
-    
+
     // Check if this module is part of a vector (has an index)
     if (isVector()) {
         _tableIndex = this->getIndex();
-    } else {
+    }
+    else {
         _tableIndex = 0; // Default table index for single flow table
     }
-    
+
     _nextAging = simtime_t::getMaxTime();
 
     WATCH(_nextAging);
     WATCH_PTRVECTOR(_entries);
 
-
-    if(_agingInterval > 0){
+    if (_agingInterval > 0) {
         scheduleNextAging();
     }
 
     updateDisplayString();
 }
 
-void OF_FlowTable::handleParameterChange(const char* parname)
+void OF_FlowTable::handleParameterChange(const char *parname)
 {
-    if (!parname || !strcmp(parname, "agingInterval"))
-    {
+    if (!parname || !strcmp(parname, "agingInterval")) {
         _agingInterval = par("agingInterval").doubleValue();
     }
-    if (!parname || !strcmp(parname, "maxFlowEntries"))
-    {
+    if (!parname || !strcmp(parname, "maxFlowEntries")) {
         _maxEntries = par("maxFlowEntries");
     }
 }
@@ -102,10 +100,11 @@ void OF_FlowTable::scheduleNextAging() {
 
 void OF_FlowTable::handleMessage(cMessage *msg)
 {
-    if(msg->isSelfMessage() && !strcmp(msg->getName(), "AGING")) {
+    if (msg->isSelfMessage() && !strcmp(msg->getName(), "AGING")) {
         //start aging
         removeAgedEntries();
-    } else {
+    }
+    else {
         throw cRuntimeError("This module doesn't process messages");
     }
     delete msg;
@@ -113,7 +112,7 @@ void OF_FlowTable::handleMessage(cMessage *msg)
 
 void OF_FlowTable::updateDisplayString() {
     if (!getEnvir()->isGUI())
-            return;
+        return;
 
     getDisplayString().setTagArg("t", 0, (to_string(getNumEntries()) + " flows").c_str());
 }
@@ -123,16 +122,16 @@ void OF_FlowTable::sortEntries() {
     std::sort(_entries.begin(), _entries.end(), Compare_OF_FlowTableEntry());
 }
 
-bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
+bool OF_FlowTable::addEntry(OF_FlowTableEntry *entry) {
     Enter_Method("addEntry()");
     //abort if full
-    if(_maxEntries != 0 && getNumEntries() >= _maxEntries)
+    if (_maxEntries != 0 && getNumEntries() >= _maxEntries)
         return false;
 
     //check if entry already exists.
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
+    for (auto iter = _entries.begin(); iter != _entries.end(); ++iter) {
         //flow table entrys matches are equal
-        if(entry->tryMatch((*iter))) {
+        if (entry->tryMatch((*iter))) {
             _entries.erase(iter);
             break;
         }
@@ -152,10 +151,10 @@ bool OF_FlowTable::addEntry(OF_FlowTableEntry* entry) {
 void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match, int priority) {
     Enter_Method("deleteMatchingEntries()");
     //check all entries
-    for(auto iter =_entries.begin();iter != _entries.end(); ){
-        OF_FlowTableEntry* entry = (*iter);
+    for (auto iter = _entries.begin(); iter != _entries.end(); ) {
+        OF_FlowTableEntry *entry = (*iter);
         bool deleted = false;
-        if(entry->getPriority() == priority) {
+        if (entry->getPriority() == priority) {
             //flow table entrys matches are equal
             if (entry->tryMatch(match, true)) {
                 _entries.erase(iter);
@@ -171,33 +170,33 @@ void OF_FlowTable::deleteMatchingEntries(const oxm_basic_match& match, int prior
     updateDisplayString();
 }
 
-vector<OF_FlowTableEntry*> OF_FlowTable::getEntrys(){
+vector<OF_FlowTableEntry *> OF_FlowTable::getEntrys() {
     return _entries;
 }
 
-void OF_FlowTable::handleFlowMod(OFP_Flow_Mod* flow_mod) {
+void OF_FlowTable::handleFlowMod(OFP_Flow_Mod *flow_mod) {
     Enter_Method("handleFlowMod()");
     //check flow mod command
-    switch(flow_mod->getCommand()){
-    case ofp_flow_mod_command::OFPFC_ADD:
-        addEntry(OF_FlowTableEntry::createEntryForOFVersion(flow_mod));
-        break;
-    //TODO Implement other flow mod commands
-    case ofp_flow_mod_command::OFPFC_MODIFY:
-    case ofp_flow_mod_command::OFPFC_MODIFY_STRICT:
-    case ofp_flow_mod_command::OFPFC_DELETE:
-        deleteMatchingEntries(flow_mod->getMatch());
-    case ofp_flow_mod_command::OFPFC_DELETE_STRICT:
-    default:
-        break;
+    switch (flow_mod->getCommand()) {
+        case ofp_flow_mod_command::OFPFC_ADD:
+            addEntry(OF_FlowTableEntry::createEntryForOFVersion(flow_mod));
+            break;
+        //TODO Implement other flow mod commands
+        case ofp_flow_mod_command::OFPFC_MODIFY:
+        case ofp_flow_mod_command::OFPFC_MODIFY_STRICT:
+        case ofp_flow_mod_command::OFPFC_DELETE:
+            deleteMatchingEntries(flow_mod->getMatch());
+        case ofp_flow_mod_command::OFPFC_DELETE_STRICT:
+        default:
+            break;
     }
 }
 
 void OF_FlowTable::clear() {
     Enter_Method("clear()");
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
-        OF_FlowTableEntry* entry = (*iter);
-       delete entry;
+    for (auto iter = _entries.begin(); iter != _entries.end(); ++iter) {
+        OF_FlowTableEntry *entry = (*iter);
+        delete entry;
     }
     _entries.clear();
     updateDisplayString();
@@ -205,13 +204,11 @@ void OF_FlowTable::clear() {
 
 void OF_FlowTable::removeAgedEntriesIfNeeded() {
     //return if no entries set or automatic aging turned off.
-    if(_entries.empty() || _agingInterval > 0){
+    if (_entries.empty() || _agingInterval > 0) {
         return;
     }
 
-
-    if (simTime() >= _nextAging)
-    {
+    if (simTime() >= _nextAging) {
         removeAgedEntries();
     }
 }
@@ -232,31 +229,30 @@ void OF_FlowTable::removeAgedEntries() {
     _nextAging = simtime_t::getMaxTime();
 
     //iterate over entries
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
-        OF_FlowTableEntry* entry = (*iter);
+    for (auto iter = _entries.begin(); iter != _entries.end(); ++iter) {
+        OF_FlowTableEntry *entry = (*iter);
         simtime_t entryTimeout = entry->getTimeOut();
-        if(now >= entryTimeout){
-           _entries.erase(iter--);
-           delete entry;
-           updated = true;
-        } else {
+        if (now >= entryTimeout) {
+            _entries.erase(iter--);
+            delete entry;
+            updated = true;
+        }
+        else {
             //update next aging.
-            if(_nextAging > entryTimeout){
+            if (_nextAging > entryTimeout) {
                 _nextAging = entryTimeout;
             }
         }
     }
-    if(updated){
+    if (updated) {
         sortEntries();
         updateDisplayString();
     }
 
-    if(_agingInterval > 0){
+    if (_agingInterval > 0) {
         scheduleNextAging();
     }
-
 }
-
 
 std::string OF_FlowTable::exportToXML() {
     std::ostringstream oss;
@@ -264,7 +260,7 @@ std::string OF_FlowTable::exportToXML() {
 
     oss << "<flowTable index=\"" << _tableIndex << "\" >" << endl; // start flow table
 
-    for(auto iter =_entries.begin();iter != _entries.end();++iter){
+    for (auto iter = _entries.begin(); iter != _entries.end(); ++iter) {
         oss << (*iter)->exportToXML();
     }
 
@@ -272,26 +268,27 @@ std::string OF_FlowTable::exportToXML() {
     return oss.str();
 }
 
-void OF_FlowTable::importFromXML(omnetpp::cXMLElement* xmlDoc) {
+void OF_FlowTable::importFromXML(omnetpp::cXMLElement *xmlDoc) {
     //check if entry has correct index
-    if(const char* value = xmlDoc->getAttribute("index")) {
+    if (const char *value = xmlDoc->getAttribute("index")) {
         //check for our table index.
-        if(atoi(value) != _tableIndex){
+        if (atoi(value) != _tableIndex) {
             //wrong table
             return;
         }
-    } else {
+    }
+    else {
         return;
     }
 
     //everything is allright so import.
     cXMLElementList xmlFlows = xmlDoc->getChildrenByTagName("flowEntry");
-    for(size_t i=0; i<xmlFlows.size(); i++){
-        if(OF_FlowTableEntry* entry = OF_FlowTableEntry::createEntryForOFVersion(xmlFlows[i])){
+    for (size_t i = 0; i < xmlFlows.size(); i++) {
+        if (OF_FlowTableEntry *entry = OF_FlowTableEntry::createEntryForOFVersion(xmlFlows[i])) {
             addEntry(entry);
         }
     }
-
 }
 
-}
+} // namespace openflow
+

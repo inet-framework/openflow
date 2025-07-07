@@ -1,4 +1,3 @@
-
 #ifndef SWITCH_INFO_H_
 #define SWITCH_INFO_H_
 
@@ -8,41 +7,41 @@
 using namespace __gnu_cxx;
 using namespace inet;
 
-namespace openflow{
+namespace openflow {
 
-class Switch_Info {
-    public:
-        Switch_Info();
+class Switch_Info
+{
+  public:
+    Switch_Info();
 
-        int getConnId() const;
-        void setConnId(int connId);
-        int getVersion() const;
-        void setVersion(int version);
-        std::string getMacAddress() const;
-        void setMacAddress(std::string macAddress);
-        int getNumOfPorts() const;
-        void setNumOfPorts(int numOfPorts);
-        TcpSocket* getSocket() const;
-        void setSocket(TcpSocket* socket);
+    int getConnId() const;
+    void setConnId(int connId);
+    int getVersion() const;
+    void setVersion(int version);
+    std::string getMacAddress() const;
+    void setMacAddress(std::string macAddress);
+    int getNumOfPorts() const;
+    void setNumOfPorts(int numOfPorts);
+    TcpSocket *getSocket() const;
+    void setSocket(TcpSocket *socket);
 
-        void setSwitchPortsIndexId(const int &, const int &);
+    void setSwitchPortsIndexId(const int&, const int&);
 
+    int getIndexPort(const int&);
+    int getIdPort(const int&);
 
-        int getIndexPort(const int&);
-        int getIdPort(const int&);
+  protected:
+    std::vector<int> idPort;
 
-
-    protected:
-        std::vector<int> idPort;
-
-        int connID;
-        int numOfPorts;
-        std::string macAddress;
-        TcpSocket *socket;
-        int version;
+    int connID;
+    int numOfPorts;
+    std::string macAddress;
+    TcpSocket *socket;
+    int version;
 
 };
 
 } /*end namespace openflow*/
 
 #endif /* FLOW_TABLE_H_ */
+
