@@ -14,6 +14,14 @@ struct ControlChannelEntry{
     // getters for descriptor:
     const char *getControllerId() const { return controllerId.c_str(); }
     simtime_t getTime() const { return time; }
+    size_t getSwitchesArraySize() { return switches.size(); }
+    const Switch_Info * getSwitches(int i) const {
+        if (i < 0 || static_cast<size_t>(i) >= switches.size())
+            throw std::out_of_range("Cannot return field, index out of range.");
+        auto it = switches.begin();
+        std::advance(it, i);
+        return *it;
+    }
 };
 
 struct DataChannelEntry{
@@ -30,6 +38,5 @@ struct DataChannelEntry{
 };
 
 } /*end namespace openflow*/
-
 
 #endif /* OF_CONTROLLER_H_ */
