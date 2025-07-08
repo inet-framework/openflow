@@ -148,7 +148,7 @@ void HyperFlowSynchronizer::handleSyncRequest(Packet *pkt) {
     for (auto iterData = dataChannel.begin(); iter < counter && iterData != dataChannel.end(); ++iterData, ++iter) {
         reply->setDataChannel(iter, *iterData);
     }
-    reply->setChunkLength(B(sizeof(controlChannel) + sizeof(dataChannel))); // TODO FIXME incorrect size calculation! correct value is length of list * itemsize, or sum of itemsizes when the items have variable length
+    reply->setChunkLength(B(sizeof(controlChannel) + sizeof(dataChannel))); // TODO FIXME wrong size calculation! correct value is length of list * itemsize, or sum of itemsizes when the items have variable length
     //reply->setByteLength(sizeof(controlChannel)+sizeof(tempDataChannel));
     pktReply->insertAtFront(reply);
     pktReply->setKind(TCP_C_SEND);

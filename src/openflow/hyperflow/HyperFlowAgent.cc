@@ -164,7 +164,7 @@ void HyperFlowAgent::sendReportIn() {
         reportIn->getSwitchInfoListForUpdate().push_front(&iterSw);
     }
 
-    reportIn->setChunkLength(B(1 + sizeof(reportIn->getSwitchInfoList())));
+    reportIn->setChunkLength(B(1 + sizeof(reportIn->getSwitchInfoList())));    // TODO FIXME wrong length calculation: sizeof(std::list); correct value is length of list * itemsize, or sum of itemsizes when the items have variable length
     auto pktReport = new Packet("ReportIn");
     pktReport->setKind(TCP_C_SEND);
     pktReport->insertAtFront(reportIn);
@@ -245,7 +245,7 @@ void HyperFlowAgent::synchronizeDataChannelEntry(DataChannelEntry entry) {
 
     EV_DEBUG << "HyperFlowAgent::Sent Change" << endl;
     auto change = makeShared<HF_ChangeNotification>();
-    change->setChunkLength(B(sizeof(entry)));
+    change->setChunkLength(B(sizeof(entry)));    // TODO FIXME wrong length calculation
     change->setEntry(entry);
 
     auto pktChange = new Packet("HF_Change");
