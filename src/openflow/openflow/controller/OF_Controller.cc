@@ -197,7 +197,7 @@ void OF_Controller::socketAvailable(TcpSocket *listenerSocket, TcpAvailableInfo 
 
     newSocket->setOutputGate(gate("socketOut"));
     newSocket->setCallback(this);
-    Switch_Info swInfo = Switch_Info();
+    Switch_Info swInfo;
     swInfo.setSocket(newSocket);
     swInfo.setConnId(newSocket->getSocketId());
     swInfo.setMacAddress("");
@@ -378,7 +378,7 @@ void OF_Controller::registerConnection(Indication *sockInfo) {
     TcpSocket *newSocket = new TcpSocket(availableInfo);
 
     newSocket->setOutputGate(gate("socketOut"));
-    Switch_Info swInfo = Switch_Info();
+    Switch_Info swInfo;
     swInfo.setSocket(newSocket);
     swInfo.setConnId(newSocket->getSocketId());
     swInfo.setMacAddress("");
@@ -467,4 +467,3 @@ void OF_Controller::finish() {
 }
 
 } /*end namespace openflow*/
-

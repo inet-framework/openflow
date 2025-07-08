@@ -501,7 +501,7 @@ static bool chekIcmpEchoRequest(Packet *pkt, int& seqNumber, int& identifier) {
 }
 
 void OF_Switch::processFrame(Packet *pkt) {
-    oxm_basic_match match = oxm_basic_match();
+    oxm_basic_match match;
 
     //EthernetIIFrame *frame
     //extract match fields
@@ -674,7 +674,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame) {
 //        packetIn->encapsulate(frame);
         packetIn->setBuffer_id(OFP_NO_BUFFER);
         packetIn->getHeaderForUpdate().length = B(packetIn->getChunkLength()).get() + pktFrame->getByteLength();
-        oxm_basic_match match = oxm_basic_match();
+        oxm_basic_match match;
         match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
 //        match.OFB_ETH_SRC = etherHeader->getSrc();
 //        match.OFB_ETH_DST = etherHeader->getDest();
@@ -687,7 +687,7 @@ void OF_Switch::handleMissMatchedPacket(Packet *pktFrame) {
         // store packet in buffer and only send header fields
         auto etherHeader = pktFrame->removeAtFront<EthernetMacHeader>();
 
-        oxm_basic_match match = oxm_basic_match();
+        oxm_basic_match match;
         match.OFB_IN_PORT = pktFrame->getTag<InterfaceInd>()->getInterfaceId();
 
         match.OFB_ETH_SRC = etherHeader->getSrc();
@@ -824,4 +824,3 @@ void OF_Switch::finish() {
 }
 
 } /*end namespace openflow*/
-

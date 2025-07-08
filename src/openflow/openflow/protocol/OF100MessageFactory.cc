@@ -145,7 +145,7 @@ Packet *OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, Packet 
         // msg->encapsulate(frame->dup());
         pk->insertAtFront(ethPk->peekData());
         msg->getHeaderForUpdate().length = 18 + pk->getByteLength();
-        oxm_basic_match match = oxm_basic_match();
+        oxm_basic_match match;
         match.OFB_IN_PORT = ethPk->getTag<InterfaceInd>()->getInterfaceId();
 //       match.OFB_ETH_SRC = frame->getSrc();
 //       match.OFB_ETH_DST = frame->getDest();
@@ -156,7 +156,7 @@ Packet *OF100MessageFactory::createPacketIn(ofp_packet_in_reason reason, Packet 
     else {
         auto frame = ethPk->popAtFront<EthernetMacHeader>();
         // packet in buffer so only send header fields
-        oxm_basic_match match = oxm_basic_match();
+        oxm_basic_match match;
         match.OFB_IN_PORT = ethPk->getTag<InterfaceInd>()->getInterfaceId();
 
         match.OFB_ETH_SRC = frame->getSrc();
@@ -214,4 +214,3 @@ Packet *OF100MessageFactory::createPacketOut(uint32_t *outports, int n_outports,
 }
 
 } /* namespace openflow */
-

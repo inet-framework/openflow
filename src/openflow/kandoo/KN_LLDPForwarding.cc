@@ -64,7 +64,7 @@ void KN_LLDPForwarding::handlePacketIn(Packet *pktIn) {
     if (route.empty()) {
         if (!knAgent->getIsRootController()) {
             //ask our root controller for instructions
-            KandooEntry entry = KandooEntry();
+            KandooEntry entry;
             entry.trgApp = "KN_LLDPForwarding";
             entry.srcApp = "KN_LLDPForwarding";
             entry.trgController = "RootController";
@@ -186,7 +186,7 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
                             if (route.empty()) {
                                 if (dropIfNoRouteFound && headerFields.eth_type != ETHERTYPE_ARP) {
                                     //respond with a drop packet
-                                    KandooEntry entry2 = KandooEntry();
+                                    KandooEntry entry2;
                                     entry2.trgApp = "KN_LLDPForwarding";
                                     entry2.srcApp = "KN_LLDPForwarding";
                                     entry2.trgController = knpck->getKnEntry().srcController;
@@ -300,4 +300,3 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
 }
 
 } /*end namespace openflow*/
-
