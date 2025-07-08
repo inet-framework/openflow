@@ -17,7 +17,7 @@ LLDPMibGraph::LLDPMibGraph() {
 const std::string LLDPMibGraph::getStringGraph() {
     std::stringstream stream;
 
-    for (auto & verticie : verticies) {
+    for (auto& verticie : verticies) {
         for (auto iterList = verticies[verticie.first].begin(); iterList != verticies[verticie.first].end(); ++iterList) {
             stream << " (" << iterList->getSrcId() << "," << iterList->getSrcPort() << ") ->" << "(" << iterList->getDstId() << "," << iterList->getDstPort() << ") Expires at:" << iterList->getExpiresAt() << "\n";
         }
@@ -31,7 +31,7 @@ bool LLDPMibGraph::addEntry(std::string src, int srcPort, std::string dst, int d
     if (srcPort == -1) {
         if (verticies.count(dst) > 0) {
             //we have seen this arp before, check if we are the first hop
-            for (auto & iterList : verticies[dst]) {
+            for (auto& iterList : verticies[dst]) {
                 if (iterList.getSrcPort() == dstPort && iterList.getDstPort() != -1) {
                     return false;
                 }

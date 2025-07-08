@@ -6,7 +6,7 @@
 #include "string"
 
 enum {
-MSGKIND_KNCONNECT =    1404
+    MSGKIND_KNCONNECT = 1404
 };
 
 namespace openflow {

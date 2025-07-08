@@ -6,10 +6,10 @@
 #include "string"
 
 enum {
-MSGKIND_REPORTINEVERY =      701,
-MSGKIND_SYNCEVERY =          702,
-MSGKIND_CHECKALIVEEVERY =    703,
-MSGKIND_HFCONNECT =          704
+    MSGKIND_REPORTINEVERY   = 701,
+    MSGKIND_SYNCEVERY       = 702,
+    MSGKIND_CHECKALIVEEVERY = 703,
+    MSGKIND_HFCONNECT       = 704
 };
 
 namespace openflow {
@@ -160,7 +160,7 @@ void HyperFlowAgent::sendReportIn() {
 
     //copy switches list
     auto tempList = controller->getSwitchesList();
-    for (auto & iterSw : *tempList) {
+    for (auto& iterSw : *tempList) {
         reportIn->getSwitchInfoListForUpdate().push_front(&iterSw);
     }
 

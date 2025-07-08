@@ -8,8 +8,8 @@
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 
 enum {
-MSGKIND_TRIGGERLLDP =        101,
-MSGKIND_LLDPAGENTBOOTED =    201
+    MSGKIND_TRIGGERLLDP     = 101,
+    MSGKIND_LLDPAGENTBOOTED = 201
 };
 
 namespace openflow {
@@ -48,7 +48,7 @@ void LLDPAgent::sendLLDP() {
     int j = 0;
     //iterate over all switches controlled by the controller
     auto list = controller->getSwitchesList();
-    for (auto & i : *list) {
+    for (auto& i : *list) {
         if (strcmp(i.getMacAddress().c_str(), "") == 0) {
             //only use full connections
             continue;

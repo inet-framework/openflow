@@ -6,7 +6,7 @@
 #include "inet/common/ProtocolTag_m.h"
 
 enum {
-MSGKIND_ARPRESPONDERBOOTED =    801
+    MSGKIND_ARPRESPONDERBOOTED = 801
 };
 
 namespace openflow {

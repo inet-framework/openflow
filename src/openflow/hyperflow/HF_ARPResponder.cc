@@ -6,7 +6,7 @@
 #include "inet/common/ProtocolTag_m.h"
 
 enum {
-MSGKIND_ARPRESPONDERBOOTED =    801
+    MSGKIND_ARPRESPONDERBOOTED = 801
 };
 
 namespace openflow {
@@ -157,7 +157,7 @@ bool HF_ARPResponder::searchHyperFlowAggent()
         return true;
     if (hfAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(iterApp)) {
                 hfAgent = hf;
                 return true;

@@ -4,8 +4,8 @@
 #include "inet/protocolelement/fragmentation/tag/FragmentTag_m.h"
 
 enum {
-MSGKIND_TRIGGERLLDP =        101,
-MSGKIND_LLDPAGENTBOOTED =    201
+    MSGKIND_TRIGGERLLDP     = 101,
+    MSGKIND_LLDPAGENTBOOTED = 201
 };
 
 namespace openflow {
@@ -107,7 +107,7 @@ bool HF_LLDPAgent::searchHyperFlowAggent()
 
     if (hfAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (HyperFlowAgent *hf = dynamic_cast<HyperFlowAgent *>(iterApp)) {
                 hfAgent = hf;
                 return true;

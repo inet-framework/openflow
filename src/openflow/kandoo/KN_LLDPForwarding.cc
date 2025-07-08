@@ -137,7 +137,7 @@ void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *
     if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 knAgent = kn;
                 break;

@@ -4,8 +4,8 @@
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
 enum {
-MSGKIND_TRIGGERLLDP =        101,
-MSGKIND_LLDPAGENTBOOTED =    201
+    MSGKIND_TRIGGERLLDP     = 101,
+    MSGKIND_LLDPAGENTBOOTED = 201
 };
 
 namespace openflow {
@@ -110,7 +110,7 @@ void KN_LLDPAgent::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, 
     if (kandooAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 kandooAgent = kn;
                 break;

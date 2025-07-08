@@ -3,7 +3,7 @@
 #include "inet/linklayer/ethernet/common/EthernetMacHeader_m.h"
 
 enum {
-MSGKIND_ARPRESPONDERBOOTED =    801
+    MSGKIND_ARPRESPONDERBOOTED = 801
 };
 
 namespace openflow {
@@ -119,7 +119,7 @@ void KN_ARPResponder::receiveSignal(cComponent *src, simsignal_t id, cObject *ob
     if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (KandooAgent *kn = dynamic_cast<KandooAgent *>(iterApp)) {
                 knAgent = kn;
                 break;

@@ -118,7 +118,7 @@ void LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj
     if (lldpAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
 
-        for (auto & iterApp : *appList) {
+        for (auto& iterApp : *appList) {
             if (LLDPAgent *lldp = dynamic_cast<LLDPAgent *>(iterApp)) {
                 lldpAgent = lldp;
                 break;
