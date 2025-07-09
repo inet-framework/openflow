@@ -19,4 +19,6 @@ simple KN_LLDPForwarding like IControllerApp
         bool ignoreArpRequests = default(false);
         int priority = default(1);
 
+        @signal[cpPingPacketHash](type="unsigned long");
+        @statistic[cpPingPacketHash](title="CpPingPacketHash"; record=vector?,stats; interpolationmode=none);
 }
