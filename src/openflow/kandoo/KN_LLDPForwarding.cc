@@ -131,8 +131,9 @@ void KN_LLDPForwarding::handlePacketIn(Packet *pktIn) {
 }
 
 void KN_LLDPForwarding::receiveSignal(cComponent *src, simsignal_t id, cObject *obj, cObject *details) {
-    LLDPForwarding::receiveSignal(src, id, obj, details);
     Enter_Method("KN_LLDPForwarding::receiveSignal %s", cComponent::getSignalName(id));
+
+    LLDPForwarding::receiveSignal(src, id, obj, details);
     //set knagent link
     if (knAgent == nullptr && controller != nullptr) {
         auto appList = controller->getAppList();
