@@ -4,6 +4,8 @@ using namespace std;
 
 namespace openflow {
 
+Register_Class(HF_ReFire_Wrapper);
+
 HF_ReFire_Wrapper::HF_ReFire_Wrapper() = default;
 
 HF_ReFire_Wrapper::~HF_ReFire_Wrapper() = default;
