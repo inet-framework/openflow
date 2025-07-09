@@ -1,24 +1,14 @@
 
 
 package openflow.kandoo;
-import openflow.controllerApps.IControllerApp;
+import openflow.controllerApps.LLDPForwarding;
 
 
-simple KN_LLDPForwarding like IControllerApp
+simple KN_LLDPForwarding extends LLDPForwarding
 {
     parameters:
         @class(openflow::KN_LLDPForwarding);
         @signal[KandooEvent];
-        @signal[pingPacketHash](type="long");
-        @statistic[pingPacketHash](title="PingPacketHash"; record=vector?,stats?; interpolationmode=none);
-        @display("i=block/app");
-        int flowModHardTimeOut = default(0);
-        int flowModIdleTimeOut = default(1);
-        bool printMibGraph = default(false);
-        bool dropIfNoRouteFound = default(true);
-        bool ignoreArpRequests = default(false);
-        int priority = default(1);
-
         @signal[cpPingPacketHash](type="unsigned long");
         @statistic[cpPingPacketHash](title="CpPingPacketHash"; record=vector?,stats; interpolationmode=none);
 }
