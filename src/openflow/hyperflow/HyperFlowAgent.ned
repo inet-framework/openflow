@@ -43,7 +43,7 @@ simple HyperFlowAgent extends openflow.controllerApps.AbstractTCPControllerApp
     parameters:
         @class(openflow::HyperFlowAgent);
         @class(HyperFlowAgent);
-        @signal[HyperFlowReFire];
+        @signal[HyperFlowReFire](type="openflow::HF_ReFire_Wrapper");
         @display("i=block/app");
 
         // Hard timeout for flow entries (0 means no hard timeout)

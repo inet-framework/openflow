@@ -6,7 +6,7 @@ simple KandooAgent extends openflow.controllerApps.AbstractTCPControllerApp
         @class(openflow::KandooAgent);
         @display("i=block/app");
         @class(KandooAgent);
-        @signal[KandooEvent];
+        @signal[KandooEvent](type="inet::Packet");
         int flowModHardTimeOut = default(0);
         int flowModIdleTimeOut = default(1);
         int localPort = default(-1);
